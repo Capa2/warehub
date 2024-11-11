@@ -79,7 +79,7 @@ namespace warehub.db
 
 //Example usage
 
-//string connectionString = "Server=YOUR_SERVER;Database=YOUR_DATABASE;User ID=YOUR_USER;Password=YOUR_PASSWORD;";
+//string connectionString = "Server=Localhost Connection;Database=wareHub;User ID=root;Password=bcj93qpq;";
 //DbConnection dbConnection = DbConnection.GetInstance(connectionString);
 //dbConnection.Connect();
 //MySqlConnection connection = dbConnection.GetConnection();

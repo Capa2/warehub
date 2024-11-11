@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using warehub.db;
 
 namespace warehub.db
 {
@@ -12,7 +8,7 @@ namespace warehub.db
     {
         private readonly MySqlConnection _connection;
 
-        // Primary constructor accepting MySqlConnection instance from DbConnections
+        // Primary constructor accepting MySqlConnection instance from DbConnection
         public CRUDService(MySqlConnection connection) => _connection = connection;
 
         /// <summary>
@@ -22,15 +18,18 @@ namespace warehub.db
         /// <param name="parameters">A dictionary of parameter names and values.</param>
         public void Create(string query, Dictionary<string, object> parameters)
         {
+            var connectionWasClosed = _connection.State == System.Data.ConnectionState.Closed;
             try
             {
+                if (connectionWasClosed)
+                    _connection.Open();
+
                 using (var command = new MySqlCommand(query, _connection))
                 {
                     foreach (var param in parameters)
                     {
                         command.Parameters.AddWithValue(param.Key, param.Value);
                     }
-                    _connection.Open();
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item created successfully.");
                 }
@@ -41,7 +40,8 @@ namespace warehub.db
             }
             finally
             {
-                _connection.Close();
+                if (connectionWasClosed && _connection.State == System.Data.ConnectionState.Open)
+                    _connection.Close();
             }
         }
 
@@ -53,11 +53,15 @@ namespace warehub.db
         public List<Dictionary<string, object>> Read(string query)
         {
             var results = new List<Dictionary<string, object>>();
+            var connectionWasClosed = _connection.State == System.Data.ConnectionState.Closed;
+
             try
             {
+                if (connectionWasClosed)
+                    _connection.Open();
+
                 using (var command = new MySqlCommand(query, _connection))
                 {
-                    _connection.Open();
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -79,8 +83,10 @@ namespace warehub.db
             }
             finally
             {
-                _connection.Close();
+                if (connectionWasClosed && _connection.State == System.Data.ConnectionState.Open)
+                    _connection.Close();
             }
+
             return results;
         }
 
@@ -91,15 +97,18 @@ namespace warehub.db
         /// <param name="parameters">A dictionary of parameter names and values.</param>
         public void Update(string query, Dictionary<string, object> parameters)
         {
+            var connectionWasClosed = _connection.State == System.Data.ConnectionState.Closed;
             try
             {
+                if (connectionWasClosed)
+                    _connection.Open();
+
                 using (var command = new MySqlCommand(query, _connection))
                 {
                     foreach (var param in parameters)
                     {
                         command.Parameters.AddWithValue(param.Key, param.Value);
                     }
-                    _connection.Open();
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item updated successfully.");
                 }
@@ -110,7 +119,8 @@ namespace warehub.db
             }
             finally
             {
-                _connection.Close();
+                if (connectionWasClosed && _connection.State == System.Data.ConnectionState.Open)
+                    _connection.Close();
             }
         }
 
@@ -121,15 +131,18 @@ namespace warehub.db
         /// <param name="parameters">A dictionary of parameter names and values.</param>
         public void Delete(string query, Dictionary<string, object> parameters)
         {
+            var connectionWasClosed = _connection.State == System.Data.ConnectionState.Closed;
             try
             {
+                if (connectionWasClosed)
+                    _connection.Open();
+
                 using (var command = new MySqlCommand(query, _connection))
                 {
                     foreach (var param in parameters)
                     {
                         command.Parameters.AddWithValue(param.Key, param.Value);
                     }
-                    _connection.Open();
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item deleted successfully.");
                 }
@@ -140,21 +153,9 @@ namespace warehub.db
             }
             finally
             {
-                _connection.Close();
+                if (connectionWasClosed && _connection.State == System.Data.ConnectionState.Open)
+                    _connection.Close();
             }
         }
     }
-
-
 }
-
-//Example usage
-
-// Create a new product.
-//var parameters = new Dictionary<string, object>
-//{
-//    { "@name", "Product Name" },
-//    { "@price", 19.99 },
-//    { "@weight", 0.5 }
-//};
-//crudService.Create("INSERT INTO Products (Name, Price, Weight) VALUES (@name, @price, @weight)", parameters);
