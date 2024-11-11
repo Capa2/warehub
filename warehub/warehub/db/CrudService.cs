@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using warehub.db;
 
 namespace warehub.db
 {
@@ -12,7 +8,7 @@ namespace warehub.db
     {
         private readonly MySqlConnection _connection;
 
-        // Primary constructor accepting MySqlConnection instance from DbConnections
+        // Primary constructor accepting MySqlConnection instance from DbConnection
         public CRUDService(MySqlConnection connection) => _connection = connection;
 
         /// <summary>
@@ -30,7 +26,6 @@ namespace warehub.db
                     {
                         command.Parameters.AddWithValue(param.Key, param.Value);
                     }
-                    _connection.Open();
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item created successfully.");
                 }
@@ -38,10 +33,6 @@ namespace warehub.db
             catch (Exception ex)
             {
                 Console.WriteLine("Error creating item: " + ex.Message);
-            }
-            finally
-            {
-                _connection.Close();
             }
         }
 
@@ -57,7 +48,6 @@ namespace warehub.db
             {
                 using (var command = new MySqlCommand(query, _connection))
                 {
-                    _connection.Open();
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -77,10 +67,7 @@ namespace warehub.db
             {
                 Console.WriteLine("Error reading data: " + ex.Message);
             }
-            finally
-            {
-                _connection.Close();
-            }
+
             return results;
         }
 
@@ -99,7 +86,6 @@ namespace warehub.db
                     {
                         command.Parameters.AddWithValue(param.Key, param.Value);
                     }
-                    _connection.Open();
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item updated successfully.");
                 }
@@ -107,10 +93,6 @@ namespace warehub.db
             catch (Exception ex)
             {
                 Console.WriteLine("Error updating item: " + ex.Message);
-            }
-            finally
-            {
-                _connection.Close();
             }
         }
 
@@ -129,7 +111,6 @@ namespace warehub.db
                     {
                         command.Parameters.AddWithValue(param.Key, param.Value);
                     }
-                    _connection.Open();
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item deleted successfully.");
                 }
@@ -138,23 +119,6 @@ namespace warehub.db
             {
                 Console.WriteLine("Error deleting item: " + ex.Message);
             }
-            finally
-            {
-                _connection.Close();
-            }
         }
     }
-
-
 }
-
-//Example usage
-
-// Create a new product.
-//var parameters = new Dictionary<string, object>
-//{
-//    { "@name", "Product Name" },
-//    { "@price", 19.99 },
-//    { "@weight", 0.5 }
-//};
-//crudService.Create("INSERT INTO Products (Name, Price, Weight) VALUES (@name, @price, @weight)", parameters);
