@@ -11,7 +11,14 @@ namespace warehub.db
     {
         internal GenericResponseDTO<Product> Add(Product product)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>
+            {
+                { "@name", product.Name },
+                { "@price", product.Price },
+                { "@id", product.Id }
+            };
+            crudService.Create("INSERT INTO Products (Name, Price, Id) VALUES (@name, @price, @id)", parameters);
+            return new GenericResponseDTO<Product>(product);
         }
 
         internal GenericResponseDTO<Product> Delete(Guid id)

@@ -7,7 +7,7 @@ using warehub.services.interfaces;
 
 namespace warehub.model
 {
-    public abstract class Product
+    public class Product
     {
         public Guid Id { get; }
         public string Name { get; }

@@ -9,20 +9,13 @@ using warehub.services.interfaces;
 
 namespace warehub.services
 {
-    public class ProductService: IProductSerivce
+    public class ProductService(ProductRepository productRepository) : IProductSerivce
     {
 
-        private readonly ProductRepository _productRepository;
-
-        // Constructor injection to get an instance of IProductRepository
-        public ProductService(ProductRepository productRepository)
-        {
-            _productRepository = productRepository;
-        }
+        private readonly ProductRepository _productRepository = productRepository;
 
         public IEnumerable<Product>? GetAllProducts()
         {
-            
             GenericResponseDTO<IEnumerable<Product>> responseObject = _productRepository.GetAll();
             if (responseObject.IsSuccess)
             {
@@ -31,43 +24,55 @@ namespace warehub.services
             return null;
         }
 
-        public Product GetProductById(Guid id)
-        {   
-            Product product = null;
-            productDTO = _productRepository.GetById(id);
-            if (product == null)
-            {
-                throw new Exception("Product not found");
-            }?? throw new Exception("Product not found");
-        }
-
-        // Method to add a new product
-        public void AddProduct(Product product)
+        public Product? GetProductById(Guid id)
         {
-            _productRepository.Add(product);
-        }
-
-        // Method to update an existing product
-        public void UpdateProduct(Product product)
-        {
-            var existingProduct = _productRepository.GetById(product.Id);
-            if (existingProduct == null)
+            GenericResponseDTO<Product> response = _productRepository.GetById(id);
+            if (response.IsSuccess)
             {
-                throw new Exception("Product not found");
+                return response.Data;
             }
-            _productRepository.Update(existingProduct);
+            return null;
         }
 
-        // Method to delete a product by ID
-        public void DeleteProduct(Guid id)
+        public bool AddProduct(Product product)
         {
-            var product = _productRepository.GetById(id);
-            if (product == null)
+            GenericResponseDTO<Product> response = _productRepository.Add(product);
+            if (response.IsSuccess)
             {
-                throw new Exception("Product not found");
+                return true;
             }
+            return false;
+        }
 
-            _productRepository.Delete(id);
+        public bool UpdateProduct(Product product)
+        {
+            GenericResponseDTO<Product> getResponse = _productRepository.GetById(product.Id);
+            if (!getResponse.IsSuccess)
+            {
+                return false;
+            }
+            GenericResponseDTO<Product> response = _productRepository.Update(product);
+            if (response.IsSuccess)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool DeleteProduct(Guid id)
+        {
+            GenericResponseDTO<Product> getResponse = _productRepository.GetById(id);
+            if (!getResponse.IsSuccess)
+            {
+                return false;
+            }
+            GenericResponseDTO<Product> response = _productRepository.Delete(id);
+
+            if (response.IsSuccess)
+            {
+                return true;
+            }
+            return false;
         }
     }
 
