@@ -1,0 +1,15 @@
+DROP DATABASE IF EXISTS Warehub;
+CREATE DATABASE IF NOT EXISTS Warehub;
+USE Warehub;
+
+CREATE TABLE Products (
+    ID CHAR(36) PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL
+);
+
+
+CREATE INDEX `ID` ON `Products` (`ID`);
+
+INSERT INTO Products VALUES('d3f3f9c4-34c3-4f3b-bc99-8129e54f26d1','Red T-shirt', 20.00);
+INSERT INTO Products VALUES('a12b9c3f-15e7-4a49-b8fc-6d97e37481ab','BLue T-shirt', 20.00);
