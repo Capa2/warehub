@@ -18,12 +18,8 @@ namespace warehub.db
         /// <param name="parameters">A dictionary of parameter names and values.</param>
         public void Create(string query, Dictionary<string, object> parameters)
         {
-            var connectionWasClosed = _connection.State == System.Data.ConnectionState.Closed;
             try
             {
-                if (connectionWasClosed)
-                    _connection.Open();
-
                 using (var command = new MySqlCommand(query, _connection))
                 {
                     foreach (var param in parameters)
@@ -38,11 +34,6 @@ namespace warehub.db
             {
                 Console.WriteLine("Error creating item: " + ex.Message);
             }
-            finally
-            {
-                if (connectionWasClosed && _connection.State == System.Data.ConnectionState.Open)
-                    _connection.Close();
-            }
         }
 
         /// <summary>
@@ -53,13 +44,8 @@ namespace warehub.db
         public List<Dictionary<string, object>> Read(string query)
         {
             var results = new List<Dictionary<string, object>>();
-            var connectionWasClosed = _connection.State == System.Data.ConnectionState.Closed;
-
             try
             {
-                if (connectionWasClosed)
-                    _connection.Open();
-
                 using (var command = new MySqlCommand(query, _connection))
                 {
                     using (var reader = command.ExecuteReader())
@@ -81,11 +67,6 @@ namespace warehub.db
             {
                 Console.WriteLine("Error reading data: " + ex.Message);
             }
-            finally
-            {
-                if (connectionWasClosed && _connection.State == System.Data.ConnectionState.Open)
-                    _connection.Close();
-            }
 
             return results;
         }
@@ -97,12 +78,8 @@ namespace warehub.db
         /// <param name="parameters">A dictionary of parameter names and values.</param>
         public void Update(string query, Dictionary<string, object> parameters)
         {
-            var connectionWasClosed = _connection.State == System.Data.ConnectionState.Closed;
             try
             {
-                if (connectionWasClosed)
-                    _connection.Open();
-
                 using (var command = new MySqlCommand(query, _connection))
                 {
                     foreach (var param in parameters)
@@ -117,11 +94,6 @@ namespace warehub.db
             {
                 Console.WriteLine("Error updating item: " + ex.Message);
             }
-            finally
-            {
-                if (connectionWasClosed && _connection.State == System.Data.ConnectionState.Open)
-                    _connection.Close();
-            }
         }
 
         /// <summary>
@@ -131,12 +103,8 @@ namespace warehub.db
         /// <param name="parameters">A dictionary of parameter names and values.</param>
         public void Delete(string query, Dictionary<string, object> parameters)
         {
-            var connectionWasClosed = _connection.State == System.Data.ConnectionState.Closed;
             try
             {
-                if (connectionWasClosed)
-                    _connection.Open();
-
                 using (var command = new MySqlCommand(query, _connection))
                 {
                     foreach (var param in parameters)
@@ -150,11 +118,6 @@ namespace warehub.db
             catch (Exception ex)
             {
                 Console.WriteLine("Error deleting item: " + ex.Message);
-            }
-            finally
-            {
-                if (connectionWasClosed && _connection.State == System.Data.ConnectionState.Open)
-                    _connection.Close();
             }
         }
     }
