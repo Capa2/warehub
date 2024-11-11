@@ -7,11 +7,11 @@ using warehub.services.interfaces;
 
 namespace warehub.model
 {
-    internal abstract class Product
+    public abstract class Product
     {
-        private Guid Id { get; }
-        private string Name { get; }
-        private int Price { get; }
+        public Guid Id { get; }
+        public string Name { get; }
+        public int Price { get; }
 
         Product(IIdService idService, string name, int price)
         {
