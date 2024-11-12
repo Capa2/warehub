@@ -1,17 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+
+using System;
 using System.Text;
-using System.Threading.Tasks;
-using warehub.services.interfaces;
 
 namespace warehub.services
 {
-    internal class GuidService : IIdService
+    public static class GuidService
     {
-        public Guid GenerateId()
+        public static Guid GenerateId()
         {
             return Guid.NewGuid();
+        }
+
+        public static byte[] GuidToBinary(Guid guid)
+        {
+            return guid.ToByteArray();
+        }
+
+        public static Guid BinaryToGuid(byte[] binaryGuid)
+        {
+            if (binaryGuid.Length != 16)
+            {
+                throw new ArgumentException("Invalid binary format for Guid. Must be 16 bytes.");
+            }
+            return new Guid(binaryGuid);
+        }
+
+        public static string GuidToString(Guid guid)
+        {
+            return guid.ToString();
+        }
+
+        public static Guid StringToGuid(string guidString)
+        {
+            return Guid.Parse(guidString);
         }
     }
 }
