@@ -1,14 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+    <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
+    </PropertyGroup>
 
-  <ItemGroup>
+    <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
     <PackageReference Include="MySql.Data" Version="9.1.0" />
-  </ItemGroup>
+    </ItemGroup>
+	
+    <ItemGroup>
+	    <None Update="appsettings*.json">
+		    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		    <Exclude>appsettings.template.json</Exclude>
+	    </None>
+    </ItemGroup>
 
 </Project>
