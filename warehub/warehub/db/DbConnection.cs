@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using MySql.Data.MySqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MySql.Data.MySqlClient;
+using warehub;
+
 
 namespace warehub.db
 {
@@ -20,7 +17,7 @@ namespace warehub.db
         /// </summary>
         /// <param name="connectionString">The connection string for MySQL.</param>
         /// <returns>The singleton instance of DbConnection.</returns>
-        public static DbConnection GetInstance(string connectionString)
+        public static DbConnection Instance(string connectionString)
         {
             if (_instance == null)
             {
