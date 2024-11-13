@@ -98,21 +98,37 @@ namespace warehub.db
 
             foreach (var productDict in products)
             {
-                // Get each property from the dictionary and cast to the correct type
-                Guid id = productDict.ContainsKey("ID") && productDict["ID"] is Guid
-                    ? (Guid)productDict["ID"]
-                    : Guid.NewGuid();  // Generate new ID if none is found
+                Guid id;
+                if (productDict.ContainsKey("ID") && productDict["ID"] is Guid)
+                {
+                    id = (Guid)productDict["ID"];
+                }
+                else
+                {
+                    continue;
+                }
 
-                string name = productDict.ContainsKey("Name") && productDict["Name"] is string
-                    ? (string)productDict["Name"]
-                    : string.Empty;
+                string name;
+                if (productDict.ContainsKey("Name") && productDict["Name"] is string)
+                {
+                    name = (string)productDict["Name"];
+                }
+                else
+                {
+                    continue;
+                }
 
-                int price = productDict.ContainsKey("Price") && productDict["Price"] is int
-                    ? (int)productDict["Price"]
-                    : 0;
-
+                int price;
+                if (productDict.ContainsKey("Price") && productDict["Price"] is int)
+                {
+                    price = (int)productDict["Price"];
+                }
+                else
+                {
+                    continue;
+                }
                 // Create new Product instance with parsed values
-                var product = new Product(id, name, price);
+                var product = ProductFactory.CreateProduct(id, name, price);
                 productList.Add(product);
             }
 
