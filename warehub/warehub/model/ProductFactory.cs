@@ -1,12 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using warehub.model.interfaces;
+using warehub.services;
 
 namespace warehub.model
 {
-    internal class ProductFactory
+    public static class ProductFactory
     {
+        public static Product CreateProduct(string name, int price)
+        {
+            return new Product(name, price);
+        }
+
+        public static Product CreateProduct(Guid id, string name, int price)
+        {
+            return new Product(id, name, price);
+        }
     }
 }

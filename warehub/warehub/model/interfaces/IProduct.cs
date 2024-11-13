@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace warehub.services.interfaces
+namespace warehub.model.interfaces
 {
-    public interface IIdService
+    internal interface IProduct
     {
-        Guid GenerateId();
     }
 }

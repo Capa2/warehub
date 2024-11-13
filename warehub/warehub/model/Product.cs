@@ -1,29 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using warehub.services.interfaces;
+using warehub.model.interfaces;
+using warehub.services;
 
 namespace warehub.model
 {
-    public class Product
+    public class Product : IProduct
     {
         public Guid Id { get; }
         public string Name { get; }
         public int Price { get; }
 
-        Product(IIdService idService, string name, int price)
+        public Product(string name, int price)
         {
-            Id = idService.GenerateId();
+            Id = GuidService.GenerateId();
             Name = name;
             Price = price;
         }
+
         public Product(Guid id, string name, int price)
         {
             Id = id;
             Name = name;
             Price = price;
+        }
+
+        public override string ToString()
+        {
+            return $"Product: {Name}, Price: {Price}, ID: {Id}";
         }
     }
 }

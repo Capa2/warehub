@@ -1,38 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using MySql.Data.MySqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MySql.Data.MySqlClient;
+using warehub;
+
 
 namespace warehub.db
 {
     public class DbConnection
     {
-        private static DbConnection _instance;
+        private static DbConnection? _instance;
         private readonly MySqlConnection _connection;
 
-        // Primary constructor accepting a connection string, it is private to avoid being instanciated from outside
+        // Private constructor to avoid instantiation from outside
         private DbConnection(string connectionString) => _connection = new MySqlConnection(connectionString);
 
         /// <summary>
-        /// Gets the singleton instance of DbConnection with a specified connection string.
+        /// Gets the singleton instance of DbConnection with connection string from config.
         /// </summary>
-        /// <param name="connectionString">The connection string for MySQL.</param>
-        /// <returns>The singleton instance of DbConnection.</returns>
-        public static DbConnection GetInstance(string connectionString)
+        public static DbConnection Instance
         {
-            if (_instance == null)
+            get
             {
-                _instance = new DbConnection(connectionString);
+                if (_instance == null)
+                {
+                    Config config = new();
+                    _instance = new DbConnection(config.GetConnectionString());
+                }
+                return _instance;
             }
-            return _instance;
         }
 
         /// <summary>
-        /// Retrieves the MySqlConnection instance.
+        /// Gets the MySqlConnection instance.
         /// </summary>
-        /// <returns>The active MySqlConnection.</returns>
         public MySqlConnection GetConnection() => _connection;
 
         /// <summary>
@@ -73,13 +71,9 @@ namespace warehub.db
             }
         }
     }
-
-
 }
 
-//Example usage
-
-//string connectionString = "Server=Localhost Connection;Database=wareHub;User ID=root;Password=bcj93qpq;";
-//DbConnection dbConnection = DbConnection.GetInstance(connectionString);
-//dbConnection.Connect();
-//MySqlConnection connection = dbConnection.GetConnection();
+// Usage example (Ensure appsettings.json and Config setup is correct)
+// DbConnection dbConnection = DbConnection.Instance;
+// dbConnection.Connect();
+// MySqlConnection connection = dbConnection.GetConnection();
