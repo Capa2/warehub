@@ -43,7 +43,7 @@ namespace warehub.db
         /// </summary>
         /// <param name="query">The SQL select query string.</param>
         /// <returns>A list of dictionaries, each representing a row with column-value pairs.</returns>
-        public (bool, List<Dictionary<string, object>>) Read(string query)
+        public (bool, List<Dictionary<string, object>>) Read(string query, Dictionary<string, object> parameters)
         {
             bool status = false;
             var results = new List<Dictionary<string, object>>();
@@ -51,6 +51,12 @@ namespace warehub.db
             {
                 using (var command = new MySqlCommand(query, _connection))
                 {
+                    // Add parameters to the command
+                    foreach (var param in parameters)
+                    {
+                        command.Parameters.AddWithValue(param.Key, param.Value);
+                    }
+
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -74,6 +80,7 @@ namespace warehub.db
 
             return (status, results);
         }
+
 
         /// <summary>
         /// Updates an existing entry in the database.
