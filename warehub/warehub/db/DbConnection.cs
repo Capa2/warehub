@@ -29,10 +29,13 @@ namespace warehub.db
         }
 
         /// <summary>
-        /// Gets the MySqlConnection instance.
+        /// Gets the MySqlConnection instance and ensures the connection is open.
         /// </summary>
-        public MySqlConnection GetConnection() => _connection;
-
+        public static MySqlConnection GetConnection()
+        {
+            Instance.Connect();
+            return Instance._connection;
+        }
         /// <summary>
         /// Opens the MySQL connection if it is not already open.
         /// </summary>
@@ -74,6 +77,9 @@ namespace warehub.db
 }
 
 // Usage example (Ensure appsettings.json and Config setup is correct)
-// DbConnection dbConnection = DbConnection.Instance;
-// dbConnection.Connect();
-// MySqlConnection connection = dbConnection.GetConnection();
+// Get the connection for SQL operations, and it will automatically be open
+// MySqlConnection connection = DbConnection.GetConnection();
+// Use 'connection' to execute your SQL commands
+
+// Close the connection when done
+//DbConnection.Instance.Disconnect();
