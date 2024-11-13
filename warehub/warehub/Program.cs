@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
+using warehub;
 using warehub.db;
 
 class Program
 {
     static void Main(string[] args)
     {
+        ProductPopulater.Populate();
     ///   // Define your connection string
     ///   string connectionString = "Server=localhost;Database=user;User ID=root;Password=password;";
     ///

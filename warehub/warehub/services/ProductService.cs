@@ -14,7 +14,7 @@ namespace warehub.services
 
         private readonly ProductRepository _productRepository = productRepository;
 
-        public IEnumerable<Product>? GetAllProducts()
+        public List<Product>? GetAllProducts()
         {
             GenericResponseDTO<List<Product>> responseObject = _productRepository.GetAll();
             if (responseObject.IsSuccess)

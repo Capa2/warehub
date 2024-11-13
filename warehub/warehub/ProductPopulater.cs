@@ -1,18 +1,35 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using warehub.db;
+using warehub.model;
 using warehub.services;
 
 namespace warehub
 {
-    public class ProductPopulater
+    public static class ProductPopulater
     {
-        public void Populate()
+        public static void Populate()
         {
-            ProductService productService = 
+            ProductRepository productRepository = new ProductRepository();
+            ProductService productService = new ProductService(productRepository);
+
+            Product product = ProductFactory.CreateProduct("Blue T-Shirt", 10);
+
+            productService.AddProduct(product);
+            var products = productService.GetAllProducts();
+            if (products != null)
+            {
+                var productToUpdate = products.FirstOrDefault();
+                var result = productService.UpdateProduct(productToUpdate);
+            }
+
         }
+
+        
 
     }
 }

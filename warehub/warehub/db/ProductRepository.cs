@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,10 @@ using warehub.services.interfaces;
 
 namespace warehub.db
 {
-    public class ProductRepository(DbConnection dbConnection)
+    public class ProductRepository()
     {
-        private readonly CRUDService _cRUDService = new(dbConnection.GetConnection());
+
+        private readonly CRUDService _cRUDService = new(connection: connection);
 
         public GenericResponseDTO<Product> Add(Product product)
         {
