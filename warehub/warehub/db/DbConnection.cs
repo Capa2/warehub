@@ -39,7 +39,7 @@ namespace warehub.db
         /// <summary>
         /// Opens the MySQL connection if it is not already open.
         /// </summary>
-        public void Connect()
+        private void Connect()
         {
             try
             {
