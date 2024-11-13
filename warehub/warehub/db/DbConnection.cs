@@ -58,13 +58,13 @@ namespace warehub.db
         /// <summary>
         /// Closes the MySQL connection if it is open.
         /// </summary>
-        public void Disconnect()
+        public static void Disconnect()
         {
             try
             {
-                if (_connection.State != System.Data.ConnectionState.Closed)
+                if (Instance._connection.State != System.Data.ConnectionState.Closed)
                 {
-                    _connection.Close();
+                    Instance._connection.Close();
                     Console.WriteLine("Database connection closed.");
                 }
             }
@@ -82,4 +82,4 @@ namespace warehub.db
 // Use 'connection' to execute your SQL commands
 
 // Close the connection when done
-//DbConnection.Instance.Disconnect();
+//DbConnection.Disconnect();
