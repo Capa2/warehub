@@ -99,8 +99,8 @@ namespace warehub.db
             foreach (var productDict in products)
             {
                 // Get each property from the dictionary and cast to the correct type
-                Guid id = productDict.ContainsKey("Id") && productDict["Id"] is Guid
-                    ? (Guid)productDict["Id"]
+                Guid id = productDict.ContainsKey("ID") && productDict["ID"] is Guid
+                    ? (Guid)productDict["ID"]
                     : Guid.NewGuid();  // Generate new ID if none is found
 
                 string name = productDict.ContainsKey("Name") && productDict["Name"] is string
