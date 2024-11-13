@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace warehub.db.enums
 {
-    internal class Table
+    /// <summary>
+    /// Enum representing the names of tables in the database.
+    /// </summary>
+    public enum Table
     {
+        Products
     }
 }
