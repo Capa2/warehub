@@ -19,7 +19,7 @@ namespace warehub.model
             Name = name;
             Price = price;
         }
-        Product(Guid id, string name, int price)
+        public Product(Guid id, string name, int price)
         {
             Id = id;
             Name = name;

@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using warehub.model;
+using warehub.services.interfaces;
 
 namespace warehub.db
 {
-    public class ProductRepository
+    public class ProductRepository(DbConnection dbConnection)
     {
-        internal GenericResponseDTO<Product> Add(Product product)
+        private readonly CRUDService _cRUDService = new(dbConnection.GetConnection());
+
+        public GenericResponseDTO<Product> Add(Product product)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -17,29 +20,96 @@ namespace warehub.db
                 { "@price", product.Price },
                 { "@id", product.Id }
             };
-            crudService.Create("INSERT INTO Products (Name, Price, Id) VALUES (@name, @price, @id)", parameters);
-            return new GenericResponseDTO<Product>(product);
+            bool status = _cRUDService.Create("INSERT INTO Products (Name, Price, Id) VALUES (@name, @price, @id)", parameters);
+            var returnObject = new GenericResponseDTO<Product>(product)
+            {
+                IsSuccess = status
+            };
+            return returnObject;
         }
 
-        internal GenericResponseDTO<Product> Delete(Guid id)
+        public GenericResponseDTO<Guid> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>
+            {
+                { "@id", id }
+            };
+            bool status = _cRUDService.Delete("DELETE FROM Products WHERE ID = @id", parameters);
+            var returnObject = new GenericResponseDTO<Guid>(id)
+            {
+                IsSuccess = status
+            };
+            return returnObject;
         }
 
-        internal GenericResponseDTO<IEnumerable<Product>> GetAll()
+        public GenericResponseDTO<List<Product>> GetAll()
         {
-            throw new NotImplementedException();
-            // Your logic to get data here
+            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products");
+            List<Product> listOfProducts = ConvertToProducts(products);
+            var returnObject = new GenericResponseDTO<List<Product>>(listOfProducts)
+            {
+                IsSuccess = status
+            };
+            return returnObject;
         }
 
-        internal GenericResponseDTO<Product> GetById(Guid id)
+        public GenericResponseDTO<Product> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read($"SELECT * FROM Products WHERE ID = {id}");
+            List<Product> listOfProducts = ConvertToProducts(products);
+            Product product = listOfProducts[0];
+            var returnObject = new GenericResponseDTO<Product>(product)
+            {
+                IsSuccess = status
+            };
+            return returnObject;
         }
 
-        internal GenericResponseDTO<Product> Update(object existingProduct)
+        public GenericResponseDTO<Product> Update(Product product)
         {
-            throw new NotImplementedException();
+            var updateParams = new Dictionary<string, object>
+            {
+                { "@name", product.Name },
+                { "@price", product.Price },
+                { "@id", product.Id }
+            };
+            bool status = _cRUDService.Update("UPDATE Products SET Name = @name, Price = @price WHERE ID = @id", updateParams);
+
+            var returnObject = new GenericResponseDTO<Product>(product)
+            {
+                IsSuccess = status
+            };
+            return returnObject;
+        }
+
+        // DELETE when factory is implementet
+        public List<Product> ConvertToProducts(List<Dictionary<string, object>> products)
+        {
+            var productList = new List<Product>();
+
+            foreach (var productDict in products)
+            {
+                // Get each property from the dictionary and cast to the correct type
+                Guid id = productDict.ContainsKey("Id") && productDict["Id"] is Guid
+                    ? (Guid)productDict["Id"]
+                    : Guid.NewGuid();  // Generate new ID if none is found
+
+                string name = productDict.ContainsKey("Name") && productDict["Name"] is string
+                    ? (string)productDict["Name"]
+                    : string.Empty;
+
+                int price = productDict.ContainsKey("Price") && productDict["Price"] is int
+                    ? (int)productDict["Price"]
+                    : 0;
+
+                // Create new Product instance with parsed values
+                var product = new Product(id, name, price);
+                productList.Add(product);
+            }
+
+            return productList;
         }
     }
 }
+
+

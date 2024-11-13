@@ -16,7 +16,7 @@ namespace warehub.services
 
         public IEnumerable<Product>? GetAllProducts()
         {
-            GenericResponseDTO<IEnumerable<Product>> responseObject = _productRepository.GetAll();
+            GenericResponseDTO<List<Product>> responseObject = _productRepository.GetAll();
             if (responseObject.IsSuccess)
             {
                 return responseObject.Data;
@@ -66,7 +66,7 @@ namespace warehub.services
             {
                 return false;
             }
-            GenericResponseDTO<Product> response = _productRepository.Delete(id);
+            GenericResponseDTO<Guid> response = _productRepository.Delete(id);
 
             if (response.IsSuccess)
             {

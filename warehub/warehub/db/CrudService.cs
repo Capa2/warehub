@@ -4,7 +4,7 @@ using MySql.Data.MySqlClient;
 
 namespace warehub.db
 {
-    public class CRUDService<T>
+    public class CRUDService
     {
         private readonly MySqlConnection _connection;
 
@@ -16,7 +16,7 @@ namespace warehub.db
         /// </summary>
         /// <param name="query">The SQL insert query string with parameters.</param>
         /// <param name="parameters">A dictionary of parameter names and values.</param>
-        public void Create(string query, Dictionary<string, object> parameters)
+        public bool Create(string query, Dictionary<string, object> parameters)
         {
             try
             {
@@ -28,11 +28,13 @@ namespace warehub.db
                     }
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item created successfully.");
+                    return true;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error creating item: " + ex.Message);
+                return false;
             }
         }
 
@@ -41,8 +43,9 @@ namespace warehub.db
         /// </summary>
         /// <param name="query">The SQL select query string.</param>
         /// <returns>A list of dictionaries, each representing a row with column-value pairs.</returns>
-        public List<Dictionary<string, object>> Read(string query)
+        public (bool, List<Dictionary<string, object>>) Read(string query)
         {
+            bool status = false;
             var results = new List<Dictionary<string, object>>();
             try
             {
@@ -62,13 +65,14 @@ namespace warehub.db
                     }
                 }
                 Console.WriteLine("Data retrieved successfully.");
+                status = true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error reading data: " + ex.Message);
             }
 
-            return results;
+            return (status, results);
         }
 
         /// <summary>
@@ -76,7 +80,7 @@ namespace warehub.db
         /// </summary>
         /// <param name="query">The SQL update query string with parameters.</param>
         /// <param name="parameters">A dictionary of parameter names and values.</param>
-        public void Update(string query, Dictionary<string, object> parameters)
+        public bool Update(string query, Dictionary<string, object> parameters)
         {
             try
             {
@@ -88,11 +92,13 @@ namespace warehub.db
                     }
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item updated successfully.");
+                    return true;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error updating item: " + ex.Message);
+                return false;
             }
         }
 
@@ -101,7 +107,7 @@ namespace warehub.db
         /// </summary>
         /// <param name="query">The SQL delete query string with parameters.</param>
         /// <param name="parameters">A dictionary of parameter names and values.</param>
-        public void Delete(string query, Dictionary<string, object> parameters)
+        public bool Delete(string query, Dictionary<string, object> parameters)
         {
             try
             {
@@ -113,11 +119,13 @@ namespace warehub.db
                     }
                     command.ExecuteNonQuery();
                     Console.WriteLine("Item deleted successfully.");
+                    return true;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error deleting item: " + ex.Message);
+                return false;
             }
         }
     }
