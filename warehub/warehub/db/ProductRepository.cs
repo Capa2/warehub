@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using warehub.model;
 using warehub.services.interfaces;
 
@@ -12,22 +10,22 @@ namespace warehub.db
     public class ProductRepository
     {
         private readonly CRUDService _cRUDService;
+
         public ProductRepository()
         {
             MySqlConnection connection = DbConnection.GetConnection();
             _cRUDService = new CRUDService(connection);
         }
-        
 
         public GenericResponseDTO<Product> Add(Product product)
         {
             var parameters = new Dictionary<string, object>
             {
-                { "@name", product.Name },
-                { "@price", product.Price },
-                { "@id", product.Id }
+                { "name", product.Name },
+                { "price", product.Price },
+                { "id", product.Id }
             };
-            bool status = _cRUDService.Create("INSERT INTO Products (Name, Price, Id) VALUES (@name, @price, @id)", parameters);
+            bool status = _cRUDService.Create("Products", parameters);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status
@@ -37,11 +35,7 @@ namespace warehub.db
 
         public GenericResponseDTO<Guid> Delete(Guid id)
         {
-            var parameters = new Dictionary<string, object>
-            {
-                { "@id", id }
-            };
-            bool status = _cRUDService.Delete("DELETE FROM Products WHERE ID = @id", parameters);
+            bool status = _cRUDService.Delete("Products", "id", id);
             var returnObject = new GenericResponseDTO<Guid>(id)
             {
                 IsSuccess = status
@@ -51,7 +45,7 @@ namespace warehub.db
 
         public GenericResponseDTO<List<Product>> GetAll()
         {
-            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products");  
+            var (status, products) = _cRUDService.Read("Products", new Dictionary<string, object>());
             List<Product> listOfProducts = ConvertToProducts(products);
             var returnObject = new GenericResponseDTO<List<Product>>(listOfProducts)
             {
@@ -62,8 +56,7 @@ namespace warehub.db
 
         public GenericResponseDTO<Product> GetById(Guid id)
         {
-            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products");
-            //(bool status, List<Dictionary<string, object>> products) = _cRUDService.Read($"SELECT * FROM Products WHERE ID = {id}");
+            var (status, products) = _cRUDService.Read("Products", new Dictionary<string, object> { { "id", id } });
             List<Product> listOfProducts = ConvertToProducts(products);
             
             Product product = listOfProducts.FirstOrDefault(p => p.Id == id);
@@ -78,11 +71,10 @@ namespace warehub.db
         {
             var updateParams = new Dictionary<string, object>
             {
-                { "@name", product.Name },
-                { "@price", product.Price },
-                { "@id", product.Id }
+                { "name", product.Name },
+                { "price", product.Price }
             };
-            bool status = _cRUDService.Update("UPDATE Products SET Name = @name, Price = @price WHERE ID = @id", updateParams);
+            bool status = _cRUDService.Update("Products", updateParams, "id", product.Id);
 
             var returnObject = new GenericResponseDTO<Product>(product)
             {
@@ -127,6 +119,7 @@ namespace warehub.db
                 {
                     continue;
                 }
+
                 // Create new Product instance with parsed values
                 var product = ProductFactory.CreateProduct(id, name, price);
                 productList.Add(product);
@@ -136,5 +129,3 @@ namespace warehub.db
         }
     }
 }
-
-
