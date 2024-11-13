@@ -21,7 +21,7 @@ namespace warehub.db
             {
                 if (_instance == null)
                 {
-                    Config config = new();
+                    Config config = Config.GetInstance();
                     _instance = new DbConnection(config.GetConnectionString());
                 }
                 return _instance;
