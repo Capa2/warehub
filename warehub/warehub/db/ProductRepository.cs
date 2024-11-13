@@ -9,10 +9,15 @@ using warehub.services.interfaces;
 
 namespace warehub.db
 {
-    public class ProductRepository()
+    public class ProductRepository
     {
-
-        private readonly CRUDService _cRUDService = new(connection: connection);
+        private readonly CRUDService _cRUDService;
+        public ProductRepository()
+        {
+            MySqlConnection connection = DbConnection.GetConnection();
+            _cRUDService = new CRUDService(connection);
+        }
+        
 
         public GenericResponseDTO<Product> Add(Product product)
         {
@@ -46,7 +51,7 @@ namespace warehub.db
 
         public GenericResponseDTO<List<Product>> GetAll()
         {
-            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products");
+            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products");  
             List<Product> listOfProducts = ConvertToProducts(products);
             var returnObject = new GenericResponseDTO<List<Product>>(listOfProducts)
             {
@@ -57,9 +62,11 @@ namespace warehub.db
 
         public GenericResponseDTO<Product> GetById(Guid id)
         {
-            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read($"SELECT * FROM Products WHERE ID = {id}");
+            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products");
+            //(bool status, List<Dictionary<string, object>> products) = _cRUDService.Read($"SELECT * FROM Products WHERE ID = {id}");
             List<Product> listOfProducts = ConvertToProducts(products);
-            Product product = listOfProducts[0];
+            
+            Product product = listOfProducts.FirstOrDefault(p => p.Id == id);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status

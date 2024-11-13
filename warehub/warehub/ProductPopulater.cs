@@ -17,15 +17,16 @@ namespace warehub
             ProductRepository productRepository = new ProductRepository();
             ProductService productService = new ProductService(productRepository);
 
-            Product product = ProductFactory.CreateProduct("Blue T-Shirt", 10);
+            Product product = ProductFactory.CreateProduct("Blue T-Shirt BIG", 10);
 
             productService.AddProduct(product);
             var products = productService.GetAllProducts();
             if (products != null)
             {
                 var productToUpdate = products.FirstOrDefault();
-                var result = productService.UpdateProduct(productToUpdate);
+                var result = productService.UpdateProduct(product);
             }
+            productService.DeleteProduct(product.Id);
 
         }
 
