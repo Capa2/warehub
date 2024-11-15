@@ -19,29 +19,46 @@ namespace warehub.db
         /// </summary>
         public bool Create(string table, Dictionary<string, object> parameters)
         {
-            var columns = string.Join(", ", parameters.Keys.Select(k => k));
-            var values = string.Join(", ", parameters.Keys);
-            string query = $"INSERT INTO {table} ({columns}) VALUES ({values})";
+            try
+            {
+                var columns = string.Join(", ", parameters.Keys);
+                var values = string.Join(", ", parameters.Keys.Select(k => $"@{k}"));
+                string query = $"INSERT INTO {table} ({columns}) VALUES ({values})";
 
-            return ExecuteNonQuery(query, parameters, "Item created successfully.");
+                return ExecuteNonQuery(query, parameters, "Item created successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Create Error: {ex.Message}");
+                return false;
+            }
         }
+
 
         /// <summary>
         /// Reads entries from the specified table with optional filtering.
         /// </summary>
         public (bool, List<Dictionary<string, object>>) Read(string table, Dictionary<string, object> parameters)
         {
-            //The following line changes:
-            //parameters = { "@id": 1, "@name": "Product" }
-            //to
-            //whereClause = "WHERE id = @id AND name = @name"
-            string whereClause = parameters.Any()
-                ? "WHERE " + string.Join(" AND ", parameters.Keys.Select(k => $"{k} = @{k}"))
-                : "";
+            try
+            {
+                //The following line changes:
+                //parameters = { "@id": 1, "@name": "Product" }
+                //to
+                //whereClause = "WHERE id = @id AND name = @name"
+                string whereClause = parameters.Any()
+                    ? "WHERE " + string.Join(" AND ", parameters.Keys.Select(k => $"{k} = @{k}"))
+                    : "";
 
-            string query = $"SELECT * FROM {table} {whereClause}";
+                string query = $"SELECT * FROM {table} {whereClause}";
 
-            return ExecuteQuery(query, parameters, "Data retrieved successfully.");
+                return ExecuteQuery(query, parameters, "Data retrieved successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Read Error: {ex.Message}");
+                return (false, null);
+            }
         }
 
         /// <summary>
@@ -49,24 +66,41 @@ namespace warehub.db
         /// </summary>
         public bool Update(string table, Dictionary<string, object> parameters, string idColumn, object idValue)
         {
-            var setClause = string.Join(", ", parameters.Keys.Select(k => $"{k} = @{k}"));
-            string query = $"UPDATE {table} SET {setClause} WHERE {idColumn} = @id";
+            try
+            {
+                var setClause = string.Join(", ", parameters.Keys.Select(k => $"{k} = @{k}"));
+                string query = $"UPDATE {table} SET {setClause} WHERE {idColumn} = @{idColumn}";
 
-            parameters["@id"] = idValue;
-            return ExecuteNonQuery(query, parameters, "Item updated successfully.");
+                parameters[idColumn] = idValue;
+                return ExecuteNonQuery(query, parameters, "Item updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Update Error: {ex.Message}");
+                return false;
+            }
         }
+
 
         /// <summary>
         /// Deletes an entry from the specified table.
         /// </summary>
-        public bool Delete(string table, string idColumn, Guid idValue)
+        public bool Delete(string table, string idColumn, object idValue)
         {
-            String id = GuidService.GuidToString(idValue);
-            string query = $"DELETE FROM {table} WHERE {idColumn} = @id";
-            var parameters = new Dictionary<string, object> { { "@id", id } };
+            try
+            {
+                string query = $"DELETE FROM {table} WHERE {idColumn} = @{idColumn}";
+                var parameters = new Dictionary<string, object> { { idColumn, idValue } };
 
-            return ExecuteNonQuery(query, parameters, "Item deleted successfully.");
+                return ExecuteNonQuery(query, parameters, "Item deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Delete Error: {ex.Message}");
+                return false;
+            }
         }
+
 
         /// <summary>
         /// Executes a non-query command such as INSERT, UPDATE, or DELETE.
@@ -79,8 +113,9 @@ namespace warehub.db
                 {
                     foreach (var param in parameters)
                     {
+                        // Convert 'id' to string using GuidService, otherwise use the value as is
                         var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
-                        command.Parameters.AddWithValue(param.Key, value);
+                        command.Parameters.AddWithValue($"@{param.Key}", value);
                     }
                     command.ExecuteNonQuery();
                     Console.WriteLine(successMessage);
@@ -89,10 +124,11 @@ namespace warehub.db
             }
             catch (Exception ex)
             {
-                Console.WriteLine("SQL Error: " + ex.Message);
+                Console.WriteLine($"SQL Error: {ex.Message}\nQuery: {query}");
                 return false;
             }
         }
+
 
         /// <summary>
         /// Executes a query command and retrieves results as a list of dictionaries.
@@ -108,8 +144,9 @@ namespace warehub.db
                 {
                     foreach (var param in parameters)
                     {
+                        // Convert 'id' to string using GuidService, otherwise use the value as is
                         var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
-                        command.Parameters.AddWithValue(param.Key, param.Value);
+                        command.Parameters.AddWithValue($"@{param.Key}", value);
                     }
 
                     using (var reader = command.ExecuteReader())
@@ -130,7 +167,7 @@ namespace warehub.db
             }
             catch (Exception ex)
             {
-                Console.WriteLine("SQL Error: " + ex.Message);
+                Console.WriteLine($"SQL Error: {ex.Message}\nQuery: {query}");
             }
 
             return (status, results);
