@@ -16,6 +16,7 @@ namespace warehub
         {
             ProductRepository productRepository = new ProductRepository();
             ProductService productService = new ProductService(productRepository);
+            
 
             Product product = ProductFactory.CreateProduct("Blue T-Shirt BIG", 10);
 

@@ -51,7 +51,10 @@ namespace warehub.db
 
         public GenericResponseDTO<List<Product>> GetAll()
         {
-            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products");  
+            var parameters = new Dictionary<string, object>
+            {
+             };
+            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products", parameters);  
             List<Product> listOfProducts = ConvertToProducts(products);
             var returnObject = new GenericResponseDTO<List<Product>>(listOfProducts)
             {
@@ -62,11 +65,18 @@ namespace warehub.db
 
         public GenericResponseDTO<Product> GetById(Guid id)
         {
-            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read("SELECT * FROM Products");
-            //(bool status, List<Dictionary<string, object>> products) = _cRUDService.Read($"SELECT * FROM Products WHERE ID = {id}");
+            string query = "SELECT * FROM Products WHERE id = @id";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "@id", id }
+            };
+
+            // Execute the Read method with the corrected query
+            (bool status, List<Dictionary<string, object>> products) = _cRUDService.Read(query, parameters);
             List<Product> listOfProducts = ConvertToProducts(products);
             
-            Product product = listOfProducts.FirstOrDefault(p => p.Id == id);
+            var product = listOfProducts.FirstOrDefault(p => p.Id == id);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status
