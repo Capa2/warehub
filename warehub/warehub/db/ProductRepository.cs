@@ -119,9 +119,18 @@ namespace warehub.db
                 {
                     continue;
                 }
+                int amount;
+                if (productDict.ContainsKey("Amount") && productDict["Amount"] is int)
+                {
+                    amount = (int)productDict["Amount"];
+                }
+                else
+                {
+                    continue;
+                }
 
                 // Create new Product instance with parsed values
-                var product = ProductFactory.CreateProduct(id, name, price);
+                var product = ProductFactory.CreateProduct(id, name, price, amount);
                 productList.Add(product);
             }
 
