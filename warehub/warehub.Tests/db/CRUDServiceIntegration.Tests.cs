@@ -69,15 +69,15 @@ namespace warehub.Tests.db
         {
             var parameters = new Dictionary<string, object>
             {
-                { "@id", 1 },
-                { "@name", "Test Item" }
+                { "id", 1 },
+                { "name", "Test Item" }
             };
 
             bool createStatus = _crudService.Create("test_table", parameters);
 
             Assert.True(createStatus, "Failed to create item in database.");
 
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "@id", 1 } });
+            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", 1 } });
             Assert.True(status, "Read operation failed.");
             Assert.Single(result);
             Assert.Equal("Test Item", result[0]["name"]);
@@ -86,9 +86,9 @@ namespace warehub.Tests.db
         [Fact]
         public void Read_ShouldRetrieveDataFromDatabase()
         {
-            _crudService.Create("test_table", new Dictionary<string, object> { { "@id", 2 }, { "@name", "Read Test" } });
+            _crudService.Create("test_table", new Dictionary<string, object> { { "id", 2 }, { "name", "Read Test" } });
 
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "@id", 2 } });
+            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", 2 } });
 
             Assert.True(status, "Read operation failed.");
             Assert.Single(result);
@@ -98,14 +98,14 @@ namespace warehub.Tests.db
         [Fact]
         public void Update_ShouldModifyExistingData()
         {
-            _crudService.Create("test_table", new Dictionary<string, object> { { "@id", 3 }, { "@name", "Old Name" } });
-            var updateParameters = new Dictionary<string, object> { { "@name", "New Name" } };
+            _crudService.Create("test_table", new Dictionary<string, object> { { "id", 3 }, { "name", "Old Name" } });
+            var updateParameters = new Dictionary<string, object> { { "name", "New Name" } };
 
             bool updateStatus = _crudService.Update("test_table", updateParameters, "id", 3);
 
             Assert.True(updateStatus, "Update operation failed.");
 
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "@id", 3 } });
+            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", 3 } });
             Assert.True(status, "Read operation failed.");
             Assert.Single(result);
             Assert.Equal("New Name", result[0]["name"]);
@@ -114,13 +114,13 @@ namespace warehub.Tests.db
         [Fact]
         public void Delete_ShouldRemoveDataFromDatabase()
         {
-            _crudService.Create("test_table", new Dictionary<string, object> { { "@id", 4 }, { "@name", "To Delete" } });
+            _crudService.Create("test_table", new Dictionary<string, object> { { "id", 4 }, { "name", "To Delete" } });
 
             bool deleteStatus = _crudService.Delete("test_table", "id", 4);
 
             Assert.True(deleteStatus, "Delete operation failed.");
 
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "@id", 4 } });
+            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", 4 } });
             Assert.True(status, "Read operation failed.");
             Assert.Empty(result);
         }

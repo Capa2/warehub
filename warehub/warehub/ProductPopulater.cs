@@ -27,7 +27,7 @@ namespace warehub
                 var productToUpdate = products.FirstOrDefault();
                 var result = productService.UpdateProduct(product);
             }
-            productService.DeleteProduct(product.Id);
+            //productService.DeleteProduct(product.Id);
 
         }
 

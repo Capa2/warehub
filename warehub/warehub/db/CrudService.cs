@@ -105,33 +105,50 @@ namespace warehub.db
         /// <summary>
         /// Executes a non-query command such as INSERT, UPDATE, or DELETE.
         /// </summary>
-        private bool ExecuteNonQuery(string query, Dictionary<string, object> parameters, string successMessage)
+        private bool ExecuteNonQuery(string query, Dictionary<string, object> parameters, string successMessage, bool commitTransaction = true)
         {
+            MySqlTransaction transaction = null;
+
             try
             {
-                using (var command = new MySqlCommand(query, _connection))
+                transaction = _connection.BeginTransaction();
+
+                using (var command = new MySqlCommand(query, _connection, transaction))
                 {
                     foreach (var param in parameters)
                     {
-                        // Convert 'id' to string using GuidService, otherwise use the value as is
-                        var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
-                        command.Parameters.AddWithValue($"@{param.Key}", value);
+                        command.Parameters.AddWithValue($"@{param.Key}", param.Value);
                     }
-                    command.ExecuteNonQuery();
-                    Console.WriteLine(successMessage);
-                    return true;
+
+                    int affectedRows = command.ExecuteNonQuery();
+                    if (affectedRows > 0 && commitTransaction)
+                    {
+                        transaction.Commit();
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                    }
+
+                    return affectedRows > 0;
                 }
             }
             catch (Exception ex)
             {
+                transaction?.Rollback();
                 Console.WriteLine($"SQL Error: {ex.Message}\nQuery: {query}");
                 return false;
+            }
+            finally
+            {
+                transaction?.Dispose();
             }
         }
 
 
+
         /// <summary>
-        /// Executes a query command and retrieves results as a list of dictionaries.
+        /// Executes a query command and GETS results as a list of dictionaries.
         /// </summary>
         private (bool, List<Dictionary<string, object>>) ExecuteQuery(string query, Dictionary<string, object> parameters, string successMessage)
         {
@@ -140,17 +157,24 @@ namespace warehub.db
 
             try
             {
+                // Ensure the connection is active (should be managed by the singleton connection)
+                if (_connection.State != System.Data.ConnectionState.Open)
+                {
+                    throw new InvalidOperationException("Database connection is not open.");
+                }
+
                 using (var command = new MySqlCommand(query, _connection))
                 {
+                    // Add parameters to the command
                     foreach (var param in parameters)
                     {
-                        // Convert 'id' to string using GuidService, otherwise use the value as is
                         var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
                         command.Parameters.AddWithValue($"@{param.Key}", value);
                     }
 
                     using (var reader = command.ExecuteReader())
                     {
+                        // Read and collect all rows from the result set
                         while (reader.Read())
                         {
                             var row = new Dictionary<string, object>();
@@ -161,9 +185,10 @@ namespace warehub.db
                             results.Add(row);
                         }
                     }
+
+                    Console.WriteLine(successMessage);
+                    status = true;
                 }
-                Console.WriteLine(successMessage);
-                status = true;
             }
             catch (Exception ex)
             {
