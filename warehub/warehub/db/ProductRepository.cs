@@ -25,7 +25,7 @@ namespace warehub.db
                 { "price", product.Price },
                 { "id", product.Id }
             };
-            bool status = _cRUDService.Create("Products", parameters);
+            bool status = _cRUDService.Create("products", parameters);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status
@@ -35,7 +35,7 @@ namespace warehub.db
 
         public GenericResponseDTO<Guid> Delete(Guid id)
         {
-            bool status = _cRUDService.Delete("Products", "id", id);
+            bool status = _cRUDService.Delete("products", "id", id);
             var returnObject = new GenericResponseDTO<Guid>(id)
             {
                 IsSuccess = status
@@ -45,7 +45,7 @@ namespace warehub.db
 
         public GenericResponseDTO<List<Product>> GetAll()
         {
-            var (status, products) = _cRUDService.Read("Products", new Dictionary<string, object>());
+            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object>());
             List<Product> listOfProducts = ConvertToProducts(products);
             var returnObject = new GenericResponseDTO<List<Product>>(listOfProducts)
             {
@@ -56,7 +56,7 @@ namespace warehub.db
 
         public GenericResponseDTO<Product> GetById(Guid id)
         {
-            var (status, products) = _cRUDService.Read("Products", new Dictionary<string, object> { { "id", id } });
+            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
             List<Product> listOfProducts = ConvertToProducts(products);
             
             Product product = listOfProducts.FirstOrDefault(p => p.Id == id);
@@ -74,7 +74,7 @@ namespace warehub.db
                 { "name", product.Name },
                 { "price", product.Price }
             };
-            bool status = _cRUDService.Update("Products", updateParams, "id", product.Id);
+            bool status = _cRUDService.Update("products", updateParams, "id", product.Id);
 
             var returnObject = new GenericResponseDTO<Product>(product)
             {
@@ -91,9 +91,9 @@ namespace warehub.db
             foreach (var productDict in products)
             {
                 Guid id;
-                if (productDict.ContainsKey("ID") && productDict["ID"] is Guid)
+                if (productDict.ContainsKey("id") && productDict["id"] is Guid)
                 {
-                    id = (Guid)productDict["ID"];
+                    id = (Guid)productDict["id"];
                 }
                 else
                 {
@@ -101,9 +101,9 @@ namespace warehub.db
                 }
 
                 string name;
-                if (productDict.ContainsKey("Name") && productDict["Name"] is string)
+                if (productDict.ContainsKey("name") && productDict["name"] is string)
                 {
-                    name = (string)productDict["Name"];
+                    name = (string)productDict["name"];
                 }
                 else
                 {
@@ -111,9 +111,9 @@ namespace warehub.db
                 }
 
                 int price;
-                if (productDict.ContainsKey("Price") && productDict["Price"] is int)
+                if (productDict.ContainsKey("price") && productDict["price"] is int)
                 {
-                    price = (int)productDict["Price"];
+                    price = (int)productDict["price"];
                 }
                 else
                 {
