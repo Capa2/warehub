@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MySql.Data.MySqlClient;
 using ZstdSharp;
+using warehub.services;
 
 namespace warehub.db
 {
@@ -58,10 +59,11 @@ namespace warehub.db
         /// <summary>
         /// Deletes an entry from the specified table.
         /// </summary>
-        public bool Delete(string table, string idColumn, object idValue)
+        public bool Delete(string table, string idColumn, Guid idValue)
         {
+            String id = GuidService.GuidToString(idValue);
             string query = $"DELETE FROM {table} WHERE {idColumn} = @id";
-            var parameters = new Dictionary<string, object> { { "@id", idValue } };
+            var parameters = new Dictionary<string, object> { { "@id", id } };
 
             return ExecuteNonQuery(query, parameters, "Item deleted successfully.");
         }
@@ -77,7 +79,8 @@ namespace warehub.db
                 {
                     foreach (var param in parameters)
                     {
-                        command.Parameters.AddWithValue(param.Key, param.Value);
+                        var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
+                        command.Parameters.AddWithValue(param.Key, value);
                     }
                     command.ExecuteNonQuery();
                     Console.WriteLine(successMessage);
@@ -105,6 +108,7 @@ namespace warehub.db
                 {
                     foreach (var param in parameters)
                     {
+                        var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
                         command.Parameters.AddWithValue(param.Key, param.Value);
                     }
 
