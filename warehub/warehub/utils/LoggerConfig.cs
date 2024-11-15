@@ -54,6 +54,12 @@ namespace warehub.utils
                 Layout = "${longdate} | ${level:uppercase=true} | ${message} ${exception:format=ToString}"
             };
 
+            // OutputDebugStringTarget for Visual Studio Output window
+            var outputDebugTarget = new OutputDebugStringTarget("outputDebug")
+            {
+                Layout = "${longdate} | ${level:uppercase=true} | ${message} ${exception:format=ToString}"
+            };
+
             config.AddTarget(consoleTarget);
             config.AddTarget(combinedFileTarget);
             config.AddTarget(errorFileTarget);
@@ -61,6 +67,7 @@ namespace warehub.utils
             config.AddTarget(infoFileTarget);
             config.AddTarget(debugFileTarget);
             config.AddTarget(traceFileTarget);
+            config.AddTarget(outputDebugTarget);
 
             // Configure the targets (files/console) of each log level.
             config.AddRule(LogLevel.Error, LogLevel.Fatal, errorFileTarget);
@@ -70,6 +77,7 @@ namespace warehub.utils
             config.AddRule(LogLevel.Trace, LogLevel.Trace, traceFileTarget);
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, combinedFileTarget);
             config.AddRule(LogLevel.Info, LogLevel.Fatal, consoleTarget);
+            config.AddRule(LogLevel.Trace, LogLevel.Fatal, outputDebugTarget); // Visual Studio output
 
             LogManager.Configuration = config;
         }

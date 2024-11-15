@@ -16,7 +16,7 @@ namespace warehub.model
             Id = GuidService.GenerateId();
             Name = name;
             Price = price;
-            Logger.Trace("Initialized " + this.ToString);
+            Logger.Trace("Initialized " + this.ToString());
         }
 
         public Product(Guid id, string name, int price)
@@ -25,7 +25,7 @@ namespace warehub.model
             Id = id;
             Name = name;
             Price = price;
-            Logger.Trace("Initialized " + this.ToString);
+            Logger.Trace("Initialized " + this.ToString());
         }
 
         public override string ToString()
