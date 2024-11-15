@@ -89,4 +89,3 @@ class LogUseExample
         logger.Error("An error occurred in LogUseExample.");
     }
 }
-}
