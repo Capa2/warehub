@@ -37,6 +37,21 @@ To use the logger, simply import and call it in your classes:
 
 Once initialized the logger is available globally, including static classes.
 
-### Log Configuration
+### Log Configuration Using `appsettings`
 
-Log output can be directed per level to multiple targets, such as files or the console. Refer to `utils/LoggerConfig.cs` for detailed settings.
+Log Level Settings: You can configure log levels dynamically using the appsettings file. Example:
+
+    // appsettings.dev.json
+    {
+        "ConnectionStrings": {
+            "localhost": "Server=localhost;Database=db;User=user;Password=pass;"
+        },
+        "Log": {
+            "FileLogLevel": "Trace", // Set the log level for file output
+            "ConsoleLogLevel": "Info" // Set the log level for console output
+        }
+    }
+
+Valid Levels are `Trace`, `Debug`, `Info`, `Warn`, `Error` and `Fatal`
+
+Refer to `utils/LoggerConfig.cs` for detailed settings.
