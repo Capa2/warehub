@@ -8,7 +8,9 @@ namespace warehub.utils
     {
         public static void ConfigureLogging()
         {
-            var config = new LoggingConfiguration();
+            LoggingConfiguration logConfig = new LoggingConfiguration();
+            LogLevel fileLogLevel = LogLevel.FromString(Config.GetInstance().GetFileLogLevel());
+            LogLevel consoleLogLevel = LogLevel.FromString(Config.GetInstance().GetConsoleLogLevel());
 
             // Basedir should not require manual configuration as it defaults to the directory of the executing assembly.
             // config.Variables["basedir"] = AppDomain.CurrentDomain.BaseDirectory;
@@ -60,26 +62,31 @@ namespace warehub.utils
                 Layout = "${longdate} | ${level:uppercase=true} | ${message} ${exception:format=ToString}"
             };
 
-            config.AddTarget(consoleTarget);
-            config.AddTarget(combinedFileTarget);
-            config.AddTarget(errorFileTarget);
-            config.AddTarget(warnFileTarget);
-            config.AddTarget(infoFileTarget);
-            config.AddTarget(debugFileTarget);
-            config.AddTarget(traceFileTarget);
-            config.AddTarget(outputDebugTarget);
+            logConfig.AddTarget(consoleTarget);
+            logConfig.AddTarget(combinedFileTarget);
+            logConfig.AddTarget(errorFileTarget);
+            logConfig.AddTarget(warnFileTarget);
+            logConfig.AddTarget(infoFileTarget);
+            logConfig.AddTarget(debugFileTarget);
+            logConfig.AddTarget(traceFileTarget);
+            logConfig.AddTarget(outputDebugTarget);
 
-            // Configure the targets (files/console) of each log level.
-            config.AddRule(LogLevel.Error, LogLevel.Fatal, errorFileTarget);
-            config.AddRule(LogLevel.Warn, LogLevel.Warn, warnFileTarget);
-            config.AddRule(LogLevel.Info, LogLevel.Info, infoFileTarget);
-            config.AddRule(LogLevel.Debug, LogLevel.Debug, debugFileTarget);
-            config.AddRule(LogLevel.Trace, LogLevel.Trace, traceFileTarget);
-            config.AddRule(LogLevel.Trace, LogLevel.Fatal, combinedFileTarget);
-            config.AddRule(LogLevel.Info, LogLevel.Fatal, consoleTarget);
-            config.AddRule(LogLevel.Trace, LogLevel.Fatal, outputDebugTarget); // Visual Studio output
+            // Configure rules for file logging
+            logConfig.AddRule(LogLevel.Error, LogLevel.Fatal, errorFileTarget);
+            if (fileLogLevel <= LogLevel.Warn) logConfig.AddRule(LogLevel.Warn, LogLevel.Warn, warnFileTarget);
+            if (fileLogLevel <= LogLevel.Info) logConfig.AddRule(LogLevel.Info, LogLevel.Info, infoFileTarget);
+            if (fileLogLevel <= LogLevel.Debug) logConfig.AddRule(LogLevel.Debug, LogLevel.Debug, debugFileTarget);
+            if (fileLogLevel <= LogLevel.Trace) logConfig.AddRule(LogLevel.Trace, LogLevel.Trace, traceFileTarget);
 
-            LogManager.Configuration = config;
+            // Combined file target for all levels
+            logConfig.AddRule(fileLogLevel, LogLevel.Fatal, combinedFileTarget);
+
+            // Configure rules for console and debug output
+            logConfig.AddRule(consoleLogLevel, LogLevel.Fatal, consoleTarget);
+            logConfig.AddRule(consoleLogLevel, LogLevel.Fatal, outputDebugTarget);
+
+
+            LogManager.Configuration = logConfig;
         }
     }
 }

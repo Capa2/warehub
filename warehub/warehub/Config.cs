@@ -56,6 +56,8 @@ namespace warehub
         /// <param name="name">The name of the connection string to retrieve. Defaults to "localhost".</param>
         /// <returns>The specified connection string.</returns>
         public string GetConnectionString(string name = "localhost") => _configuration.GetConnectionString(name);
+        public string GetFileLogLevel() => _configuration["Logging:LogLevel:File"];
+        public string GetConsoleLogLevel() => _configuration["Logging:LogLevel:Console"];
     }
 }
 
