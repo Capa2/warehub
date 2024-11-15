@@ -9,9 +9,9 @@ namespace warehub.model
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public Guid Id { get; }
         public string Name { get; }
-        public int Price { get; }
+        public decimal Price { get; }
 
-        public Product(string name, int price)
+        public Product(string name, decimal price)
         {
             Id = GuidService.GenerateId();
             Name = name;
@@ -19,7 +19,7 @@ namespace warehub.model
             Logger.Trace("Initialized " + this.ToString());
         }
 
-        public Product(Guid id, string name, int price)
+        public Product(Guid id, string name, decimal price)
         {
             
             Id = id;

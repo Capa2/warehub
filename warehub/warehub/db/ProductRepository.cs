@@ -90,42 +90,43 @@ namespace warehub.db
 
             foreach (var productDict in products)
             {
-                Guid id;
-                if (productDict.ContainsKey("id") && productDict["id"] is Guid)
+                // Log the contents of productDict for debugging
+                Console.WriteLine("Processing product dictionary:");
+                foreach (var kvp in productDict)
                 {
-                    id = (Guid)productDict["id"];
+                    Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}, Type: {kvp.Value?.GetType()}");
                 }
-                else
+
+                // Parse the 'id' field
+                if (!productDict.ContainsKey("id") || productDict["id"] is not Guid id)
                 {
+                    Console.WriteLine("Skipping product due to invalid or missing 'id'.");
                     continue;
                 }
 
-                string name;
-                if (productDict.ContainsKey("name") && productDict["name"] is string)
+                // Parse the 'name' field
+                if (!productDict.ContainsKey("name") || productDict["name"] is not string name)
                 {
-                    name = (string)productDict["name"];
-                }
-                else
-                {
+                    Console.WriteLine("Skipping product due to invalid or missing 'name'.");
                     continue;
                 }
 
-                int price;
-                if (productDict.ContainsKey("price") && productDict["price"] is int)
+                // Parse the 'price' field
+                if (!productDict.ContainsKey("price") || productDict["price"] is not decimal price)
                 {
-                    price = (int)productDict["price"];
-                }
-                else
-                {
+                    Console.WriteLine("Skipping product due to invalid or missing 'price'.");
                     continue;
                 }
 
-                // Create new Product instance with parsed values
+                // Create a new Product instance
                 var product = ProductFactory.CreateProduct(id, name, price);
                 productList.Add(product);
+
+                Console.WriteLine($"Added product: {product}");
             }
 
             return productList;
         }
+
     }
 }

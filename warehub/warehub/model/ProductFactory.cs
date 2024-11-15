@@ -9,13 +9,13 @@ namespace warehub.model
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static Product CreateProduct(string name, int price)
+        public static Product CreateProduct(string name, decimal price)
         {
             Logger.Trace(string.Join("Factory is creating product with name: ", name, ", and price:", price));
             return new Product(name, price);
         }
 
-        public static Product CreateProduct(Guid id, string name, int price)
+        public static Product CreateProduct(Guid id, string name, decimal price)
         {
             Logger.Trace(string.Join("Factory is creating product with id: ", id, ", name: ",name, ", and price:", price));
             return new Product(id, name, price);

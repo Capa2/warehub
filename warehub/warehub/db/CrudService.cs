@@ -42,17 +42,14 @@ namespace warehub.db
         {
             try
             {
-                //The following line changes:
-                //parameters = { "@id": 1, "@name": "Product" }
-                //to
-                //whereClause = "WHERE id = @id AND name = @name"
                 string whereClause = parameters.Any()
                     ? "WHERE " + string.Join(" AND ", parameters.Keys.Select(k => $"{k} = @{k}"))
                     : "";
 
                 string query = $"SELECT * FROM {table} {whereClause}";
+                Console.WriteLine($"Generated Query: {query}");
 
-                return ExecuteQuery(query, parameters, "Data retrieved successfully.");
+                return ExecuteQuery(query, parameters, "Data retrieved successfully.", table);
             }
             catch (Exception ex)
             {
@@ -60,6 +57,7 @@ namespace warehub.db
                 return (false, null);
             }
         }
+
 
         /// <summary>
         /// Updates an existing entry in the specified table.
@@ -150,17 +148,22 @@ namespace warehub.db
         /// <summary>
         /// Executes a query command and GETS results as a list of dictionaries.
         /// </summary>
-        private (bool, List<Dictionary<string, object>>) ExecuteQuery(string query, Dictionary<string, object> parameters, string successMessage)
+        private (bool, List<Dictionary<string, object>>) ExecuteQuery(string query, Dictionary<string, object> parameters, string successMessage, string tableName)
         {
             var results = new List<Dictionary<string, object>>();
             bool status = false;
 
             try
             {
-                // Ensure the connection is active (should be managed by the singleton connection)
                 if (_connection.State != System.Data.ConnectionState.Open)
                 {
                     throw new InvalidOperationException("Database connection is not open.");
+                }
+
+                // Fetch the type mapping for the specified table
+                if (!TableTypeRegistry.TableColumnMappings.TryGetValue(tableName, out var columnTypeMapping))
+                {
+                    throw new InvalidOperationException($"No type mapping found for table: {tableName}");
                 }
 
                 using (var command = new MySqlCommand(query, _connection))
@@ -174,13 +177,21 @@ namespace warehub.db
 
                     using (var reader = command.ExecuteReader())
                     {
-                        // Read and collect all rows from the result set
                         while (reader.Read())
                         {
                             var row = new Dictionary<string, object>();
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
-                                row[reader.GetName(i)] = reader.GetValue(i);
+                                string columnName = reader.GetName(i);
+                                object value = reader.GetValue(i);
+
+                                // Convert the value based on the column type mapping
+                                if (columnTypeMapping.TryGetValue(columnName, out var targetType))
+                                {
+                                    value = ConvertToType(value, targetType);
+                                }
+
+                                row[columnName] = value;
                             }
                             results.Add(row);
                         }
@@ -197,5 +208,45 @@ namespace warehub.db
 
             return (status, results);
         }
+
+
+        public static class TableTypeRegistry
+        {
+            public static readonly Dictionary<string, Dictionary<string, Type>> TableColumnMappings = new()
+            {
+                {
+                    "products", // Table name
+                    new Dictionary<string, Type>
+                    {
+                        { "id", typeof(Guid) },
+                        { "name", typeof(string) },
+                        { "price", typeof(decimal) }
+                    }
+                },
+                // Add mappings for additional tables as needed
+                {
+                    "another_table",
+                    new Dictionary<string, Type>
+                    {
+                        { "column1", typeof(int) },
+                        { "column2", typeof(DateTime) }
+                    }
+                }
+            };
+        }
+
+        private object ConvertToType(object value, Type targetType)
+        {
+            if (value == DBNull.Value)
+                return null;
+
+            if (targetType == typeof(Guid))
+            {
+                return Guid.Parse(value.ToString());
+            }
+
+            return Convert.ChangeType(value, targetType);
+        }
+
     }
 }
