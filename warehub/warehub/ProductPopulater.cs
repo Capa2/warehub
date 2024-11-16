@@ -1,6 +1,6 @@
 ﻿using NLog;
-using warehub.db;
 using warehub.model;
+using warehub.repository;
 using warehub.services;
 
 namespace warehub

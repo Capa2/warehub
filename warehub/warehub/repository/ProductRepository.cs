@@ -2,12 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Xml.Linq;
+using warehub.db;
+using warehub.db.DTO;
+using warehub.db.enums;
 using warehub.model;
+using warehub.repository.interfaces;
+using warehub.repository.returnObjects;
 using warehub.services.interfaces;
 
-namespace warehub.db
+namespace warehub.repository
 {
-    public class ProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly CRUDService _cRUDService;
 
@@ -25,7 +32,7 @@ namespace warehub.db
                 { "price", product.Price },
                 { "id", product.Id }
             };
-            bool status = _cRUDService.Create("products", parameters);
+            bool status = _cRUDService.Create(Table.Products, parameters);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status
@@ -35,7 +42,7 @@ namespace warehub.db
 
         public GenericResponseDTO<Guid> Delete(Guid id)
         {
-            bool status = _cRUDService.Delete("products", "id", id);
+            bool status = _cRUDService.Delete(Table.Products, "id", id);
             var returnObject = new GenericResponseDTO<Guid>(id)
             {
                 IsSuccess = status
@@ -45,7 +52,7 @@ namespace warehub.db
 
         public GenericResponseDTO<List<Product>> GetAll()
         {
-            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object>());
+            var (status, products) = _cRUDService.Read<ProductDTO>(Table.Products, new Dictionary<string, object>());
             List<Product> listOfProducts = ConvertToProducts(products);
             var returnObject = new GenericResponseDTO<List<Product>>(listOfProducts)
             {
@@ -56,9 +63,9 @@ namespace warehub.db
 
         public GenericResponseDTO<Product> GetById(Guid id)
         {
-            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
+            var (status, products) = _cRUDService.Read<ProductDTO>(Table.Products, new Dictionary<string, object> { { "id", id } });
             List<Product> listOfProducts = ConvertToProducts(products);
-            
+
             Product product = listOfProducts.FirstOrDefault(p => p.Id == id);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
@@ -74,7 +81,7 @@ namespace warehub.db
                 { "name", product.Name },
                 { "price", product.Price }
             };
-            bool status = _cRUDService.Update("products", updateParams, "id", product.Id);
+            bool status = _cRUDService.Update(Table.Products, updateParams, "id", product.Id);
 
             var returnObject = new GenericResponseDTO<Product>(product)
             {
@@ -87,46 +94,32 @@ namespace warehub.db
         public List<Product> ConvertToProducts(List<Dictionary<string, object>> products)
         {
             var productList = new List<Product>();
+            Type productType = typeof(Product);
+            // Retrieve all the properties of the Product type
+            PropertyInfo[] properties = productType.GetProperties();
 
             foreach (var productDict in products)
             {
-                // Log the contents of productDict for debugging
-                Console.WriteLine("Processing product dictionary:");
-                foreach (var kvp in productDict)
+                bool objectValid = true;
+                foreach (var property in properties)
                 {
-                    Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}, Type: {kvp.Value?.GetType()}");
+                    if (!productDict.ContainsKey(property.Name) && productDict[property.Name].GetType() == property.PropertyType)
+                    {
+                        Console.WriteLine($"Skipping product due to invalid or missing '{property.Name}'.");
+                        objectValid = false;
+                        break;
+                    }
+                    
                 }
-
-                // Parse the 'id' field
-                if (!productDict.ContainsKey("id") || productDict["id"] is not Guid id)
-                {
-                    Console.WriteLine("Skipping product due to invalid or missing 'id'.");
-                    continue;
-                }
-
-                // Parse the 'name' field
-                if (!productDict.ContainsKey("name") || productDict["name"] is not string name)
-                {
-                    Console.WriteLine("Skipping product due to invalid or missing 'name'.");
-                    continue;
-                }
-
-                // Parse the 'price' field
-                if (!productDict.ContainsKey("price") || productDict["price"] is not decimal price)
-                {
-                    Console.WriteLine("Skipping product due to invalid or missing 'price'.");
-                    continue;
-                }
-
-                // Create a new Product instance
-                var product = ProductFactory.CreateProduct(id, name, price);
+                
+                var product = ProductFactory.CreateProduct((Guid)productDict["id"], productDict["name"].ToString(), (int)productDict["price"]);
+                Console.WriteLine($"Added product: {product}");
                 productList.Add(product);
 
-                Console.WriteLine($"Added product: {product}");
+                
             }
-
             return productList;
-        }
 
+        }
     }
 }

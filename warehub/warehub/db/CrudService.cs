@@ -4,6 +4,7 @@ using System.Linq;
 using MySql.Data.MySqlClient;
 using ZstdSharp;
 using warehub.services;
+using warehub.db.enums;
 
 namespace warehub.db
 {
@@ -17,7 +18,7 @@ namespace warehub.db
         /// <summary>
         /// Inserts a new entry into the specified table.
         /// </summary>
-        public bool Create(string table, Dictionary<string, object> parameters)
+        public bool Create(Table table, Dictionary<string, object> parameters)
         {
             try
             {
@@ -38,7 +39,7 @@ namespace warehub.db
         /// <summary>
         /// Reads entries from the specified table with optional filtering.
         /// </summary>
-        public (bool, List<Dictionary<string, object>>) Read(string table, Dictionary<string, object> parameters)
+        public (bool, List<Dictionary<string, object>>) Read<T>(Table table, Dictionary<string, object> parameters)
         {
             try
             {
@@ -49,12 +50,12 @@ namespace warehub.db
                 string query = $"SELECT * FROM {table} {whereClause}";
                 Console.WriteLine($"Generated Query: {query}");
 
-                return ExecuteQuery(query, parameters, "Data retrieved successfully.", table);
+                return ExecuteQuery<T>(query, parameters, "Data retrieved successfully.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Read Error: {ex.Message}");
-                return (false, null);
+                return (false, []);
             }
         }
 
@@ -62,7 +63,7 @@ namespace warehub.db
         /// <summary>
         /// Updates an existing entry in the specified table.
         /// </summary>
-        public bool Update(string table, Dictionary<string, object> parameters, string idColumn, object idValue)
+        public bool Update(Table table, Dictionary<string, object> parameters, string idColumn, object idValue)
         {
             try
             {
@@ -83,7 +84,7 @@ namespace warehub.db
         /// <summary>
         /// Deletes an entry from the specified table.
         /// </summary>
-        public bool Delete(string table, string idColumn, object idValue)
+        public bool Delete(Table table, string idColumn, object idValue)
         {
             try
             {
@@ -148,7 +149,7 @@ namespace warehub.db
         /// <summary>
         /// Executes a query command and GETS results as a list of dictionaries.
         /// </summary>
-        private (bool, List<Dictionary<string, object>>) ExecuteQuery(string query, Dictionary<string, object> parameters, string successMessage, string tableName)
+        private (bool, List<Dictionary<string, object>>) ExecuteQuery<T>(string query, Dictionary<string, object> parameters, string successMessage)
         {
             var results = new List<Dictionary<string, object>>();
             bool status = false;
@@ -161,10 +162,10 @@ namespace warehub.db
                 }
 
                 // Fetch the type mapping for the specified table
-                if (!TableTypeRegistry.TableColumnMappings.TryGetValue(tableName, out var columnTypeMapping))
-                {
-                    throw new InvalidOperationException($"No type mapping found for table: {tableName}");
-                }
+                //if (!TableTypeRegistry.TableColumnMappings.TryGetValue(tableName, out var columnTypeMapping))
+                //{
+                //    throw new InvalidOperationException($"No type mapping found for table: {tableName}");
+                //}
 
                 using (var command = new MySqlCommand(query, _connection))
                 {
