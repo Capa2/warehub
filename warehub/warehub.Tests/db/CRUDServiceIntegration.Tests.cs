@@ -24,10 +24,10 @@ namespace warehub.Tests.db
             try
             {
                 string createTableQuery = @"
-                CREATE TABLE IF NOT EXISTS test_table (
-                    id INT PRIMARY KEY,
-                    name VARCHAR(50)
-                );";
+            CREATE TABLE IF NOT EXISTS test_table (
+                id CHAR(36) PRIMARY KEY,
+                name VARCHAR(50)
+            );";
 
                 using (var command = new MySqlCommand(createTableQuery, DbConnection.GetConnection()))
                 {
@@ -55,6 +55,7 @@ namespace warehub.Tests.db
         }
     }
 
+
     public class CRUDServiceIntegrationTests : IClassFixture<DatabaseFixture>
     {
         private readonly CRUDService _crudService;
@@ -65,64 +66,46 @@ namespace warehub.Tests.db
         }
 
         [Fact]
-        public void Create_ShouldInsertDataIntoDatabase()
+        public void CRUDOperations_ShouldPerformAllSteps()
         {
-            var parameters = new Dictionary<string, object>
-            {
-                { "id", 1 },
-                { "name", "Test Item" }
-            };
+            // Generate a new GUID for the test
+            var testId = Guid.NewGuid();
 
-            bool createStatus = _crudService.Create("test_table", parameters);
+            // Step 1: Create
+            var createParameters = new Dictionary<string, object>
+        {
+            { "id", testId.ToString() },
+            { "name", "Test Item" }
+        };
 
+            bool createStatus = _crudService.Create("test_table", createParameters);
             Assert.True(createStatus, "Failed to create item in database.");
 
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", 1 } });
-            Assert.True(status, "Read operation failed.");
-            Assert.Single(result);
-            Assert.Equal("Test Item", result[0]["name"]);
-        }
+            // Verify creation
+            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
+            Assert.True(readStatus, "Read operation failed after creation.");
+            Assert.Single(readResult);
+            Assert.Equal("Test Item", readResult[0]["name"]);
 
-        [Fact]
-        public void Read_ShouldRetrieveDataFromDatabase()
-        {
-            _crudService.Create("test_table", new Dictionary<string, object> { { "id", 2 }, { "name", "Read Test" } });
-
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", 2 } });
-
-            Assert.True(status, "Read operation failed.");
-            Assert.Single(result);
-            Assert.Equal("Read Test", result[0]["name"]);
-        }
-
-        [Fact]
-        public void Update_ShouldModifyExistingData()
-        {
-            _crudService.Create("test_table", new Dictionary<string, object> { { "id", 3 }, { "name", "Old Name" } });
-            var updateParameters = new Dictionary<string, object> { { "name", "New Name" } };
-
-            bool updateStatus = _crudService.Update("test_table", updateParameters, "id", 3);
-
+            // Step 2: Update
+            var updateParameters = new Dictionary<string, object> { { "name", "Updated Item" } };
+            bool updateStatus = _crudService.Update("test_table", updateParameters, "id", testId.ToString());
             Assert.True(updateStatus, "Update operation failed.");
 
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", 3 } });
-            Assert.True(status, "Read operation failed.");
-            Assert.Single(result);
-            Assert.Equal("New Name", result[0]["name"]);
-        }
+            // Verify update
+            var (readAfterUpdateStatus, readAfterUpdateResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
+            Assert.True(readAfterUpdateStatus, "Read operation failed after update.");
+            Assert.Single(readAfterUpdateResult);
+            Assert.Equal("Updated Item", readAfterUpdateResult[0]["name"]);
 
-        [Fact]
-        public void Delete_ShouldRemoveDataFromDatabase()
-        {
-            _crudService.Create("test_table", new Dictionary<string, object> { { "id", 4 }, { "name", "To Delete" } });
-
-            bool deleteStatus = _crudService.Delete("test_table", "id", 4);
-
+            // Step 3: Delete
+            bool deleteStatus = _crudService.Delete("test_table", "id", testId.ToString());
             Assert.True(deleteStatus, "Delete operation failed.");
 
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", 4 } });
-            Assert.True(status, "Read operation failed.");
-            Assert.Empty(result);
+            // Verify deletion
+            var (readAfterDeleteStatus, readAfterDeleteResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
+            Assert.True(readAfterDeleteStatus, "Read operation failed after deletion.");
+            Assert.Empty(readAfterDeleteResult);
         }
     }
 }
