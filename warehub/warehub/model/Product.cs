@@ -1,5 +1,4 @@
-﻿using System;
-using warehub.model.interfaces;
+﻿using warehub.model.interfaces;
 using warehub.services;
 using NLog;
 namespace warehub.model
