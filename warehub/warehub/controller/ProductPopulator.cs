@@ -16,7 +16,8 @@ namespace warehub.controller
         public static void Populate()
         {
 
-            string filePath = "C:\\Users\\spac-36\\Source\\Repos\\warehub\\warehub\\warehub\\controller\\ExampleProducts.json";
+            string relativePath = "controller\\ExampleProducts.json"; // Path relative to the application root
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
 
             try
             {
