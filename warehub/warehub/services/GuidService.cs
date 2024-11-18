@@ -12,12 +12,7 @@ namespace warehub.services
             return guid;
         }
 
-        public static byte[] GuidToBinary(Guid guid)
-        {
-            Byte[] byteGuid = guid.ToByteArray();
-            Logger.Trace(GuidToString(guid) + " converted to binary.");
-            return byteGuid;
-        }
+        public static byte[] GuidToBinary(Guid guid) => guid.ToByteArray();
 
         public static Guid BinaryToGuid(byte[] binaryGuid)
         {
@@ -28,14 +23,8 @@ namespace warehub.services
             return new Guid(binaryGuid);
         }
 
-        public static string GuidToString(Guid guid)
-        {
-            return guid.ToString();
-        }
+        public static string GuidToString(Guid guid) => guid.ToString();
 
-        public static Guid StringToGuid(string guidString)
-        {
-            return Guid.Parse(guidString);
-        }
+        public static Guid StringToGuid(string guidString) => Guid.Parse(guidString);
     }
 }

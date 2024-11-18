@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using NLog;
 
 namespace warehub
 {
@@ -8,6 +9,7 @@ namespace warehub
     /// </summary>
     public class Config
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static Config? _instance;
         private static readonly object _lock = new();
 
@@ -24,6 +26,9 @@ namespace warehub
         /// </param>
         private Config(string appSetting)
         {
+            Logger.Debug("Loading configuration settings from appsettings." + appSetting + ".json");
+            Logger.Trace(String.Join("appSetting:\n",appSetting));
+
             _configuration = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile($"appsettings.{appSetting}.json", optional: false, reloadOnChange: true)
