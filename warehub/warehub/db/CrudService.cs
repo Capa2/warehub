@@ -4,11 +4,13 @@ using System.Linq;
 using MySql.Data.MySqlClient;
 using ZstdSharp;
 using warehub.services;
+using NLog;
 
 namespace warehub.db
 {
     public class CRUDService
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private readonly MySqlConnection _connection;
 
         // Primary constructor accepting MySqlConnection instance from DbConnection
@@ -25,11 +27,16 @@ namespace warehub.db
                 var values = string.Join(", ", parameters.Keys.Select(k => $"@{k}"));
                 string query = $"INSERT INTO {table} ({columns}) VALUES ({values})";
 
-                return ExecuteNonQuery(query, parameters, "Item created successfully.");
+                if (ExecuteNonQuery(query, parameters, $"Item created in table '{table}' with values: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}."))
+                {
+                    Logger.Info($"Create operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Create Error: {ex.Message}");
+                Logger.Error(ex, $"Create operation failed for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
                 return false;
             }
         }
@@ -47,13 +54,18 @@ namespace warehub.db
                     : "";
 
                 string query = $"SELECT * FROM {table} {whereClause}";
-                Console.WriteLine($"Generated Query: {query}");
+                Logger.Debug($"Generated Query for Read: {query}");
 
-                return ExecuteQuery(query, parameters, "Data retrieved successfully.", table);
+                var result = ExecuteQuery(query, parameters, $"Data retrieved from table '{table}'.", table);
+                if (result.Item1)
+                {
+                    Logger.Info($"Read operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
+                }
+                return result;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Read Error: {ex.Message}");
+                Logger.Error(ex, $"Read operation failed for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
                 return (false, null);
             }
         }
@@ -70,11 +82,17 @@ namespace warehub.db
                 string query = $"UPDATE {table} SET {setClause} WHERE {idColumn} = @{idColumn}";
 
                 parameters[idColumn] = idValue;
-                return ExecuteNonQuery(query, parameters, "Item updated successfully.");
+
+                if (ExecuteNonQuery(query, parameters, $"Item in table '{table}' with {idColumn}={idValue} updated successfully."))
+                {
+                    Logger.Info($"Update operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Update Error: {ex.Message}");
+                Logger.Error(ex, $"Update operation failed for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
                 return false;
             }
         }
@@ -90,11 +108,16 @@ namespace warehub.db
                 string query = $"DELETE FROM {table} WHERE {idColumn} = @{idColumn}";
                 var parameters = new Dictionary<string, object> { { idColumn, idValue } };
 
-                return ExecuteNonQuery(query, parameters, "Item deleted successfully.");
+                if (ExecuteNonQuery(query, parameters, $"Item in table '{table}' with {idColumn}={idValue} deleted successfully."))
+                {
+                    Logger.Info($"Delete operation successful for table '{table}'. {idColumn}={idValue}.");
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Delete Error: {ex.Message}");
+                Logger.Error(ex, $"Delete operation failed for table '{table}'. {idColumn}={idValue}.");
                 return false;
             }
         }
@@ -122,19 +145,21 @@ namespace warehub.db
                     if (affectedRows > 0 && commitTransaction)
                     {
                         transaction.Commit();
+                        Logger.Debug(successMessage);
+                        return true;
                     }
                     else
                     {
                         transaction.Rollback();
+                        Logger.Warn($"Transaction rolled back for query: {query}");
+                        return false;
                     }
-
-                    return affectedRows > 0;
                 }
             }
             catch (Exception ex)
             {
                 transaction?.Rollback();
-                Console.WriteLine($"SQL Error: {ex.Message}\nQuery: {query}");
+                Logger.Error(ex, $"SQL Error in ExecuteNonQuery. Query: {query}");
                 return false;
             }
             finally
@@ -160,7 +185,6 @@ namespace warehub.db
                     throw new InvalidOperationException("Database connection is not open.");
                 }
 
-                // Fetch the type mapping for the specified table
                 if (!TableTypeRegistry.TableColumnMappings.TryGetValue(tableName, out var columnTypeMapping))
                 {
                     throw new InvalidOperationException($"No type mapping found for table: {tableName}");
@@ -168,7 +192,6 @@ namespace warehub.db
 
                 using (var command = new MySqlCommand(query, _connection))
                 {
-                    // Add parameters to the command
                     foreach (var param in parameters)
                     {
                         var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
@@ -185,7 +208,6 @@ namespace warehub.db
                                 string columnName = reader.GetName(i);
                                 object value = reader.GetValue(i);
 
-                                // Convert the value based on the column type mapping
                                 if (columnTypeMapping.TryGetValue(columnName, out var targetType))
                                 {
                                     value = ConvertToType(value, targetType);
@@ -197,13 +219,13 @@ namespace warehub.db
                         }
                     }
 
-                    Console.WriteLine(successMessage);
+                    Logger.Info(successMessage);
                     status = true;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SQL Error: {ex.Message}\nQuery: {query}");
+                Logger.Error(ex, $"SQL Error in ExecuteQuery. Query: {query}");
             }
 
             return (status, results);
