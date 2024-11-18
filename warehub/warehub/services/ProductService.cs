@@ -32,27 +32,27 @@ namespace warehub.services
         {
             try
             {
-                Logger.Trace("Attempting to retrieve all products from the repository.");
+                Logger.Trace("ProductService: Attempting to retrieve all products from the repository.");
                 var responseObject = _productRepository.GetAll();
 
                 if (responseObject.IsSuccess)
                 {
                     if (responseObject.Data == null || responseObject.Data.Count == 0)
                     {
-                        Logger.Warn("No products found in the repository.");
+                        Logger.Warn("ProductService: No products found in the repository.");
                         return null;
                     }
 
-                    Logger.Trace($"Retrieved {responseObject.Data.Count} products successfully.");
+                    Logger.Trace($"ProductService: Retrieved {responseObject.Data.Count} products successfully.");
                     return responseObject.Data;
                 }
 
-                Logger.Warn("Failed to retrieve products: Operation was not successful.");
+                Logger.Warn("ProductService: Failed to retrieve products: Operation was not successful.");
                 return null;
             }
             catch (Exception ex)
             {
-                Logger.Error($"An error occurred while retrieving all products: {ex.Message}");
+                Logger.Error($"ProductService: An error occurred while retrieving all products: {ex.Message}");
                 return null;
             }
         }
@@ -66,27 +66,27 @@ namespace warehub.services
         {
             try
             {
-                Logger.Trace($"Attempting to retrieve product with ID: {id}");
+                Logger.Trace($"ProductService: Attempting to retrieve product with ID: {id}");
                 var response = _productRepository.GetById(id);
 
                 if (response.IsSuccess)
                 {
                     if (response.Data == null)
                     {
-                        Logger.Warn($"Product with ID {id} was not found in the repository.");
+                        Logger.Warn($"ProductService: Product with ID {id} was not found in the repository.");
                         return null;
                     }
 
-                    Logger.Trace($"Product with ID {id} retrieved successfully.");
+                    Logger.Trace($"ProductService: Product with ID {id} retrieved successfully.");
                     return response.Data;
                 }
 
-                Logger.Warn($"Failed to retrieve product with ID {id}: Operation was not successful.");
+                Logger.Warn($"ProductService: Failed to retrieve product with ID {id}: Operation was not successful.");
                 return null;
             }
             catch (Exception ex)
             {
-                Logger.Error($"An error occurred while retrieving product by ID: {ex.Message}");
+                Logger.Error($"ProductService: An error occurred while retrieving product by ID: {ex.Message}");
                 return null;
             }
         }
@@ -100,21 +100,21 @@ namespace warehub.services
         {
             try
             {
-                Logger.Trace($"Attempting to add product: {product.Name}");
+                Logger.Trace($"ProductService: Attempting to add product: {product.Name}");
                 var response = _productRepository.Add(product);
 
                 if (response.IsSuccess)
                 {
-                    Logger.Trace($"Product {product.Name} added successfully.");
+                    Logger.Trace($"ProductService: Product {product.Name} added successfully.");
                     return true;
                 }
 
-                Logger.Warn($"Failed to add product {product.Name}: Operation was not successful.");
+                Logger.Warn($"ProductService: Failed to add product {product.Name}: Operation was not successful.");
                 return false;
             }
             catch (Exception ex)
             {
-                Logger.Error($"An error occurred while adding product: {ex.Message}");
+                Logger.Error($"ProductService: An error occurred while adding product: {ex.Message}");
                 return false;
             }
         }
@@ -128,12 +128,12 @@ namespace warehub.services
         {
             try
             {
-                Logger.Trace($"Attempting to update product with ID: {product.Id}");
+                Logger.Trace($"ProductService: Attempting to update product with ID: {product.Id}");
                 var getResponse = _productRepository.GetById(product.Id);
 
                 if (!getResponse.IsSuccess || getResponse.Data == null)
                 {
-                    Logger.Warn($"Product with ID {product.Id} not found. Update operation aborted.");
+                    Logger.Warn($"ProductService: Product with ID {product.Id} not found. Update operation aborted.");
                     return false;
                 }
 
@@ -141,16 +141,16 @@ namespace warehub.services
 
                 if (response.IsSuccess)
                 {
-                    Logger.Trace($"Product with ID {product.Id} updated successfully.");
+                    Logger.Trace($"ProductService: Product with ID {product.Id} updated successfully.");
                     return true;
                 }
 
-                Logger.Warn($"Failed to update product with ID {product.Id}: Operation was not successful.");
+                Logger.Warn($"ProductService: Failed to update product with ID {product.Id}: Operation was not successful.");
                 return false;
             }
             catch (Exception ex)
             {
-                Logger.Error($"An error occurred while updating product: {ex.Message}");
+                Logger.Error($"ProductService: An error occurred while updating product: {ex.Message}");
                 return false;
             }
         }
@@ -164,12 +164,12 @@ namespace warehub.services
         {
             try
             {
-                Logger.Trace($"Attempting to delete product with ID: {id}");
+                Logger.Trace($"ProductService: Attempting to delete product with ID: {id}");
                 var getResponse = _productRepository.GetById(id);
 
                 if (!getResponse.IsSuccess || getResponse.Data == null)
                 {
-                    Logger.Warn($"Product with ID {id} not found. Delete operation aborted.");
+                    Logger.Warn($"ProductService: Product with ID {id} not found. Delete operation aborted.");
                     return false;
                 }
 
@@ -177,16 +177,16 @@ namespace warehub.services
 
                 if (response.IsSuccess)
                 {
-                    Logger.Trace($"Product with ID {id} deleted successfully.");
+                    Logger.Trace($"ProductService: Product with ID {id} deleted successfully.");
                     return true;
                 }
 
-                Logger.Warn($"Failed to delete product with ID {id}: Operation was not successful.");
+                Logger.Warn($"ProductService: Failed to delete product with ID {id}: Operation was not successful.");
                 return false;
             }
             catch (Exception ex)
             {
-                Logger.Error($"An error occurred while deleting product: {ex.Message}");
+                Logger.Error($"ProductService: An error occurred while deleting product: {ex.Message}");
                 return false;
             }
         }

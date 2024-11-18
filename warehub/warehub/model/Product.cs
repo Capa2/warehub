@@ -26,7 +26,7 @@ namespace warehub.model
             Name = name;
             Price = price;
             Amount = amount;
-            Logger.Trace("Initialized " + this.ToString());
+            Logger.Trace("Product: Initialized " + this.ToString());
         }
 
         public override string ToString()

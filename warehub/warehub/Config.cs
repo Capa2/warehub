@@ -30,7 +30,7 @@ namespace warehub
         /// </param>
         private Config(string appSetting)
         {
-            Logger.Trace($"Initializing configuration from appsettings.{appSetting}.json");
+            Logger.Trace($"Config: Initializing configuration from appsettings.{appSetting}.json");
 
             try
             {
@@ -39,11 +39,11 @@ namespace warehub
                     .AddJsonFile($"appsettings.{appSetting}.json", optional: false, reloadOnChange: true)
                     .Build();
 
-                Logger.Info($"Configuration successfully loaded from appsettings.{appSetting}.json");
+                Logger.Info($"Config: Configuration successfully loaded from appsettings.{appSetting}.json");
             }
             catch (Exception ex)
             {
-                Logger.Error($"Failed to load configuration from appsettings.{appSetting}.json. Error: {ex.Message}");
+                Logger.Error($"Config: Failed to load configuration from appsettings.{appSetting}.json. Error: {ex.Message}");
                 throw;
             }
         }
@@ -61,14 +61,14 @@ namespace warehub
                 {
                     if (_instance == null)
                     {
-                        Logger.Trace($"Creating new Config instance with appSetting: {appSetting}");
+                        Logger.Trace($"Config: Creating new Config instance with appSetting: {appSetting}");
                         _instance = new Config(appSetting);
                     }
                 }
             }
             else
             {
-                Logger.Trace("Returning existing Config instance");
+                Logger.Trace("Config: Returning existing Config instance");
             }
             return _instance;
         }
@@ -80,16 +80,16 @@ namespace warehub
         /// <returns>The specified connection string.</returns>
         public string? GetConnectionString(string name = "localhost")
         {
-            Logger.Trace($"Retrieving connection string for: {name}");
+            Logger.Trace($"Config: Retrieving connection string for: {name}");
             string? connectionString = _configuration.GetConnectionString(name);
 
             if (string.IsNullOrEmpty(connectionString))
             {
-                Logger.Warn($"Connection string for '{name}' is null or empty.");
+                Logger.Warn($"Config: Connection string for '{name}' is null or empty.");
             }
             else
             {
-                Logger.Trace($"Connection string for '{name}' successfully retrieved.");
+                Logger.Trace($"Config: Connection string for '{name}' successfully retrieved.");
             }
 
             return connectionString;
@@ -101,11 +101,11 @@ namespace warehub
         /// <returns>The file log level as a string.</returns>
         public string? GetFileLogLevel()
         {
-            Logger.Trace("Retrieving file log level");
+            Logger.Trace("Config: Retrieving file log level");
             string? loglevel = _configuration["Logging:LogLevel:File"];
             if (string.IsNullOrEmpty(loglevel))
             {
-                Logger.Warn("File log level is null or empty.");
+                Logger.Warn("Config: File log level is null or empty.");
             }
             return _configuration["Logging:LogLevel:File"];
         }
@@ -116,11 +116,11 @@ namespace warehub
         /// <returns>The console log level as a string.</returns>
         public string? GetConsoleLogLevel()
         {
-            Logger.Trace("Retrieving console log level");
+            Logger.Trace("Config: Retrieving console log level");
             string? loglevel = _configuration["Logging:LogLevel:Console"];
             if (string.IsNullOrEmpty(loglevel))
             {
-                Logger.Warn("Console log level is null or empty.");
+                Logger.Warn("Config: Console log level is null or empty.");
             }
             return _configuration["Logging:LogLevel:Console"];
         }
