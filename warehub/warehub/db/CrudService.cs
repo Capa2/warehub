@@ -66,7 +66,7 @@ namespace warehub.db
                     : "";
 
                 string query = $"SELECT * FROM {table} {whereClause}";
-                Logger.Debug($"Generated Query for Read: {query}");
+                Logger.Trace($"Generated Query for Read: {query}");
 
                 var (status, results) = ExecuteQuery(query, parameters, $"Data retrieved from table '{table}'.", columnTypeMapping);
 
@@ -77,6 +77,10 @@ namespace warehub.db
                     {
                         Logger.Info($"Read operation retrieved a large dataset ({results.Count} items) from table '{table}'.");
                     }
+                }
+                else
+                {
+                    Logger.Debug($"Read operation failed for table '{table}'.");
                 }
 
                 return (status, results);
@@ -101,7 +105,7 @@ namespace warehub.db
 
                 parameters[idColumn] = idValue;
 
-                if (ExecuteNonQuery(query, parameters, $"Item in table '{table}' with {idColumn}={idValue} updated successfully."))
+                if (ExecuteNonQuery(query, parameters, $"Item updated successfully in table '{table}' with {idColumn}={idValue}."))
                 {
                     Logger.Debug($"Update operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
                     return true;
@@ -126,7 +130,7 @@ namespace warehub.db
                 string query = $"DELETE FROM {table} WHERE {idColumn} = @{idColumn}";
                 var parameters = new Dictionary<string, object> { { idColumn, idValue } };
 
-                if (ExecuteNonQuery(query, parameters, $"Item in table '{table}' with {idColumn}={idValue} deleted successfully."))
+                if (ExecuteNonQuery(query, parameters, $"Item deleted successfully in table '{table}' with {idColumn}={idValue}."))
                 {
                     Logger.Debug($"Delete operation successful for table '{table}'. {idColumn}={idValue}.");
                     return true;
@@ -163,7 +167,7 @@ namespace warehub.db
                     if (affectedRows > 0 && commitTransaction)
                     {
                         transaction.Commit();
-                        Logger.Debug(successMessage);
+                        Logger.Trace($"SuccessMessage: ({successMessage})");
                         return true;
                     }
                     else
@@ -227,7 +231,7 @@ namespace warehub.db
                         }
                     }
 
-                    Logger.Debug(successMessage);
+                    Logger.Trace($"SuccessMessage: ({successMessage})");
                     status = true;
                 }
             }
