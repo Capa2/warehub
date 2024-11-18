@@ -29,7 +29,7 @@ namespace warehub.db
 
                 if (ExecuteNonQuery(query, parameters, $"Item created in table '{table}' with values: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}."))
                 {
-                    Logger.Info($"Create operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
+                    Logger.Debug($"Create operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
                     return true;
                 }
                 return false;
@@ -49,6 +49,18 @@ namespace warehub.db
         {
             try
             {
+                if (_connection.State != System.Data.ConnectionState.Open)
+                {
+                    Logger.Error("Attempted to read data while the database connection was not open.");
+                    return (false, null); // Graceful failure
+                }
+
+                if (!TableTypeRegistry.TableColumnMappings.TryGetValue(table, out var columnTypeMapping))
+                {
+                    Logger.Error($"No type mapping found for table: {table}");
+                    return (false, null); // Graceful failure
+                }
+
                 string whereClause = parameters.Any()
                     ? "WHERE " + string.Join(" AND ", parameters.Keys.Select(k => $"{k} = @{k}"))
                     : "";
@@ -56,17 +68,23 @@ namespace warehub.db
                 string query = $"SELECT * FROM {table} {whereClause}";
                 Logger.Debug($"Generated Query for Read: {query}");
 
-                var result = ExecuteQuery(query, parameters, $"Data retrieved from table '{table}'.", table);
-                if (result.Item1)
+                var (status, results) = ExecuteQuery(query, parameters, $"Data retrieved from table '{table}'.", columnTypeMapping);
+
+                if (status)
                 {
-                    Logger.Info($"Read operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
+                    Logger.Debug($"Read operation successful for table '{table}'. Retrieved {results.Count} items.");
+                    if (results.Count > 100)
+                    {
+                        Logger.Info($"Read operation retrieved a large dataset ({results.Count} items) from table '{table}'.");
+                    }
                 }
-                return result;
+
+                return (status, results);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, $"Read operation failed for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
-                return (false, null);
+                Logger.Error(ex, $"Unexpected error during read operation for table '{table}'.");
+                return (false, null); // Graceful failure
             }
         }
 
@@ -85,7 +103,7 @@ namespace warehub.db
 
                 if (ExecuteNonQuery(query, parameters, $"Item in table '{table}' with {idColumn}={idValue} updated successfully."))
                 {
-                    Logger.Info($"Update operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
+                    Logger.Debug($"Update operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
                     return true;
                 }
                 return false;
@@ -110,7 +128,7 @@ namespace warehub.db
 
                 if (ExecuteNonQuery(query, parameters, $"Item in table '{table}' with {idColumn}={idValue} deleted successfully."))
                 {
-                    Logger.Info($"Delete operation successful for table '{table}'. {idColumn}={idValue}.");
+                    Logger.Debug($"Delete operation successful for table '{table}'. {idColumn}={idValue}.");
                     return true;
                 }
                 return false;
@@ -173,23 +191,13 @@ namespace warehub.db
         /// <summary>
         /// Executes a query command and GETS results as a list of dictionaries.
         /// </summary>
-        private (bool, List<Dictionary<string, object>>) ExecuteQuery(string query, Dictionary<string, object> parameters, string successMessage, string tableName)
+        private (bool, List<Dictionary<string, object>>) ExecuteQuery(string query, Dictionary<string, object> parameters, string successMessage, Dictionary<string, Type> columnTypeMapping)
         {
             var results = new List<Dictionary<string, object>>();
             bool status = false;
 
             try
             {
-                if (_connection.State != System.Data.ConnectionState.Open)
-                {
-                    throw new InvalidOperationException("Database connection is not open.");
-                }
-
-                if (!TableTypeRegistry.TableColumnMappings.TryGetValue(tableName, out var columnTypeMapping))
-                {
-                    throw new InvalidOperationException($"No type mapping found for table: {tableName}");
-                }
-
                 using (var command = new MySqlCommand(query, _connection))
                 {
                     foreach (var param in parameters)
@@ -219,7 +227,7 @@ namespace warehub.db
                         }
                     }
 
-                    Logger.Info(successMessage);
+                    Logger.Debug(successMessage);
                     status = true;
                 }
             }
