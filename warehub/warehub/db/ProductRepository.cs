@@ -130,7 +130,7 @@ namespace warehub.db
                 }
 
                 // Create a new Product instance
-                var product = ProductFactory.CreateProduct(id, name, price);
+                var product = ProductFactory.CreateProduct(id, name, price, amount);
                 productList.Add(product);
 
                 Console.WriteLine($"Added product: {product}");
