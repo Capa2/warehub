@@ -10,10 +10,14 @@ namespace warehub
     public class Config
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        // Singleton instance of the Config class
         private static Config? _instance;
+
+        // Lock object to ensure thread safety when initializing the singleton
         private static readonly object _lock = new();
 
-        // The IConfiguration instance used to access the configuration settings.
+        // The IConfiguration instance used to access the configuration settings
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -26,13 +30,22 @@ namespace warehub
         /// </param>
         private Config(string appSetting)
         {
-            Logger.Debug("Loading configuration settings from appsettings." + appSetting + ".json");
-            Logger.Trace(String.Join("appSetting:\n",appSetting));
+            Logger.Trace($"Initializing configuration from appsettings.{appSetting}.json");
 
-            _configuration = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile($"appsettings.{appSetting}.json", optional: false, reloadOnChange: true)
-                .Build();
+            try
+            {
+                _configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile($"appsettings.{appSetting}.json", optional: false, reloadOnChange: true)
+                    .Build();
+
+                Logger.Info($"Configuration successfully loaded from appsettings.{appSetting}.json");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to load configuration from appsettings.{appSetting}.json. Error: {ex.Message}");
+                throw;
+            }
         }
 
         /// <summary>
@@ -48,9 +61,14 @@ namespace warehub
                 {
                     if (_instance == null)
                     {
+                        Logger.Trace($"Creating new Config instance with appSetting: {appSetting}");
                         _instance = new Config(appSetting);
                     }
                 }
+            }
+            else
+            {
+                Logger.Trace("Returning existing Config instance");
             }
             return _instance;
         }
@@ -60,9 +78,52 @@ namespace warehub
         /// </summary>
         /// <param name="name">The name of the connection string to retrieve. Defaults to "localhost".</param>
         /// <returns>The specified connection string.</returns>
-        public string GetConnectionString(string name = "localhost") => _configuration.GetConnectionString(name);
-        public string GetFileLogLevel() => _configuration["Logging:LogLevel:File"];
-        public string GetConsoleLogLevel() => _configuration["Logging:LogLevel:Console"];
+        public string? GetConnectionString(string name = "localhost")
+        {
+            Logger.Trace($"Retrieving connection string for: {name}");
+            string? connectionString = _configuration.GetConnectionString(name);
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                Logger.Warn($"Connection string for '{name}' is null or empty.");
+            }
+            else
+            {
+                Logger.Trace($"Connection string for '{name}' successfully retrieved.");
+            }
+
+            return connectionString;
+        }
+
+        /// <summary>
+        /// Retrieves the file log level from the configuration.
+        /// </summary>
+        /// <returns>The file log level as a string.</returns>
+        public string? GetFileLogLevel()
+        {
+            Logger.Trace("Retrieving file log level");
+            string? loglevel = _configuration["Logging:LogLevel:File"];
+            if (string.IsNullOrEmpty(loglevel))
+            {
+                Logger.Warn("File log level is null or empty.");
+            }
+            return _configuration["Logging:LogLevel:File"];
+        }
+
+        /// <summary>
+        /// Retrieves the console log level from the configuration.
+        /// </summary>
+        /// <returns>The console log level as a string.</returns>
+        public string? GetConsoleLogLevel()
+        {
+            Logger.Trace("Retrieving console log level");
+            string? loglevel = _configuration["Logging:LogLevel:Console"];
+            if (string.IsNullOrEmpty(loglevel))
+            {
+                Logger.Warn("Console log level is null or empty.");
+            }
+            return _configuration["Logging:LogLevel:Console"];
+        }
     }
 }
 
