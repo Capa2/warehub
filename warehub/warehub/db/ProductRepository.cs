@@ -23,7 +23,8 @@ namespace warehub.db
             {
                 { "name", product.Name },
                 { "price", product.Price },
-                { "id", product.Id }
+                { "id", product.Id },
+                { "amount", product.Amount }
             };
             bool status = _cRUDService.Create("products", parameters);
             var returnObject = new GenericResponseDTO<Product>(product)
@@ -59,7 +60,7 @@ namespace warehub.db
             var (status, products) = _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
             List<Product> listOfProducts = ConvertToProducts(products);
             
-            Product product = listOfProducts.FirstOrDefault(p => p.Id == id);
+            var product = listOfProducts.FirstOrDefault(p => p.Id == id);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status
@@ -72,7 +73,8 @@ namespace warehub.db
             var updateParams = new Dictionary<string, object>
             {
                 { "name", product.Name },
-                { "price", product.Price }
+                { "price", product.Price },
+                { "amount", product.Amount }
             };
             bool status = _cRUDService.Update("products", updateParams, "id", product.Id);
 
@@ -117,9 +119,18 @@ namespace warehub.db
                     Console.WriteLine("Skipping product due to invalid or missing 'price'.");
                     continue;
                 }
+                int amount;
+                if (productDict.ContainsKey("Amount") && productDict["Amount"] is int)
+                {
+                    amount = (int)productDict["Amount"];
+                }
+                else
+                {
+                    continue;
+                }
 
                 // Create a new Product instance
-                var product = ProductFactory.CreateProduct(id, name, price);
+                var product = ProductFactory.CreateProduct(id, name, price, amount);
                 productList.Add(product);
 
                 Console.WriteLine($"Added product: {product}");

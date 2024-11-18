@@ -5,7 +5,8 @@ USE warehub;
 CREATE TABLE products (
     id CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL
+    price DECIMAL(10, 2) NOT NULL,
+    Amount INT NOT NULL
 );
 
 INSERT INTO products VALUES('d3f3f9c4-34c3-4f3b-bc99-8129e54f26d1','Red T-shirt', 20.00);
