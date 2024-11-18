@@ -14,19 +14,19 @@ namespace warehub.repository
             var productList = new List<Product>();
             foreach (var productDict in products)
             {
-                if (!productDict.TryGetValue("id", out var idObj) || idObj is not Guid id)
+                if (!productDict.TryGetValue("ID", out var idObj) || idObj is not Guid id)
                 {
                     Console.WriteLine("Skipping product due to invalid or missing 'id'.");
                     continue;
                 }
 
-                if (!productDict.TryGetValue("name", out var nameObj) || nameObj is not string name)
+                if (!productDict.TryGetValue("Name", out var nameObj) || nameObj is not string name)
                 {
                     Console.WriteLine("Skipping product due to invalid or missing 'name'.");
                     continue;
                 }
 
-                if (!productDict.TryGetValue("price", out var priceObj) || priceObj is not decimal price)
+                if (!productDict.TryGetValue("Price", out var priceObj) || priceObj is not decimal price)
                 {
                     Console.WriteLine("Skipping product due to invalid or missing 'price'.");
                     continue;

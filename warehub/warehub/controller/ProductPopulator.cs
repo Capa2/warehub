@@ -37,7 +37,12 @@ namespace warehub.controller
                 foreach (var product in products)
                 {
                     productService.AddProduct(product);
-                    Console.WriteLine($"Name: {product.Name}, Price: {product.Price}, Amount: {product.Amount}");
+                }
+                var productsReturned = productService.GetAllProducts();
+                if (productsReturned != null)
+                {
+                    var productToUpdate = productsReturned.FirstOrDefault();
+                    var result = productService.UpdateProduct(productToUpdate);
                 }
             }
             catch (Exception ex)
