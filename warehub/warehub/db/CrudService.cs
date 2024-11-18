@@ -223,6 +223,14 @@ namespace warehub.db
                         { "price", typeof(decimal) }
                     }
                 },
+                {
+                    "test_table",
+                    new Dictionary<string, Type>
+                    {
+                        { "id", typeof(Guid) },
+                        { "name", typeof(string) }
+                    }
+                },
                 // Add mappings for additional tables as needed
                 {
                     "another_table",
