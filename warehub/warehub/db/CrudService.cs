@@ -2,23 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using MySql.Data.MySqlClient;
-using ZstdSharp;
-using warehub.services;
 using NLog;
+using warehub.db.utils;
 
 namespace warehub.db
 {
+    /// <summary>
+    /// Handles CRUD (Create, Read, Update, Delete) operations on a database table.
+    /// </summary>
     public class CRUDService
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private readonly MySqlConnection _connection;
+        private readonly QueryExecutor _queryExecutor;
 
-        // Primary constructor accepting MySqlConnection instance from DbConnection
-        public CRUDService(MySqlConnection connection) => _connection = connection;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CRUDService"/> class.
+        /// </summary>
+        /// <param name="connection">An active MySQL database connection.</param>
+        public CRUDService(MySqlConnection connection)
+        {
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _queryExecutor = new QueryExecutor(connection);
+        }
 
         /// <summary>
         /// Inserts a new entry into the specified table.
         /// </summary>
+        /// <param name="table">The name of the table.</param>
+        /// <param name="parameters">A dictionary containing column names and their values.</param>
+        /// <returns>True if the operation is successful; otherwise, false.</returns>
         public bool Create(string table, Dictionary<string, object> parameters)
         {
             try
@@ -27,7 +40,7 @@ namespace warehub.db
                 var values = string.Join(", ", parameters.Keys.Select(k => $"@{k}"));
                 string query = $"INSERT INTO {table} ({columns}) VALUES ({values})";
 
-                if (ExecuteNonQuery(query, parameters, $"Item created in table '{table}' with values: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}."))
+                if (_queryExecutor.ExecuteNonQuery(query, parameters, $"Item created in table '{table}' with values: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}."))
                 {
                     Logger.Debug($"Create operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
                     return true;
@@ -41,10 +54,12 @@ namespace warehub.db
             }
         }
 
-
         /// <summary>
         /// Reads entries from the specified table with optional filtering.
         /// </summary>
+        /// <param name="table">The name of the table.</param>
+        /// <param name="parameters">Optional filtering criteria as a dictionary of column names and values.</param>
+        /// <returns>A tuple containing a success flag and a list of retrieved rows as dictionaries.</returns>
         public (bool, List<Dictionary<string, object>>) Read(string table, Dictionary<string, object> parameters)
         {
             try
@@ -55,11 +70,7 @@ namespace warehub.db
                     return (false, null); // Graceful failure
                 }
 
-                if (!TableTypeRegistry.TableColumnMappings.TryGetValue(table, out var columnTypeMapping))
-                {
-                    Logger.Error($"No type mapping found for table: {table}");
-                    return (false, null); // Graceful failure
-                }
+                var columnTypeMapping = TableTypeUtility.GetColumnTypeMapping(table);
 
                 string whereClause = parameters.Any()
                     ? "WHERE " + string.Join(" AND ", parameters.Keys.Select(k => $"{k} = @{k}"))
@@ -68,7 +79,7 @@ namespace warehub.db
                 string query = $"SELECT * FROM {table} {whereClause}";
                 Logger.Trace($"Generated Query for Read: {query}");
 
-                var (status, results) = ExecuteQuery(query, parameters, $"Data retrieved from table '{table}'.", columnTypeMapping);
+                var (status, results) = _queryExecutor.ExecuteQuery(query, parameters, $"Data retrieved from table '{table}'.", columnTypeMapping);
 
                 if (status)
                 {
@@ -92,10 +103,14 @@ namespace warehub.db
             }
         }
 
-
         /// <summary>
         /// Updates an existing entry in the specified table.
         /// </summary>
+        /// <param name="table">The name of the table.</param>
+        /// <param name="parameters">A dictionary containing column names and their updated values.</param>
+        /// <param name="idColumn">The column name for identifying the row to update.</param>
+        /// <param name="idValue">The value of the identifying column.</param>
+        /// <returns>True if the operation is successful; otherwise, false.</returns>
         public bool Update(string table, Dictionary<string, object> parameters, string idColumn, object idValue)
         {
             try
@@ -105,7 +120,7 @@ namespace warehub.db
 
                 parameters[idColumn] = idValue;
 
-                if (ExecuteNonQuery(query, parameters, $"Item updated successfully in table '{table}' with {idColumn}={idValue}."))
+                if (_queryExecutor.ExecuteNonQuery(query, parameters, $"Item updated successfully in table '{table}' with {idColumn}={idValue}."))
                 {
                     Logger.Debug($"Update operation successful for table '{table}'. Parameters: {string.Join(", ", parameters.Select(p => $"{p.Key}={p.Value}"))}.");
                     return true;
@@ -119,10 +134,13 @@ namespace warehub.db
             }
         }
 
-
         /// <summary>
         /// Deletes an entry from the specified table.
         /// </summary>
+        /// <param name="table">The name of the table.</param>
+        /// <param name="idColumn">The column name for identifying the row to delete.</param>
+        /// <param name="idValue">The value of the identifying column.</param>
+        /// <returns>True if the operation is successful; otherwise, false.</returns>
         public bool Delete(string table, string idColumn, object idValue)
         {
             try
@@ -130,7 +148,7 @@ namespace warehub.db
                 string query = $"DELETE FROM {table} WHERE {idColumn} = @{idColumn}";
                 var parameters = new Dictionary<string, object> { { idColumn, idValue } };
 
-                if (ExecuteNonQuery(query, parameters, $"Item deleted successfully in table '{table}' with {idColumn}={idValue}."))
+                if (_queryExecutor.ExecuteNonQuery(query, parameters, $"Item deleted successfully in table '{table}' with {idColumn}={idValue}."))
                 {
                     Logger.Debug($"Delete operation successful for table '{table}'. {idColumn}={idValue}.");
                     return true;
@@ -143,152 +161,5 @@ namespace warehub.db
                 return false;
             }
         }
-
-
-        /// <summary>
-        /// Executes a non-query command such as INSERT, UPDATE, or DELETE.
-        /// </summary>
-        private bool ExecuteNonQuery(string query, Dictionary<string, object> parameters, string successMessage, bool commitTransaction = true)
-        {
-            MySqlTransaction transaction = null;
-
-            try
-            {
-                transaction = _connection.BeginTransaction();
-
-                using (var command = new MySqlCommand(query, _connection, transaction))
-                {
-                    foreach (var param in parameters)
-                    {
-                        command.Parameters.AddWithValue($"@{param.Key}", param.Value);
-                    }
-
-                    int affectedRows = command.ExecuteNonQuery();
-                    if (affectedRows > 0 && commitTransaction)
-                    {
-                        transaction.Commit();
-                        Logger.Trace($"SuccessMessage: ({successMessage})");
-                        return true;
-                    }
-                    else
-                    {
-                        transaction.Rollback();
-                        Logger.Warn($"Transaction rolled back for query: {query}");
-                        return false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                transaction?.Rollback();
-                Logger.Error(ex, $"SQL Error in ExecuteNonQuery. Query: {query}");
-                return false;
-            }
-            finally
-            {
-                transaction?.Dispose();
-            }
-        }
-
-
-
-        /// <summary>
-        /// Executes a query command and GETS results as a list of dictionaries.
-        /// </summary>
-        private (bool, List<Dictionary<string, object>>) ExecuteQuery(string query, Dictionary<string, object> parameters, string successMessage, Dictionary<string, Type> columnTypeMapping)
-        {
-            var results = new List<Dictionary<string, object>>();
-            bool status = false;
-
-            try
-            {
-                using (var command = new MySqlCommand(query, _connection))
-                {
-                    foreach (var param in parameters)
-                    {
-                        var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
-                        command.Parameters.AddWithValue($"@{param.Key}", value);
-                    }
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var row = new Dictionary<string, object>();
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                string columnName = reader.GetName(i);
-                                object value = reader.GetValue(i);
-
-                                if (columnTypeMapping.TryGetValue(columnName, out var targetType))
-                                {
-                                    value = ConvertToType(value, targetType);
-                                }
-
-                                row[columnName] = value;
-                            }
-                            results.Add(row);
-                        }
-                    }
-
-                    Logger.Trace($"SuccessMessage: ({successMessage})");
-                    status = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"SQL Error in ExecuteQuery. Query: {query}");
-            }
-
-            return (status, results);
-        }
-
-
-        public static class TableTypeRegistry
-        {
-            public static readonly Dictionary<string, Dictionary<string, Type>> TableColumnMappings = new()
-            {
-                {
-                    "products", // Table name
-                    new Dictionary<string, Type>
-                    {
-                        { "id", typeof(Guid) },
-                        { "name", typeof(string) },
-                        { "price", typeof(decimal) }
-                    }
-                },
-                {
-                    "test_table",
-                    new Dictionary<string, Type>
-                    {
-                        { "id", typeof(Guid) },
-                        { "name", typeof(string) }
-                    }
-                },
-                // Add mappings for additional tables as needed
-                {
-                    "another_table",
-                    new Dictionary<string, Type>
-                    {
-                        { "column1", typeof(int) },
-                        { "column2", typeof(DateTime) }
-                    }
-                }
-            };
-        }
-
-        private object ConvertToType(object value, Type targetType)
-        {
-            if (value == DBNull.Value)
-                return null;
-
-            if (targetType == typeof(Guid))
-            {
-                return Guid.Parse(value.ToString());
-            }
-
-            return Convert.ChangeType(value, targetType);
-        }
-
     }
 }
