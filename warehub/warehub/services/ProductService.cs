@@ -9,10 +9,10 @@ using warehub.services.interfaces;
 
 namespace warehub.services
 {
-    public class ProductService(ProductRepository productRepository) : IProductSerivce
+    public class ProductService(IProductRepository productRepository) : IProductSerivce
     {
 
-        private readonly ProductRepository _productRepository = productRepository;
+        private readonly IProductRepository _productRepository = productRepository;
 
         public List<Product>? GetAllProducts()
         {

@@ -8,7 +8,7 @@ using warehub.services.interfaces;
 
 namespace warehub.repository
 {
-    public class ProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly CRUDService _cRUDService;
 
