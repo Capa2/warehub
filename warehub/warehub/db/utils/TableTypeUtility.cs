@@ -55,11 +55,13 @@ namespace warehub.db.utils
 
             try
             {
-                if (targetType == typeof(Guid))
+                // Handle Guid conversion from string
+                if (targetType == typeof(Guid) && value is string stringValue)
                 {
-                    return Guid.Parse(value.ToString());
+                    return Guid.Parse(stringValue);
                 }
 
+                // Convert to the target type
                 return Convert.ChangeType(value, targetType);
             }
             catch (Exception ex)
@@ -67,6 +69,7 @@ namespace warehub.db.utils
                 throw new InvalidOperationException($"Failed to convert value '{value}' to type '{targetType.FullName}'.", ex);
             }
         }
+
 
         /// <summary>
         /// Gets the column type mapping for the specified table.

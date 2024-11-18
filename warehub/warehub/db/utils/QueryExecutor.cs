@@ -55,7 +55,8 @@ namespace warehub.db.utils
                     if (affectedRows > 0 && commitTransaction)
                     {
                         transaction.Commit();
-                        Logger.Debug(successMessage);
+                        Logger.Trace($"Transaction committed for query: {query}");
+                        Logger.Debug($"Success Message: {successMessage}");
                         return true;
                     }
                     else
@@ -97,9 +98,14 @@ namespace warehub.db.utils
             var results = new List<Dictionary<string, object>>();
             bool status = false;
 
+            MySqlTransaction transaction = null;
+
             try
             {
-                using (var command = new MySqlCommand(query, _connection))
+                // Begin a transaction to ensure data consistency
+                transaction = _connection.BeginTransaction();
+
+                using (var command = new MySqlCommand(query, _connection, transaction))
                 {
                     // Add parameters to the query
                     foreach (var param in parameters)
@@ -133,17 +139,25 @@ namespace warehub.db.utils
                         }
                     }
 
+                    // Commit the transaction after successfully reading the data
+                    transaction.Commit();
                     Logger.Debug(successMessage);
                     status = true;
                 }
             }
             catch (Exception ex)
             {
+                transaction?.Rollback();
                 Logger.Error(ex, $"SQL Error in ExecuteQuery. Query: {query}");
+            }
+            finally
+            {
+                transaction?.Dispose();
             }
 
             return (status, results);
         }
+
 
         /// <summary>
         /// Converts a database value to a specified .NET type.
