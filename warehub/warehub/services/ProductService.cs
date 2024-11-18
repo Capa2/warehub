@@ -13,13 +13,13 @@ namespace warehub.services
     public class ProductService : IProductSerivce
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly ProductRepository _productRepository;
+        private readonly IProductRepository _productRepository;
 
         /// <summary>
         /// Initializes a new instance of the ProductService class.
         /// </summary>
         /// <param name="productRepository">The product repository to be used for data access operations.</param>
-        public ProductService(ProductRepository productRepository)
+        public ProductService(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
