@@ -8,10 +8,10 @@ namespace warehub.model
     {
         public Guid Id { get; }
         public string Name { get; }
-        public int Price { get; }
+        public decimal Price { get; }
         public int Amount { get; }
 
-        public Product(string name, int price, int amount)
+        public Product(string name, decimal price, int amount)
         {
             Id = GuidService.GenerateId();
             Name = name;
@@ -19,7 +19,7 @@ namespace warehub.model
             Amount = amount;
         }
 
-        public Product(Guid id, string name, int price, int amount)
+        public Product(Guid id, string name, decimal price, int amount)
         {
             Id = id;
             Name = name;

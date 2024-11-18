@@ -23,7 +23,8 @@ namespace warehub.db
             {
                 { "name", product.Name },
                 { "price", product.Price },
-                { "id", product.Id }
+                { "id", product.Id },
+                { "amount", product.Amount }
             };
             bool status = _cRUDService.Create("Products", parameters);
             var returnObject = new GenericResponseDTO<Product>(product)
@@ -72,7 +73,8 @@ namespace warehub.db
             var updateParams = new Dictionary<string, object>
             {
                 { "name", product.Name },
-                { "price", product.Price }
+                { "price", product.Price },
+                { "amount", product.Amount }
             };
             bool status = _cRUDService.Update("Products", updateParams, "id", product.Id);
 

@@ -5,7 +5,8 @@ USE Warehub;
 CREATE TABLE Products (
     ID CHAR(36) PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
-    Price DECIMAL(10, 2) NOT NULL
+    Price DECIMAL(10, 2) NOT NULL,
+    Amount INT NOT NULL
 );
 
 
