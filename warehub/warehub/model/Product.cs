@@ -1,11 +1,12 @@
 ﻿using System;
 using warehub.model.interfaces;
 using warehub.services;
-
+using NLog;
 namespace warehub.model
 {
     public class Product : IProduct
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public Guid Id { get; }
         public string Name { get; }
         public decimal Price { get; }
@@ -21,10 +22,12 @@ namespace warehub.model
 
         public Product(Guid id, string name, decimal price, int amount)
         {
+            
             Id = id;
             Name = name;
             Price = price;
             Amount = amount;
+            Logger.Trace("Initialized " + this.ToString());
         }
 
         public override string ToString()

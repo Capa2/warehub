@@ -26,7 +26,7 @@ namespace warehub.db
                 { "id", product.Id },
                 { "amount", product.Amount }
             };
-            bool status = _cRUDService.Create("Products", parameters);
+            bool status = _cRUDService.Create("products", parameters);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status
@@ -36,7 +36,7 @@ namespace warehub.db
 
         public GenericResponseDTO<Guid> Delete(Guid id)
         {
-            bool status = _cRUDService.Delete("Products", "id", id);
+            bool status = _cRUDService.Delete("products", "id", id);
             var returnObject = new GenericResponseDTO<Guid>(id)
             {
                 IsSuccess = status
@@ -46,7 +46,7 @@ namespace warehub.db
 
         public GenericResponseDTO<List<Product>> GetAll()
         {
-            var (status, products) = _cRUDService.Read("Products", new Dictionary<string, object>());
+            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object>());
             List<Product> listOfProducts = ConvertToProducts(products);
             var returnObject = new GenericResponseDTO<List<Product>>(listOfProducts)
             {
@@ -57,7 +57,7 @@ namespace warehub.db
 
         public GenericResponseDTO<Product> GetById(Guid id)
         {
-            var (status, products) = _cRUDService.Read("Products", new Dictionary<string, object> { { "id", id } });
+            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
             List<Product> listOfProducts = ConvertToProducts(products);
             
             var product = listOfProducts.FirstOrDefault(p => p.Id == id);
@@ -76,7 +76,7 @@ namespace warehub.db
                 { "price", product.Price },
                 { "amount", product.Amount }
             };
-            bool status = _cRUDService.Update("Products", updateParams, "id", product.Id);
+            bool status = _cRUDService.Update("products", updateParams, "id", product.Id);
 
             var returnObject = new GenericResponseDTO<Product>(product)
             {
@@ -92,33 +92,31 @@ namespace warehub.db
 
             foreach (var productDict in products)
             {
-                Guid id;
-                if (productDict.ContainsKey("ID") && productDict["ID"] is Guid)
+                // Log the contents of productDict for debugging
+                Console.WriteLine("Processing product dictionary:");
+                foreach (var kvp in productDict)
                 {
-                    id = (Guid)productDict["ID"];
+                    Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}, Type: {kvp.Value?.GetType()}");
                 }
-                else
+
+                // Parse the 'id' field
+                if (!productDict.ContainsKey("id") || productDict["id"] is not Guid id)
                 {
+                    Console.WriteLine("Skipping product due to invalid or missing 'id'.");
                     continue;
                 }
 
-                string name;
-                if (productDict.ContainsKey("Name") && productDict["Name"] is string)
+                // Parse the 'name' field
+                if (!productDict.ContainsKey("name") || productDict["name"] is not string name)
                 {
-                    name = (string)productDict["Name"];
-                }
-                else
-                {
+                    Console.WriteLine("Skipping product due to invalid or missing 'name'.");
                     continue;
                 }
 
-                int price;
-                if (productDict.ContainsKey("Price") && productDict["Price"] is int)
+                // Parse the 'price' field
+                if (!productDict.ContainsKey("price") || productDict["price"] is not decimal price)
                 {
-                    price = (int)productDict["Price"];
-                }
-                else
-                {
+                    Console.WriteLine("Skipping product due to invalid or missing 'price'.");
                     continue;
                 }
                 int amount;
@@ -131,12 +129,15 @@ namespace warehub.db
                     continue;
                 }
 
-                // Create new Product instance with parsed values
-                var product = ProductFactory.CreateProduct(id, name, price, amount);
+                // Create a new Product instance
+                var product = ProductFactory.CreateProduct(id, name, price);
                 productList.Add(product);
+
+                Console.WriteLine($"Added product: {product}");
             }
 
             return productList;
         }
+
     }
 }

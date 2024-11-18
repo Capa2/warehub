@@ -6,16 +6,16 @@ using MySql.Data.MySqlClient;
 
 namespace warehub.Tests.db
 {
-    public class CRUDServiceIntegrationTests : IDisposable
+    public class DatabaseFixture : IDisposable
     {
-        private readonly CRUDService _crudService;
+        public CRUDService CrudService { get; }
 
-        public CRUDServiceIntegrationTests()
+        public DatabaseFixture()
         {
-            // Initialize CRUD service with the MySQL connection from DbConnection
-            _crudService = new CRUDService(DbConnection.GetConnection());
+            // Initialize the CRUD service with the MySQL connection
+            CrudService = new CRUDService(DbConnection.GetConnection());
 
-            // Create the test table if it doesn't exist
+            // Create the test table once
             CreateTestTable();
         }
 
@@ -24,27 +24,14 @@ namespace warehub.Tests.db
             try
             {
                 string createTableQuery = @"
-                CREATE TABLE IF NOT EXISTS test_table (
-                    id INT PRIMARY KEY,
-                    name VARCHAR(50)
-                );";
+            CREATE TABLE IF NOT EXISTS test_table (
+                id CHAR(36) PRIMARY KEY,
+                name VARCHAR(50)
+            );";
 
                 using (var command = new MySqlCommand(createTableQuery, DbConnection.GetConnection()))
                 {
                     command.ExecuteNonQuery();
-                }
-
-                // Verify if the table was created by checking if it exists in the database
-                string checkTableQuery = "SHOW TABLES LIKE 'test_table'";
-                using (var command = new MySqlCommand(checkTableQuery, DbConnection.GetConnection()))
-                {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (!reader.HasRows)
-                        {
-                            throw new InvalidOperationException("Failed to create test_table. Tests cannot proceed.");
-                        }
-                    }
                 }
             }
             catch (Exception ex)
@@ -54,85 +41,9 @@ namespace warehub.Tests.db
             }
         }
 
-        [Fact]
-        public void Create_ShouldInsertDataIntoDatabase()
-        {
-            // Arrange
-            var parameters = new Dictionary<string, object>
-            {
-                { "@id", 1 },
-                { "@name", "Test Item" }
-            };
-
-            // Act
-            bool createStatus = _crudService.Create("test_table", parameters);
-
-            // Assert Create status
-            Assert.True(createStatus, "Failed to create item in database.");
-
-            // Retrieve and assert the inserted record
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "@id", 1 } });
-            Assert.True(status, "Read operation failed.");
-            Assert.Single(result);
-            Assert.Equal("Test Item", result[0]["name"]);
-        }
-
-        [Fact]
-        public void Read_ShouldRetrieveDataFromDatabase()
-        {
-            // Arrange: Insert data to read later
-            _crudService.Create("test_table", new Dictionary<string, object> { { "@id", 2 }, { "@name", "Read Test" } });
-
-            // Act
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "@id", 2 } });
-
-            // Assert
-            Assert.True(status, "Read operation failed.");
-            Assert.Single(result);
-            Assert.Equal("Read Test", result[0]["name"]);
-        }
-
-        [Fact]
-        public void Update_ShouldModifyExistingData()
-        {
-            // Arrange
-            _crudService.Create("test_table", new Dictionary<string, object> { { "@id", 3 }, { "@name", "Old Name" } });
-            var updateParameters = new Dictionary<string, object> { { "@name", "New Name" } };
-
-            // Act
-            bool updateStatus = _crudService.Update("test_table", updateParameters, "id", 3);
-
-            // Assert Update status
-            Assert.True(updateStatus, "Update operation failed.");
-
-            // Verify the update with a read
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "@id", 3 } });
-            Assert.True(status, "Read operation failed.");
-            Assert.Single(result);
-            Assert.Equal("New Name", result[0]["name"]);
-        }
-
-        [Fact]
-        public void Delete_ShouldRemoveDataFromDatabase()
-        {
-            // Arrange
-            _crudService.Create("test_table", new Dictionary<string, object> { { "@id", 4 }, { "@name", "To Delete" } });
-
-            // Act
-            bool deleteStatus = _crudService.Delete("test_table", "id", 4);
-
-            // Assert Delete status
-            Assert.True(deleteStatus, "Delete operation failed.");
-
-            // Confirm deletion with a read
-            var (status, result) = _crudService.Read("test_table", new Dictionary<string, object> { { "@id", 4 } });
-            Assert.True(status, "Read operation failed.");
-            Assert.Empty(result);
-        }
-
         public void Dispose()
         {
-            // Clean up by dropping the test table
+            // Drop the test table once after all tests
             string dropTableQuery = "DROP TABLE IF EXISTS test_table";
             using (var command = new MySqlCommand(dropTableQuery, DbConnection.GetConnection()))
             {
@@ -141,6 +52,60 @@ namespace warehub.Tests.db
 
             // Disconnect from the database
             DbConnection.Disconnect();
+        }
+    }
+
+
+    public class CRUDServiceIntegrationTests : IClassFixture<DatabaseFixture>
+    {
+        private readonly CRUDService _crudService;
+
+        public CRUDServiceIntegrationTests(DatabaseFixture fixture)
+        {
+            _crudService = fixture.CrudService;
+        }
+
+        [Fact]
+        public void CRUDOperations_ShouldPerformAllSteps()
+        {
+            // Generate a new GUID for the test
+            var testId = Guid.NewGuid();
+
+            // Step 1: Create
+            var createParameters = new Dictionary<string, object>
+        {
+            { "id", testId.ToString() },
+            { "name", "Test Item" }
+        };
+
+            bool createStatus = _crudService.Create("test_table", createParameters);
+            Assert.True(createStatus, "Failed to create item in database.");
+
+            // Verify creation
+            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
+            Assert.True(readStatus, "Read operation failed after creation.");
+            Assert.Single(readResult);
+            Assert.Equal("Test Item", readResult[0]["name"]);
+
+            // Step 2: Update
+            var updateParameters = new Dictionary<string, object> { { "name", "Updated Item" } };
+            bool updateStatus = _crudService.Update("test_table", updateParameters, "id", testId.ToString());
+            Assert.True(updateStatus, "Update operation failed.");
+
+            // Verify update
+            var (readAfterUpdateStatus, readAfterUpdateResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
+            Assert.True(readAfterUpdateStatus, "Read operation failed after update.");
+            Assert.Single(readAfterUpdateResult);
+            Assert.Equal("Updated Item", readAfterUpdateResult[0]["name"]);
+
+            // Step 3: Delete
+            bool deleteStatus = _crudService.Delete("test_table", "id", testId.ToString());
+            Assert.True(deleteStatus, "Delete operation failed.");
+
+            // Verify deletion
+            var (readAfterDeleteStatus, readAfterDeleteResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
+            Assert.True(readAfterDeleteStatus, "Read operation failed after deletion.");
+            Assert.Empty(readAfterDeleteResult);
         }
     }
 }

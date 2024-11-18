@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using NLog;
 using warehub;
 
 
@@ -6,6 +7,7 @@ namespace warehub.db
 {
     public class DbConnection
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private static DbConnection? _instance;
         private readonly MySqlConnection _connection;
 
@@ -22,7 +24,9 @@ namespace warehub.db
                 if (_instance == null)
                 {
                     Config config = Config.GetInstance();
-                    _instance = new DbConnection(config.GetConnectionString());
+                    string connectionString = config.GetConnectionString();
+                    _instance = new DbConnection(connectionString);
+                    Logger.Info("DbConnection singleton instance created.");
                 }
                 return _instance;
             }
@@ -46,12 +50,16 @@ namespace warehub.db
                 if (_connection.State != System.Data.ConnectionState.Open)
                 {
                     _connection.Open();
-                    Console.WriteLine("Database connection opened.");
+                    Logger.Info("Database connection successfully opened.");
+                }
+                else
+                {
+                    Logger.Debug("Database connection is already open.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error connecting to database: " + ex.Message);
+                Logger.Error(ex, "Error occurred while connecting to the database.");
             }
         }
 
@@ -65,12 +73,16 @@ namespace warehub.db
                 if (Instance._connection.State != System.Data.ConnectionState.Closed)
                 {
                     Instance._connection.Close();
-                    Console.WriteLine("Database connection closed.");
+                    Logger.Info("Database connection successfully closed.");
+                }
+                else
+                {
+                    Logger.Debug("Database connection is already closed.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error disconnecting from database: " + ex.Message);
+                Logger.Error(ex, "Error occurred while disconnecting from the database.");
             }
         }
     }
