@@ -1,0 +1,482 @@
+[
+  {
+    "Name": "SmartPhone X",
+    "Price": 699,
+    "Amount": 50
+  },
+  {
+    "Name": "Laptop Pro 15",
+    "Price": 1299,
+    "Amount": 30
+  },
+  {
+    "Name": "Wireless Earbuds",
+    "Price": 99,
+    "Amount": 200
+  },
+  {
+    "Name": "4K Smart TV 50\"",
+    "Price": 499,
+    "Amount": 25
+  },
+  {
+    "Name": "Gaming Console",
+    "Price": 399,
+    "Amount": 40
+  },
+  {
+    "Name": "Bluetooth Speaker",
+    "Price": 79,
+    "Amount": 150
+  },
+  {
+    "Name": "Action Camera",
+    "Price": 299,
+    "Amount": 60
+  },
+  {
+    "Name": "External SSD 1TB",
+    "Price": 129,
+    "Amount": 75
+  },
+  {
+    "Name": "Smartwatch Series 7",
+    "Price": 349,
+    "Amount": 120
+  },
+  {
+    "Name": "Drone 1080p",
+    "Price": 499,
+    "Amount": 20
+  },
+  {
+    "Name": "Air Fryer Pro",
+    "Price": 199,
+    "Amount": 80
+  },
+  {
+    "Name": "Robotic Vacuum Cleaner",
+    "Price": 399,
+    "Amount": 35
+  },
+  {
+    "Name": "Instant Pot Duo",
+    "Price": 129,
+    "Amount": 50
+  },
+  {
+    "Name": "Espresso Machine",
+    "Price": 499,
+    "Amount": 15
+  },
+  {
+    "Name": "2-Door Refrigerator",
+    "Price": 1199,
+    "Amount": 10
+  },
+  {
+    "Name": "Washing Machine",
+    "Price": 749,
+    "Amount": 12
+  },
+  {
+    "Name": "Microwave Oven",
+    "Price": 159,
+    "Amount": 30
+  },
+  {
+    "Name": "Portable Air Conditioner",
+    "Price": 399,
+    "Amount": 18
+  },
+  {
+    "Name": "Cordless Vacuum",
+    "Price": 299,
+    "Amount": 45
+  },
+  {
+    "Name": "Water Purifier",
+    "Price": 249,
+    "Amount": 25
+  },
+  {
+    "Name": "Men's Casual Shirt",
+    "Price": 29,
+    "Amount": 300
+  },
+  {
+    "Name": "Women's Summer Dress",
+    "Price": 39,
+    "Amount": 200
+  },
+  {
+    "Name": "Unisex Sneakers",
+    "Price": 59,
+    "Amount": 150
+  },
+  {
+    "Name": "Leather Wallet",
+    "Price": 45,
+    "Amount": 100
+  },
+  {
+    "Name": "Designer Sunglasses",
+    "Price": 149,
+    "Amount": 75
+  },
+  {
+    "Name": "Cotton Socks (Pack of 5)",
+    "Price": 15,
+    "Amount": 250
+  },
+  {
+    "Name": "Men's Formal Suit",
+    "Price": 249,
+    "Amount": 20
+  },
+  {
+    "Name": "Women's Winter Jacket",
+    "Price": 199,
+    "Amount": 50
+  },
+  {
+    "Name": "Sports Cap",
+    "Price": 25,
+    "Amount": 100
+  },
+  {
+    "Name": "Canvas Backpack",
+    "Price": 49,
+    "Amount": 75
+  },
+  {
+    "Name": "Digital Watch",
+    "Price": 89,
+    "Amount": 200
+  },
+  {
+    "Name": "Yoga Mat",
+    "Price": 29,
+    "Amount": 150
+  },
+  {
+    "Name": "Bluetooth Keyboard",
+    "Price": 59,
+    "Amount": 120
+  },
+  {
+    "Name": "Gaming Mouse",
+    "Price": 79,
+    "Amount": 180
+  },
+  {
+    "Name": "Smart Light Bulb",
+    "Price": 25,
+    "Amount": 300
+  },
+  {
+    "Name": "Noise-Canceling Headphones",
+    "Price": 199,
+    "Amount": 50
+  },
+  {
+    "Name": "Portable Power Bank",
+    "Price": 39,
+    "Amount": 250
+  },
+  {
+    "Name": "Wireless Charger",
+    "Price": 29,
+    "Amount": 200
+  },
+  {
+    "Name": "HD Projector",
+    "Price": 399,
+    "Amount": 20
+  },
+  {
+    "Name": "Electric Toothbrush",
+    "Price": 69,
+    "Amount": 100
+  },
+  {
+    "Name": "Hair Dryer",
+    "Price": 49,
+    "Amount": 120
+  },
+  {
+    "Name": "Fitness Tracker",
+    "Price": 99,
+    "Amount": 150
+  },
+  {
+    "Name": "Digital Camera",
+    "Price": 499,
+    "Amount": 30
+  },
+  {
+    "Name": "Portable Speaker",
+    "Price": 59,
+    "Amount": 180
+  },
+  {
+    "Name": "Electric Kettle",
+    "Price": 39,
+    "Amount": 80
+  },
+  {
+    "Name": "Blender",
+    "Price": 79,
+    "Amount": 90
+  },
+  {
+    "Name": "Iron",
+    "Price": 35,
+    "Amount": 60
+  },
+  {
+    "Name": "Table Lamp",
+    "Price": 29,
+    "Amount": 150
+  },
+  {
+    "Name": "Desk Organizer",
+    "Price": 19,
+    "Amount": 200
+  },
+  {
+    "Name": "Office Chair",
+    "Price": 159,
+    "Amount": 40
+  },
+  {
+    "Name": "Standing Desk",
+    "Price": 399,
+    "Amount": 20
+  },
+  {
+    "Name": "File Cabinet",
+    "Price": 129,
+    "Amount": 25
+  },
+  {
+    "Name": "Gaming Desk",
+    "Price": 199,
+    "Amount": 15
+  },
+  {
+    "Name": "Wireless Mouse",
+    "Price": 29,
+    "Amount": 300
+  },
+  {
+    "Name": "Monitor 24\"",
+    "Price": 159,
+    "Amount": 50
+  },
+  {
+    "Name": "Mechanical Keyboard",
+    "Price": 129,
+    "Amount": 60
+  },
+  {
+    "Name": "Graphic Tablet",
+    "Price": 249,
+    "Amount": 30
+  },
+  {
+    "Name": "Drawing Pencils Set",
+    "Price": 19,
+    "Amount": 100
+  },
+  {
+    "Name": "Acrylic Paint Set",
+    "Price": 49,
+    "Amount": 75
+  },
+  {
+    "Name": "Painting Easel",
+    "Price": 89,
+    "Amount": 30
+  },
+  {
+    "Name": "Leather Journal",
+    "Price": 25,
+    "Amount": 120
+  },
+  {
+    "Name": "Ceramic Coffee Mug",
+    "Price": 15,
+    "Amount": 200
+  },
+  {
+    "Name": "Travel Mug",
+    "Price": 29,
+    "Amount": 150
+  },
+  {
+    "Name": "Insulated Water Bottle",
+    "Price": 39,
+    "Amount": 180
+  },
+  {
+    "Name": "Camping Tent (4-Person)",
+    "Price": 199,
+    "Amount": 20
+  },
+  {
+    "Name": "Hiking Backpack",
+    "Price": 129,
+    "Amount": 30
+  },
+  {
+    "Name": "Sleeping Bag",
+    "Price": 89,
+    "Amount": 40
+  },
+  {
+    "Name": "Portable Grill",
+    "Price": 199,
+    "Amount": 15
+  },
+  {
+    "Name": "First Aid Kit",
+    "Price": 29,
+    "Amount": 120
+  },
+  {
+    "Name": "Tool Set",
+    "Price": 99,
+    "Amount": 50
+  },
+  {
+    "Name": "Cordless Drill",
+    "Price": 129,
+    "Amount": 30
+  },
+  {
+    "Name": "Lawn Mower",
+    "Price": 399,
+    "Amount": 10
+  },
+  {
+    "Name": "Garden Hose (50 ft)",
+    "Price": 49,
+    "Amount": 80
+  },
+  {
+    "Name": "Flower Pots (Set of 3)",
+    "Price": 25,
+    "Amount": 100
+  },
+  {
+    "Name": "Indoor Plant Stand",
+    "Price": 59,
+    "Amount": 50
+  },
+  {
+    "Name": "Outdoor Patio Chair",
+    "Price": 99,
+    "Amount": 25
+  },
+  {
+    "Name": "Dining Table (6-seater)",
+    "Price": 799,
+    "Amount": 10
+  },
+  {
+    "Name": "Bed Frame (Queen)",
+    "Price": 599,
+    "Amount": 20
+  },
+  {
+    "Name": "Mattress (Queen)",
+    "Price": 399,
+    "Amount": 15
+  },
+  {
+    "Name": "Wardrobe",
+    "Price": 999,
+    "Amount": 5
+  },
+  {
+    "Name": "Bookshelf",
+    "Price": 149,
+    "Amount": 25
+  },
+  {
+    "Name": "Sofa Set (3-Seater)",
+    "Price": 1199,
+    "Amount": 8
+  },
+  {
+    "Name": "Accent Chair",
+    "Price": 199,
+    "Amount": 20
+  },
+  {
+    "Name": "Wall Clock",
+    "Price": 49,
+    "Amount": 75
+  },
+  {
+    "Name": "Area Rug (5'x7')",
+    "Price": 149,
+    "Amount": 15
+  },
+  {
+    "Name": "Decorative Mirror",
+    "Price": 129,
+    "Amount": 20
+  },
+  {
+    "Name": "LED Strip Lights",
+    "Price": 29,
+    "Amount": 200
+  },
+  {
+    "Name": "Air Humidifier",
+    "Price": 79,
+    "Amount": 40
+  },
+  {
+    "Name": "Dehumidifier",
+    "Price": 149,
+    "Amount": 15
+  },
+  {
+    "Name": "Electric Scooter",
+    "Price": 599,
+    "Amount": 12
+  },
+  {
+    "Name": "Mountain Bike",
+    "Price": 499,
+    "Amount": 10
+  },
+  {
+    "Name": "Treadmill",
+    "Price": 799,
+    "Amount": 5
+  },
+  {
+    "Name": "Dumbbell Set",
+    "Price": 129,
+    "Amount": 30
+  },
+  {
+    "Name": "Yoga Ball",
+    "Price": 39,
+    "Amount": 80
+  },
+  {
+    "Name": "Foam Roller",
+    "Price": 29,
+    "Amount": 100
+  },
+  {
+    "Name": "Jump Rope",
+    "Price": 19,
+    "Amount": 150
+  }
+]

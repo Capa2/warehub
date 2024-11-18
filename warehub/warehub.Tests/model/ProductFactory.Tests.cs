@@ -8,23 +8,24 @@ using warehub.model;
 namespace warehub.Tests.model
 {
 
-        public class ProductFactoryTests
+    public class ProductFactoryTests
+    {
+        [Fact]
+        public void CreateProduct_ShouldCreateProductWithCorrectProperties()
         {
-            [Fact]
-            public void CreateProduct_WithNameAndPrice_ReturnsProductWithGivenValues()
-            {
-                // Arrange
-                string expectedName = "Sample Product";
-                int expectedPrice = 100;
+            // Arrange: Create the necessary data and mocks
+            var productName = "Smartphone X";
+            var productPrice = 699.99m;
+            var productAmount = 100;
 
-                // Act
-                Product result = ProductFactory.CreateProduct(expectedName, expectedPrice);
+            // SUT: Call the method we're testing (System Under Test)
+            var sut = ProductFactory.CreateProduct(productName, productPrice, productAmount);
 
-                // Assert
-                Assert.NotNull(result); // Ensure a product was created
-                Assert.Equal(expectedName, result.Name);
-                Assert.Equal(expectedPrice, result.Price);
-                Assert.NotEqual(Guid.Empty, result.Id); // Ensure a unique ID is generated
-            }
+            // Assert: Verify that the SUT behaves as expected
+            Assert.NotNull(sut);
+            Assert.Equal(productName, sut.Name);
+            Assert.Equal(productPrice, sut.Price);
+            Assert.Equal(productAmount, sut.Amount);
         }
+    }
 }

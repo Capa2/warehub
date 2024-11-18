@@ -2,32 +2,41 @@
 using System.Collections.Generic;
 using Xunit;
 using warehub.db;
+using warehub.db.utils;
 using MySql.Data.MySqlClient;
 
 namespace warehub.Tests.db
 {
+    /// <summary>
+    /// Sets up the database for integration tests and provides a shared instance of CRUDService.
+    /// </summary>
     public class DatabaseFixture : IDisposable
     {
         public CRUDService CrudService { get; }
 
         public DatabaseFixture()
         {
-            // Initialize the CRUD service with the MySQL connection
-            CrudService = new CRUDService(DbConnection.GetConnection());
+            // Initialize the CRUDService with the MySQL connection
+            var connection = DbConnection.GetConnection();
+            var queryExecutor = new QueryExecutor(connection); // New dependency
+            CrudService = new CRUDService(connection);
 
             // Create the test table once
             CreateTestTable();
         }
 
+        /// <summary>
+        /// Creates a test table used for integration tests.
+        /// </summary>
         private void CreateTestTable()
         {
             try
             {
                 string createTableQuery = @"
-            CREATE TABLE IF NOT EXISTS test_table (
-                id CHAR(36) PRIMARY KEY,
-                name VARCHAR(50)
-            );";
+                CREATE TABLE IF NOT EXISTS test_table (
+                    id CHAR(36) PRIMARY KEY,
+                    name VARCHAR(50)
+                );";
 
                 using (var command = new MySqlCommand(createTableQuery, DbConnection.GetConnection()))
                 {
@@ -41,25 +50,38 @@ namespace warehub.Tests.db
             }
         }
 
+        /// <summary>
+        /// Cleans up by dropping the test table and disconnecting the database connection.
+        /// </summary>
         public void Dispose()
         {
-            // Drop the test table once after all tests
-            string dropTableQuery = "DROP TABLE IF EXISTS test_table";
-            using (var command = new MySqlCommand(dropTableQuery, DbConnection.GetConnection()))
+            try
             {
-                command.ExecuteNonQuery();
+                string dropTableQuery = "DROP TABLE IF EXISTS test_table";
+                using (var command = new MySqlCommand(dropTableQuery, DbConnection.GetConnection()))
+                {
+                    command.ExecuteNonQuery();
+                }
             }
-
-            // Disconnect from the database
-            DbConnection.Disconnect();
+            finally
+            {
+                // Ensure database disconnection
+                DbConnection.Disconnect();
+            }
         }
     }
 
-
+    /// <summary>
+    /// Integration tests for CRUDService operations.
+    /// </summary>
     public class CRUDServiceIntegrationTests : IClassFixture<DatabaseFixture>
     {
         private readonly CRUDService _crudService;
 
+        /// <summary>
+        /// Initializes the test class with a shared instance of CRUDService from the fixture.
+        /// </summary>
+        /// <param name="fixture">The database fixture providing a shared CRUDService instance.</param>
         public CRUDServiceIntegrationTests(DatabaseFixture fixture)
         {
             _crudService = fixture.CrudService;
@@ -73,10 +95,10 @@ namespace warehub.Tests.db
 
             // Step 1: Create
             var createParameters = new Dictionary<string, object>
-        {
-            { "id", testId.ToString() },
-            { "name", "Test Item" }
-        };
+            {
+                { "id", testId.ToString() },
+                { "name", "Test Item" }
+            };
 
             bool createStatus = _crudService.Create("test_table", createParameters);
             Assert.True(createStatus, "Failed to create item in database.");

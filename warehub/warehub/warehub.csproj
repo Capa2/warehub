@@ -22,5 +22,11 @@
 		    <Exclude>appsettings.template.json</Exclude>
 	    </None>
     </ItemGroup>
+	
+    <ItemGroup>
+      <None Update="controller\ExampleProducts.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 
 </Project>
