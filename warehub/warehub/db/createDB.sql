@@ -6,5 +6,5 @@ CREATE TABLE products (
     id CHAR(36) UNIQUE NOT NULL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    Amount INT NOT NULL
+    amount INT NOT NULL
 );
