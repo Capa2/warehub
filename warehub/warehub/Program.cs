@@ -10,9 +10,8 @@ class Program
     {
         LoggerConfig.ConfigureLogging();
         var logger = LogManager.GetCurrentClassLogger();
-        logger.Info("Application started.");
-        
-        logger.Info("Populating...");
+        logger.Info("Program: Application started.");
+
         ProductPopulater.Populate();
         
         LogManager.Shutdown();
