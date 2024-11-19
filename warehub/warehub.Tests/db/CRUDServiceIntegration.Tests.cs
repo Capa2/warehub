@@ -8,22 +8,25 @@ namespace warehub.Tests.db
 {
     public class DatabaseFixture : IDisposable
     {
+        private readonly MySqlConnection _connection;
+
         public CRUDService CrudService { get; }
 
         public DatabaseFixture()
         {
-            // Use the test database connection
-            var connection = DbConnection.GetConnection("test");
-            CrudService = new CRUDService(connection);
+            // Use a dedicated connection for the test schema
+            _connection = new MySqlConnection(DbConnection.GetConnection("test").ConnectionString);
+            _connection.Open();
+            CrudService = new CRUDService(_connection);
 
-            // Ensure the test table exists in the test schema
-            EnsureTestTableExists(connection);
+            // Ensure the products table exists
+            EnsureTestTableExists();
         }
 
         /// <summary>
-        /// Ensures the test table exists before running tests.
+        /// Ensures the products table exists in the test schema.
         /// </summary>
-        private void EnsureTestTableExists(MySqlConnection connection)
+        private void EnsureTestTableExists()
         {
             try
             {
@@ -35,28 +38,27 @@ namespace warehub.Tests.db
                         amount INT NOT NULL
                     );";
 
-                using (var command = new MySqlCommand(createTableQuery, connection))
+                using (var command = new MySqlCommand(createTableQuery, _connection))
                 {
                     command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Failed to create test table. Check the test schema.", ex);
+                throw new InvalidOperationException("Failed to create products table. Check the test schema and connection.", ex);
             }
         }
 
         /// <summary>
-        /// Cleans up the database by dropping the test table.
+        /// Cleans up the database by dropping the products table.
         /// </summary>
         public void Dispose()
         {
             try
             {
-                // Clean up the test table
                 string dropTableQuery = "DROP TABLE IF EXISTS products";
 
-                using (var command = new MySqlCommand(dropTableQuery, DbConnection.GetConnection("test")))
+                using (var command = new MySqlCommand(dropTableQuery, _connection))
                 {
                     command.ExecuteNonQuery();
                 }
@@ -67,7 +69,8 @@ namespace warehub.Tests.db
             }
             finally
             {
-                DbConnection.Disconnect();
+                _connection.Close();
+                _connection.Dispose();
             }
         }
 
