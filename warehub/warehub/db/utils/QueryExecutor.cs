@@ -110,7 +110,17 @@ namespace warehub.db.utils
                     // Add parameters to the query
                     foreach (var param in parameters)
                     {
-                        var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
+                        object value;
+
+                        if (param.Key == "id" && param.Value is Guid guidValue)
+                        {
+                            value = GuidService.GuidToString(guidValue);
+                        }
+                        else
+                        {
+                            value = param.Value;
+                        }
+
                         command.Parameters.AddWithValue($"@{param.Key}", value);
                     }
 
