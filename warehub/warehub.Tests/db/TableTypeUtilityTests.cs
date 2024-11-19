@@ -11,12 +11,14 @@ namespace warehub.Tests.db.utils
         public void GetColumnTypeMapping_ShouldReturnMappingForValidTable()
         {
             // Act
-            var columnMapping = TableTypeUtility.GetColumnTypeMapping("test_table");
+            var columnMapping = TableTypeUtility.GetColumnTypeMapping("products");
 
             // Assert
             Assert.NotNull(columnMapping);
             Assert.Equal(typeof(Guid), columnMapping["id"]);
             Assert.Equal(typeof(string), columnMapping["name"]);
+            Assert.Equal(typeof(decimal), columnMapping["price"]);
+            Assert.Equal(typeof(int), columnMapping["amount"]);
         }
 
         [Fact]

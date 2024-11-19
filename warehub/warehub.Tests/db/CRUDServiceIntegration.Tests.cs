@@ -92,7 +92,7 @@ namespace warehub.Tests.db
                 { "id", _testId },
                 { "name", "Test Item" },
                 { "price", 199.99 },
-                { "amount", 100 },
+                { "amount", 100 }
             };
 
             // Act
@@ -163,7 +163,9 @@ namespace warehub.Tests.db
             var createParameters = new Dictionary<string, object>
             {
                 { "id", _testId },
-                { "name", "Test Item" }
+                { "name", "Test Item" },
+                { "price", 199.99 },
+                { "amount", 100 }
             };
 
             var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });

@@ -18,65 +18,73 @@ namespace warehub.Tests.db.utils
             _connection = DbConnection.GetConnection("test");
             _queryExecutor = new QueryExecutor(_connection);
 
-            // Ensure the test table exists
-            CreateTestTable();
+            // Ensure the products table exists
+            CreateProductsTable();
         }
 
         [Fact]
-        public void ExecuteNonQuery_ShouldInsertItem()
+        public void ExecuteNonQuery_ShouldInsertProduct()
         {
             // Arrange
-            string insertQuery = "INSERT INTO test_table (id, name) VALUES (@id, @name)";
+            string insertQuery = "INSERT INTO products (id, name, price, amount) VALUES (@id, @name, @price, @amount)";
             var parameters = new Dictionary<string, object>
             {
                 { "id", Guid.NewGuid() },
-                { "name", "Test Item" }
+                { "name", "Test Product" },
+                { "price", 19.99m },
+                { "amount", 100 }
             };
 
             // Act
             bool result = _queryExecutor.ExecuteNonQuery(insertQuery, parameters, "Insert succeeded.");
 
             // Assert
-            Assert.True(result, "Failed to insert item into the database.");
+            Assert.True(result, "Failed to insert product into the database.");
         }
 
         [Fact]
-        public void ExecuteQuery_ShouldRetrieveInsertedItem()
+        public void ExecuteQuery_ShouldRetrieveInsertedProduct()
         {
             // Arrange
             Guid testId = Guid.NewGuid();
-            string insertQuery = "INSERT INTO test_table (id, name) VALUES (@id, @name)";
+            string insertQuery = "INSERT INTO products (id, name, price, amount) VALUES (@id, @name, @price, @amount)";
             var insertParameters = new Dictionary<string, object>
             {
                 { "id", testId },
-                { "name", "Test Item" }
+                { "name", "Test Product" },
+                { "price", 19.99m },
+                { "amount", 100 }
             };
             _queryExecutor.ExecuteNonQuery(insertQuery, insertParameters, "Insert succeeded.");
 
-            string selectQuery = "SELECT * FROM test_table WHERE id = @id";
+            string selectQuery = "SELECT * FROM products WHERE id = @id";
             var selectParameters = new Dictionary<string, object>
             {
                 { "id", testId }
             };
 
             // Act
-            var (success, result) = _queryExecutor.ExecuteQuery(selectQuery, selectParameters, "Select succeeded.", TableTypeUtility.GetColumnTypeMapping("test_table"));
+            var (success, result) = _queryExecutor.ExecuteQuery(selectQuery, selectParameters, "Select succeeded.", TableTypeUtility.GetColumnTypeMapping("products"));
 
             // Assert
-            Assert.True(success, "Failed to retrieve the item from the database.");
+            Assert.True(success, "Failed to retrieve the product from the database.");
             Assert.Single(result);
-            Assert.Equal("Test Item", result[0]["name"]);
+            Assert.Equal("Test Product", result[0]["name"]);
+            Assert.Equal(19.99m, result[0]["price"]);
+            Assert.Equal(100, result[0]["amount"]);
         }
 
         [Fact]
         public void ExecuteNonQuery_ShouldRollbackOnError()
         {
             // Arrange
-            string invalidQuery = "INSERT INTO test_table (id, name) VALUES (@id, @non_existing_column)";
+            string invalidQuery = "INSERT INTO products (id, name, price, amount) VALUES (@id, @non_existing_column, @price, @amount)";
             var parameters = new Dictionary<string, object>
             {
                 { "id", Guid.NewGuid() },
-                { "name", "Test Item" }
+                { "name", "Test Product" },
+                { "price", 19.99m },
+                { "amount", 100 }
             };
 
             // Act
@@ -86,14 +94,16 @@ namespace warehub.Tests.db.utils
             Assert.False(result, "Query should have failed and rolled back.");
         }
 
-        private void CreateTestTable()
+        private void CreateProductsTable()
         {
             try
             {
                 string createTableQuery = @"
-                    CREATE TABLE IF NOT EXISTS test_table (
+                    CREATE TABLE IF NOT EXISTS products (
                         id CHAR(36) PRIMARY KEY,
-                        name VARCHAR(50)
+                        name VARCHAR(50),
+                        price DECIMAL(10, 2),
+                        amount INT
                     );";
 
                 using (var command = new MySqlCommand(createTableQuery, _connection))
@@ -103,7 +113,7 @@ namespace warehub.Tests.db.utils
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Failed to create test table. Check the test schema.", ex);
+                throw new InvalidOperationException("Failed to create products table. Check the test schema.", ex);
             }
         }
 
@@ -111,7 +121,7 @@ namespace warehub.Tests.db.utils
         {
             try
             {
-                string dropTableQuery = "DROP TABLE IF EXISTS test_table";
+                string dropTableQuery = "DROP TABLE IF EXISTS products";
 
                 using (var command = new MySqlCommand(dropTableQuery, _connection))
                 {

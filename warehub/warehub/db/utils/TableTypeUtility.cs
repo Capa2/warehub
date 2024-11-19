@@ -21,7 +21,8 @@ namespace warehub.db.utils
                 {
                     { "id", typeof(Guid) },
                     { "name", typeof(string) },
-                    { "price", typeof(decimal) }
+                    { "price", typeof(decimal) },
+                    { "amount", typeof(int) }
                 }
             },
             {
