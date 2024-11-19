@@ -12,35 +12,37 @@ namespace warehub.Tests.db
 
         public DatabaseFixture()
         {
-            var connection = DbConnection.GetConnection();
+            // Use the test database connection
+            var connection = DbConnection.GetConnection("test");
             CrudService = new CRUDService(connection);
 
-            // Ensure the test table exists
-            EnsureTestTableExists();
+            // Ensure the test table exists in the test schema
+            EnsureTestTableExists(connection);
         }
 
         /// <summary>
         /// Ensures the test table exists before running tests.
         /// </summary>
-        private void EnsureTestTableExists()
+        private void EnsureTestTableExists(MySqlConnection connection)
         {
             try
             {
                 string createTableQuery = @"
-                CREATE TABLE IF NOT EXISTS test_table (
-                    id CHAR(36) PRIMARY KEY,
-                    name VARCHAR(50)
-                );";
+                    CREATE TABLE IF NOT EXISTS products (
+                        id CHAR(36) PRIMARY KEY,
+                        name VARCHAR(100) NOT NULL,
+                        price DECIMAL(10, 2) NOT NULL,
+                        amount INT NOT NULL
+                    );";
 
-                using (var command = new MySqlCommand(createTableQuery, DbConnection.GetConnection()))
+                using (var command = new MySqlCommand(createTableQuery, connection))
                 {
                     command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error ensuring test table existence: " + ex.Message);
-                throw new InvalidOperationException("Test setup failed: unable to create or verify test_table.", ex);
+                throw new InvalidOperationException("Failed to create test table. Check the test schema.", ex);
             }
         }
 
@@ -51,17 +53,24 @@ namespace warehub.Tests.db
         {
             try
             {
-                string dropTableQuery = "DROP TABLE IF EXISTS test_table";
-                using (var command = new MySqlCommand(dropTableQuery, DbConnection.GetConnection()))
+                // Clean up the test table
+                string dropTableQuery = "DROP TABLE IF EXISTS products";
+
+                using (var command = new MySqlCommand(dropTableQuery, DbConnection.GetConnection("test")))
                 {
                     command.ExecuteNonQuery();
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during test cleanup: {ex.Message}");
             }
             finally
             {
                 DbConnection.Disconnect();
             }
         }
+
     }
 
     public class CRUDServiceIntegrationTests : IClassFixture<DatabaseFixture>
@@ -81,11 +90,13 @@ namespace warehub.Tests.db
             var createParameters = new Dictionary<string, object>
             {
                 { "id", _testId },
-                { "name", "Test Item" }
+                { "name", "Test Item" },
+                { "price", 199.99 },
+                { "amount", 100 },
             };
 
             // Act
-            bool createStatus = _crudService.Create("test_table", createParameters);
+            bool createStatus = _crudService.Create("products", createParameters);
 
             // Assert
             Assert.True(createStatus, "Failed to create item in database.");
@@ -98,7 +109,7 @@ namespace warehub.Tests.db
             EnsureTestItemExists();
 
             // Act
-            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", _testId } });
+            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });
 
             // Assert
             Assert.True(readStatus, "Read operation failed.");
@@ -114,13 +125,13 @@ namespace warehub.Tests.db
             var updateParameters = new Dictionary<string, object> { { "name", "Updated Item" } };
 
             // Act
-            bool updateStatus = _crudService.Update("test_table", updateParameters, "id", _testId);
+            bool updateStatus = _crudService.Update("products", updateParameters, "id", _testId);
 
             // Assert
             Assert.True(updateStatus, "Update operation failed.");
 
             // Verify update
-            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", _testId } });
+            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });
             Assert.True(readStatus, "Read operation failed after update.");
             Assert.Single(readResult);
             Assert.Equal("Updated Item", readResult[0]["name"]);
@@ -133,13 +144,13 @@ namespace warehub.Tests.db
             EnsureTestItemExists();
 
             // Act
-            bool deleteStatus = _crudService.Delete("test_table", "id", _testId);
+            bool deleteStatus = _crudService.Delete("products", "id", _testId);
 
             // Assert
             Assert.True(deleteStatus, "Delete operation failed.");
 
             // Verify deletion
-            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", _testId } });
+            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });
             Assert.True(readStatus, "Read operation failed after deletion.");
             Assert.Empty(readResult);
         }
@@ -155,11 +166,11 @@ namespace warehub.Tests.db
                 { "name", "Test Item" }
             };
 
-            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", _testId } });
+            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });
 
             if (!readStatus || readResult.Count == 0)
             {
-                bool createStatus = _crudService.Create("test_table", createParameters);
+                bool createStatus = _crudService.Create("products", createParameters);
                 if (!createStatus)
                 {
                     throw new InvalidOperationException("Test setup failed: unable to create test item.");

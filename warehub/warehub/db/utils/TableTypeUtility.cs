@@ -25,14 +25,6 @@ namespace warehub.db.utils
                 }
             },
             {
-                "test_table",
-                new Dictionary<string, Type>
-                {
-                    { "id", typeof(Guid) },
-                    { "name", typeof(string) }
-                }
-            },
-            {
                 "another_table",
                 new Dictionary<string, Type>
                 {

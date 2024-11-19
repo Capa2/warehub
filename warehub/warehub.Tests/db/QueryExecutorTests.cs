@@ -14,12 +14,11 @@ namespace warehub.Tests.db.utils
 
         public QueryExecutorTests()
         {
-            // Use a new connection specifically for this test class
-            _connection = new MySqlConnection("your_connection_string_here");
-            _connection.Open();
+            // Initialize the DbConnection with the test schema
+            _connection = DbConnection.GetConnection("test");
             _queryExecutor = new QueryExecutor(_connection);
 
-            // Ensure test table exists
+            // Ensure the test table exists
             CreateTestTable();
         }
 
@@ -89,28 +88,44 @@ namespace warehub.Tests.db.utils
 
         private void CreateTestTable()
         {
-            string createTableQuery = @"
-                CREATE TABLE IF NOT EXISTS test_table (
-                    id CHAR(36) PRIMARY KEY,
-                    name VARCHAR(50)
-                );";
-
-            using (var command = new MySqlCommand(createTableQuery, _connection))
+            try
             {
-                command.ExecuteNonQuery();
+                string createTableQuery = @"
+                    CREATE TABLE IF NOT EXISTS test_table (
+                        id CHAR(36) PRIMARY KEY,
+                        name VARCHAR(50)
+                    );";
+
+                using (var command = new MySqlCommand(createTableQuery, _connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to create test table. Check the test schema.", ex);
             }
         }
 
         public void Dispose()
         {
-            string dropTableQuery = "DROP TABLE IF EXISTS test_table";
-
-            using (var command = new MySqlCommand(dropTableQuery, _connection))
+            try
             {
-                command.ExecuteNonQuery();
-            }
+                string dropTableQuery = "DROP TABLE IF EXISTS test_table";
 
-            _connection.Dispose();
+                using (var command = new MySqlCommand(dropTableQuery, _connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during test cleanup: {ex.Message}");
+            }
+            finally
+            {
+                DbConnection.Disconnect();
+            }
         }
     }
 }
