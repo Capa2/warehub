@@ -10,7 +10,7 @@ namespace warehub.db
     /// <summary>
     /// Handles CRUD (Create, Read, Update, Delete) operations on a database table.
     /// </summary>
-    public class CRUDService
+    public class CRUDService : ICRUDService
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private readonly MySqlConnection _connection;

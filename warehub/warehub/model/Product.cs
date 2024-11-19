@@ -21,7 +21,7 @@ namespace warehub.model
 
         public Product(Guid id, string name, decimal price, int amount)
         {
-            
+
             Id = id;
             Name = name;
             Price = price;
