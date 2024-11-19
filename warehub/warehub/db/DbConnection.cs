@@ -15,31 +15,46 @@ namespace warehub.db
         private DbConnection(string connectionString) => _connection = new MySqlConnection(connectionString);
 
         /// <summary>
-        /// Gets the singleton instance of DbConnection with connection string from config.
+        /// Gets the singleton instance of DbConnection.
         /// </summary>
-        public static DbConnection Instance
+        private static DbConnection Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    Config config = Config.GetInstance();
-                    string connectionString = config.GetConnectionString();
-                    _instance = new DbConnection(connectionString);
-                    Logger.Info("DbConnection singleton instance created.");
+                    Logger.Warn("DbConnection has not been initialized. Call Initialize() first.");
                 }
                 return _instance;
             }
         }
 
         /// <summary>
-        /// Gets the MySqlConnection instance and ensures the connection is open.
+        /// Initialize the singleton instance of DbConnection with connection string from config.
         /// </summary>
-        public static MySqlConnection GetConnection()
+        private static void Initialize(string connectionString)
         {
-            Instance.Connect();
-            return Instance._connection;
+            lock (_lock)
+            {
+                if (_instance == null)
+                {
+                    try {
+                    Config config = Config.GetInstance();
+                    _instance = new DbConnection(config.GetConnectionString(connectionString));
+                    Logger.Info($"DbConnection singleton instance created targeting {target}.");
+                    } 
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"Failed to initialize DbConnection. Error: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    Logger.Warn("DbConnection singleton instance is already initialized. Ignoring re-initialization.");
+                }
+            }
         }
+        
         /// <summary>
         /// Opens the MySQL connection if it is not already open.
         /// </summary>
@@ -61,6 +76,16 @@ namespace warehub.db
             {
                 Logger.Error(ex, "Error occurred while connecting to the database.");
             }
+        }
+
+        /// <summary>
+        /// Gets the MySqlConnection instance and ensures the connection is open.
+        /// </summary>
+        public static MySqlConnection GetConnection(string connectionString)
+        {
+            if (_instance == null) Initialize(string connectionString)
+            Instance.Connect();
+            return Instance._connection;
         }
 
         /// <summary>
