@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NLog;
 
 namespace warehub.db.utils
 {
@@ -9,6 +10,8 @@ namespace warehub.db.utils
     /// </summary>
     public static class TableTypeUtility
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Registry containing type mappings for columns in different tables.
         /// Each table maps column names to their corresponding .NET types.
@@ -43,26 +46,36 @@ namespace warehub.db.utils
         /// <returns>The converted value or null if the conversion is not possible.</returns>
         public static object ConvertToType(object value, Type targetType)
         {
+            Logger.Trace($"Attempting to convert value '{value}' to type '{targetType.FullName}'.");
+
             if (value == DBNull.Value)
+            {
+                Logger.Debug($"Value is DBNull. Returning null.");
                 return null;
+            }
 
             try
             {
                 // Handle Guid conversion from string
                 if (targetType == typeof(Guid) && value is string stringValue)
                 {
-                    return Guid.Parse(stringValue);
+                    Logger.Debug($"Value is a string. Attempting to parse as Guid.");
+                    var result = Guid.Parse(stringValue);
+                    Logger.Trace($"Successfully converted '{value}' to Guid.");
+                    return result;
                 }
 
                 // Convert to the target type
-                return Convert.ChangeType(value, targetType);
+                var convertedValue = Convert.ChangeType(value, targetType);
+                Logger.Trace($"Successfully converted '{value}' to type '{targetType.FullName}'.");
+                return convertedValue;
             }
             catch (Exception ex)
             {
+                Logger.Error(ex, $"Failed to convert value '{value}' to type '{targetType.FullName}'.");
                 throw new InvalidOperationException($"Failed to convert value '{value}' to type '{targetType.FullName}'.", ex);
             }
         }
-
 
         /// <summary>
         /// Gets the column type mapping for the specified table.
@@ -72,11 +85,15 @@ namespace warehub.db.utils
         /// <exception cref="InvalidOperationException">Thrown if the table mapping is not found.</exception>
         public static Dictionary<string, Type> GetColumnTypeMapping(string tableName)
         {
+            Logger.Trace($"Attempting to retrieve column type mapping for table '{tableName}'.");
+
             if (TableColumnMappings.TryGetValue(tableName, out var columnMapping))
             {
+                Logger.Debug($"Column type mapping found for table '{tableName}'.");
                 return columnMapping;
             }
 
+            Logger.Warn($"No column type mapping found for table '{tableName}'.");
             throw new InvalidOperationException($"No type mapping found for table: {tableName}");
         }
     }
