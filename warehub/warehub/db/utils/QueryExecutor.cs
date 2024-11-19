@@ -31,14 +31,14 @@ namespace warehub.db.utils
         /// <param name="successMessage">A message to log upon successful execution.</param>
         /// <param name="commitTransaction">Indicates whether the operation should be committed as a transaction.</param>
         /// <returns>True if the operation is successful; otherwise, false.</returns>
-        public bool ExecuteNonQuery(string query, Dictionary<string, object> parameters, string successMessage, bool commitTransaction = true)
+        public async Task<bool> ExecuteNonQuery(string query, Dictionary<string, object> parameters, string successMessage, bool commitTransaction = true)
         {
-            MySqlTransaction transaction = null;
+            MySqlTransaction? transaction = null;
 
             try
             {
                 // Begin a transaction for the operation
-                transaction = _connection.BeginTransaction();
+                transaction = await _connection.BeginTransactionAsync();
 
                 using (var command = new MySqlCommand(query, _connection, transaction))
                 {
@@ -49,19 +49,19 @@ namespace warehub.db.utils
                     }
 
                     // Execute the non-query command
-                    int affectedRows = command.ExecuteNonQuery();
+                    int affectedRows = await command.ExecuteNonQueryAsync();
 
                     // Commit or rollback the transaction based on the result
                     if (affectedRows > 0 && commitTransaction)
                     {
-                        transaction.Commit();
+                        await transaction.CommitAsync();
                         Logger.Trace($"Transaction committed for query: {query}");
                         Logger.Debug($"Success Message: {successMessage}");
                         return true;
                     }
                     else
                     {
-                        transaction.Rollback();
+                        await transaction.RollbackAsync();
                         Logger.Warn($"Transaction rolled back for query: {query}");
                         return false;
                     }
@@ -69,13 +69,19 @@ namespace warehub.db.utils
             }
             catch (Exception ex)
             {
-                transaction?.Rollback();
+                if (transaction != null)
+                {
+                    await transaction.RollbackAsync();
+                }
                 Logger.Error(ex, $"SQL Error in ExecuteNonQuery. Query: {query}");
                 return false;
             }
             finally
             {
-                transaction?.Dispose();
+                if (transaction != null)
+                {
+                    await transaction.DisposeAsync();
+                }
             }
         }
 
@@ -89,7 +95,7 @@ namespace warehub.db.utils
         /// <returns>
         /// A tuple containing a success flag and a list of rows, where each row is represented as a dictionary of column names and values.
         /// </returns>
-        public (bool, List<Dictionary<string, object>>) ExecuteQuery(
+        public async Task<(bool, List<Dictionary<string, object>>)> ExecuteQuery(
             string query,
             Dictionary<string, object> parameters,
             string successMessage,
@@ -98,12 +104,12 @@ namespace warehub.db.utils
             var results = new List<Dictionary<string, object>>();
             bool status = false;
 
-            MySqlTransaction transaction = null;
+            MySqlTransaction? transaction = null;
 
             try
             {
                 // Begin a transaction to ensure data consistency
-                transaction = _connection.BeginTransaction();
+                transaction = await _connection.BeginTransactionAsync();
 
                 using (var command = new MySqlCommand(query, _connection, transaction))
                 {
@@ -125,7 +131,7 @@ namespace warehub.db.utils
                     }
 
                     // Execute the query and process the results
-                    using (var reader = command.ExecuteReader())
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -150,21 +156,26 @@ namespace warehub.db.utils
                     }
 
                     // Commit the transaction after successfully reading the data
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                     Logger.Debug(successMessage);
                     status = true;
                 }
             }
             catch (Exception ex)
-            {
-                transaction?.Rollback();
+            { 
+                if (transaction != null) {
+                    await transaction.RollbackAsync();
+                }
+                
                 Logger.Error(ex, $"SQL Error in ExecuteQuery. Query: {query}");
             }
             finally
             {
-                transaction?.Dispose();
+                if (transaction != null)
+                {
+                    await transaction.DisposeAsync();
+                }
             }
-
             return (status, results);
         }
 

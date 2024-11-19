@@ -102,13 +102,13 @@ namespace warehub.controller
 
                 try // Retrieve and update products
                 {
-                    List<Product>? productsReturned = productService.GetAllProducts();
+                    List<Product>? productsReturned = productService.GetAllProducts().Result;
                     if (productsReturned != null)
                     {
                         var productToUpdate = productsReturned.FirstOrDefault();
                         if (productToUpdate != null)
                         {
-                            bool updateResult = productService.UpdateProduct(productToUpdate);
+                            bool updateResult = productService.UpdateProduct(productToUpdate).Result;
                             Logger.Trace($"ProductPopulator: Product update result for {productToUpdate.Name}: {updateResult}");
                         }
                         else Logger.Warn("ProductPopulator: No products available to update.");

@@ -18,7 +18,7 @@ namespace warehub.repository
             _cRUDService = new CRUDService(connection);
         }
 
-        public GenericResponseDTO<Product> Add(Product product)
+        public async Task<GenericResponseDTO<Product>> Add(Product product)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -27,7 +27,7 @@ namespace warehub.repository
                 { "id", product.Id },
                 { "amount", product.Amount }
             };
-            bool status = _cRUDService.Create("products", parameters);
+            bool status = await _cRUDService.Create("products", parameters);
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status
@@ -35,9 +35,9 @@ namespace warehub.repository
             return returnObject;
         }
 
-        public GenericResponseDTO<Guid> Delete(Guid id)
+        public async Task<GenericResponseDTO<Guid>> Delete(Guid id)
         {
-            bool status = _cRUDService.Delete("products", "id", id);
+            bool status = await _cRUDService.Delete("products", "id", id);
             var returnObject = new GenericResponseDTO<Guid>(id)
             {
                 IsSuccess = status
@@ -45,9 +45,9 @@ namespace warehub.repository
             return returnObject;
         }
 
-        public GenericResponseDTO<List<Product>> GetAll()
+        public async Task<GenericResponseDTO<List<Product>>> GetAll()
         {
-            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object>());
+            var (status, products) = await _cRUDService.Read("products", new Dictionary<string, object>());
             List<Product> listOfProducts = ObjectMapper.MapDictToProducts(products);
             var returnObject = new GenericResponseDTO<List<Product>>(listOfProducts)
             {
@@ -56,9 +56,9 @@ namespace warehub.repository
             return returnObject;
         }
 
-        public GenericResponseDTO<Product> GetById(Guid id)
+        public async Task<GenericResponseDTO<Product>> GetById(Guid id)
         {
-            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
+            var (status, products) = await _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
             List<Product> listOfProducts = ObjectMapper.MapDictToProducts(products);
 
             var product = listOfProducts.FirstOrDefault(p => p.Id == id);
@@ -69,7 +69,7 @@ namespace warehub.repository
             return returnObject;
         }
 
-        public GenericResponseDTO<Product> Update(Product product)
+        public async Task<GenericResponseDTO<Product>> Update(Product product)
         {
             var updateParams = new Dictionary<string, object>
             {
@@ -77,7 +77,7 @@ namespace warehub.repository
                 { "price", product.Price },
                 { "amount", product.Amount }
             };
-            bool status = _cRUDService.Update("products", updateParams, "id", product.Id);
+            bool status = await _cRUDService.Update("products", updateParams, "id", product.Id);
 
             var returnObject = new GenericResponseDTO<Product>(product)
             {

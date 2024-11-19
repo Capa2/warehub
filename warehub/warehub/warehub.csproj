@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="5.31.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
     <PackageReference Include="MySql.Data" Version="9.1.0" />
