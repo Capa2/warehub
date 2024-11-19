@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using Xunit;
+using warehub.db;
 using warehub.db.utils;
 
 namespace warehub.Tests.db.utils
@@ -13,7 +14,9 @@ namespace warehub.Tests.db.utils
 
         public QueryExecutorTests()
         {
-            _connection = DbConnection.GetConnection();
+            // Use a new connection specifically for this test class
+            _connection = new MySqlConnection("your_connection_string_here");
+            _connection.Open();
             _queryExecutor = new QueryExecutor(_connection);
 
             // Ensure test table exists
