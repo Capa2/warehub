@@ -26,17 +26,20 @@ namespace warehub.Tests.db
         /// <summary>
         /// Ensures the products table exists in the test schema.
         /// </summary>
+        /// <summary>
+        /// Ensures the products table exists in the test schema.
+        /// </summary>
         private void EnsureTestTableExists()
         {
             try
             {
                 string createTableQuery = @"
                     CREATE TABLE IF NOT EXISTS products (
-                        id CHAR(36) PRIMARY KEY,
-                        name VARCHAR(100) NOT NULL,
-                        price DECIMAL(10, 2) NOT NULL,
-                        amount INT NOT NULL
-                    );";
+                    id CHAR(36) PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL,
+                    price DECIMAL(10, 2) NOT NULL,
+                    amount INT NOT NULL
+                 );";
 
                 using (var command = new MySqlCommand(createTableQuery, _connection))
                 {
@@ -45,27 +48,25 @@ namespace warehub.Tests.db
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Failed to create products table. Check the test schema and connection.", ex);
+                throw new InvalidOperationException("Failed to ensure the products table exists. Check the test schema and connection.", ex);
             }
         }
 
         /// <summary>
         /// Cleans up the database by dropping the products table.
         /// </summary>
+        /// <summary>
+        /// Cleans up resources without dropping the products table.
+        /// </summary>
         public void Dispose()
         {
             try
             {
-                string dropTableQuery = "DROP TABLE IF EXISTS products";
-
-                using (var command = new MySqlCommand(dropTableQuery, _connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+                // No table dropping is performed here.
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error during test cleanup: {ex.Message}");
+                Console.WriteLine($"Error during resource cleanup: {ex.Message}");
             }
             finally
             {
