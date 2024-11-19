@@ -2,33 +2,27 @@
 using System.Collections.Generic;
 using Xunit;
 using warehub.db;
-using warehub.db.utils;
 using MySql.Data.MySqlClient;
 
 namespace warehub.Tests.db
 {
-    /// <summary>
-    /// Sets up the database for integration tests and provides a shared instance of CRUDService.
-    /// </summary>
     public class DatabaseFixture : IDisposable
     {
         public CRUDService CrudService { get; }
 
         public DatabaseFixture()
         {
-            // Initialize the CRUDService with the MySQL connection
             var connection = DbConnection.GetConnection();
-            var queryExecutor = new QueryExecutor(connection); // New dependency
             CrudService = new CRUDService(connection);
 
-            // Create the test table once
-            CreateTestTable();
+            // Ensure the test table exists
+            EnsureTestTableExists();
         }
 
         /// <summary>
-        /// Creates a test table used for integration tests.
+        /// Ensures the test table exists before running tests.
         /// </summary>
-        private void CreateTestTable()
+        private void EnsureTestTableExists()
         {
             try
             {
@@ -45,13 +39,13 @@ namespace warehub.Tests.db
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error creating test table: " + ex.Message);
-                throw new InvalidOperationException("Test setup failed: unable to create test_table.", ex);
+                Console.WriteLine("Error ensuring test table existence: " + ex.Message);
+                throw new InvalidOperationException("Test setup failed: unable to create or verify test_table.", ex);
             }
         }
 
         /// <summary>
-        /// Cleans up by dropping the test table and disconnecting the database connection.
+        /// Cleans up the database by dropping the test table.
         /// </summary>
         public void Dispose()
         {
@@ -65,69 +59,112 @@ namespace warehub.Tests.db
             }
             finally
             {
-                // Ensure database disconnection
                 DbConnection.Disconnect();
             }
         }
     }
 
-    /// <summary>
-    /// Integration tests for CRUDService operations.
-    /// </summary>
     public class CRUDServiceIntegrationTests : IClassFixture<DatabaseFixture>
     {
         private readonly CRUDService _crudService;
+        private readonly Guid _testId = Guid.NewGuid(); // Shared test ID
 
-        /// <summary>
-        /// Initializes the test class with a shared instance of CRUDService from the fixture.
-        /// </summary>
-        /// <param name="fixture">The database fixture providing a shared CRUDService instance.</param>
         public CRUDServiceIntegrationTests(DatabaseFixture fixture)
         {
             _crudService = fixture.CrudService;
         }
 
         [Fact]
-        public void CRUDOperations_ShouldPerformAllSteps()
+        public void Create_ShouldInsertItem()
         {
-            // Generate a new GUID for the test
-            var testId = Guid.NewGuid();
-
-            // Step 1: Create
+            // Arrange
             var createParameters = new Dictionary<string, object>
             {
-                { "id", testId.ToString() },
+                { "id", _testId },
                 { "name", "Test Item" }
             };
 
+            // Act
             bool createStatus = _crudService.Create("test_table", createParameters);
-            Assert.True(createStatus, "Failed to create item in database.");
 
-            // Verify creation
-            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
-            Assert.True(readStatus, "Read operation failed after creation.");
+            // Assert
+            Assert.True(createStatus, "Failed to create item in database.");
+        }
+
+        [Fact]
+        public void Read_ShouldRetrieveItem()
+        {
+            // Arrange
+            EnsureTestItemExists();
+
+            // Act
+            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", _testId } });
+
+            // Assert
+            Assert.True(readStatus, "Read operation failed.");
             Assert.Single(readResult);
             Assert.Equal("Test Item", readResult[0]["name"]);
+        }
 
-            // Step 2: Update
+        [Fact]
+        public void Update_ShouldModifyItem()
+        {
+            // Arrange
+            EnsureTestItemExists();
             var updateParameters = new Dictionary<string, object> { { "name", "Updated Item" } };
-            bool updateStatus = _crudService.Update("test_table", updateParameters, "id", testId.ToString());
+
+            // Act
+            bool updateStatus = _crudService.Update("test_table", updateParameters, "id", _testId);
+
+            // Assert
             Assert.True(updateStatus, "Update operation failed.");
 
             // Verify update
-            var (readAfterUpdateStatus, readAfterUpdateResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
-            Assert.True(readAfterUpdateStatus, "Read operation failed after update.");
-            Assert.Single(readAfterUpdateResult);
-            Assert.Equal("Updated Item", readAfterUpdateResult[0]["name"]);
+            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", _testId } });
+            Assert.True(readStatus, "Read operation failed after update.");
+            Assert.Single(readResult);
+            Assert.Equal("Updated Item", readResult[0]["name"]);
+        }
 
-            // Step 3: Delete
-            bool deleteStatus = _crudService.Delete("test_table", "id", testId.ToString());
+        [Fact]
+        public void Delete_ShouldRemoveItem()
+        {
+            // Arrange
+            EnsureTestItemExists();
+
+            // Act
+            bool deleteStatus = _crudService.Delete("test_table", "id", _testId);
+
+            // Assert
             Assert.True(deleteStatus, "Delete operation failed.");
 
             // Verify deletion
-            var (readAfterDeleteStatus, readAfterDeleteResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", testId.ToString() } });
-            Assert.True(readAfterDeleteStatus, "Read operation failed after deletion.");
-            Assert.Empty(readAfterDeleteResult);
+            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", _testId } });
+            Assert.True(readStatus, "Read operation failed after deletion.");
+            Assert.Empty(readResult);
+        }
+
+        /// <summary>
+        /// Ensures a test item exists in the database for tests that require it.
+        /// </summary>
+        private void EnsureTestItemExists()
+        {
+            var createParameters = new Dictionary<string, object>
+            {
+                { "id", _testId },
+                { "name", "Test Item" }
+            };
+
+            var (readStatus, readResult) = _crudService.Read("test_table", new Dictionary<string, object> { { "id", _testId } });
+
+            if (!readStatus || readResult.Count == 0)
+            {
+                bool createStatus = _crudService.Create("test_table", createParameters);
+                if (!createStatus)
+                {
+                    throw new InvalidOperationException("Test setup failed: unable to create test item.");
+                }
+            }
         }
     }
 }
