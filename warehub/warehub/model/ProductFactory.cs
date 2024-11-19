@@ -11,13 +11,13 @@ namespace warehub.model
 
         public static Product CreateProduct(string name, decimal price, int amount)
         {
-            Logger.Trace(string.Join("Factory is creating product with name: ", name, ", and price:", price));
+            Logger.Trace($"ProductFactory: Created product - name: {name}, price: {price}");
             return new Product(name, price, amount);
         }
 
         public static Product CreateProduct(Guid id, string name, decimal price, int amount)
         {
-            Logger.Trace(string.Join("Factory is creating product with id: ", id, ", name: ", name, ", and price:", price));
+            Logger.Trace($"ProductFactory: Created product - id: {id}, name: {name}, price: {price}");
             return new Product(id, name, price, amount);
         }
     }

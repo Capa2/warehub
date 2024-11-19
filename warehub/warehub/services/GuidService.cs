@@ -18,7 +18,7 @@ namespace warehub.services
         public static Guid GenerateId()
         {
             Guid guid = Guid.NewGuid();
-            Logger.Trace($"Generated Guid: {guid}");
+            Logger.Trace($"GuidService: Generated Guid: {guid}");
             return guid;
         }
 
@@ -30,7 +30,7 @@ namespace warehub.services
         public static byte[] GuidToBinary(Guid guid)
         {
             byte[] binary = guid.ToByteArray();
-            Logger.Trace($"Guid {guid} converted to byte array.");
+            Logger.Trace($"GuidService: Guid {guid} converted to byte array.");
             return binary;
         }
 
@@ -43,10 +43,10 @@ namespace warehub.services
         {
             if (binaryGuid.Length != 16)
             {
-                Logger.Error("Invalid binary format for Guid. Must be 16 bytes.");
+                Logger.Error("GuidService: Invalid binary format for Guid. Must be 16 bytes.");
             }
             Guid guid = new Guid(binaryGuid);
-            Logger.Trace($"Converted byte array to Guid: {guid}");
+            Logger.Trace($"GuidService: Converted byte array to Guid: {guid}");
             return guid;
         }
 
@@ -58,7 +58,7 @@ namespace warehub.services
         public static string GuidToString(Guid guid)
         {
             string guidString = guid.ToString();
-            Logger.Trace($"Guid {guid} converted to string.");
+            Logger.Trace($"GuidService: Guid {guid} converted to string.");
             return guidString;
         }
 
@@ -72,12 +72,12 @@ namespace warehub.services
             try
             {
                 Guid guid = Guid.Parse(guidString);
-                Logger.Trace($"Parsed Guid from string: {guidString} to {guid}");
+                Logger.Trace($"GuidService: Parsed Guid from string: {guidString} to {guid}");
                 return guid;
             }
             catch (FormatException ex)
             {
-                Logger.Error($"Failed to parse Guid from string: {guidString}. Error: {ex.Message}");
+                Logger.Error($"GuidService: Failed to parse Guid from string: {guidString}. Error: {ex.Message}");
                 throw;
             }
         }

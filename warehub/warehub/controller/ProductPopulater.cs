@@ -28,28 +28,28 @@ namespace warehub.controller
 
             try
             {
-                Logger.Trace($"Starting product population. File path: {filePath}");
+                Logger.Trace($"ProductPopulator: Starting product population. File path: {filePath}");
 
                 string jsonContent;
 
                 try // Read the JSON file
                 {
                     jsonContent = File.ReadAllText(filePath);
-                    Logger.Trace("Read the JSON file successfully.");
+                    Logger.Trace("ProductPopulator: Read the JSON file successfully.");
                 }
                 catch (FileNotFoundException fnfEx)
                 {
-                    Logger.Error($"File not found: {filePath}. {fnfEx.Message}");
+                    Logger.Error($"ProductPopulator: File not found: {filePath}. {fnfEx.Message}");
                     return;
                 }
                 catch (UnauthorizedAccessException uaEx)
                 {
-                    Logger.Error($"Access denied for file: {filePath}. {uaEx.Message}");
+                    Logger.Error($"ProductPopulator: Access denied for file: {filePath}. {uaEx.Message}");
                     return;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error($"Error reading file: {ex.Message}");
+                    Logger.Error($"ProductPopulator: Error reading file: {ex.Message}");
                     return;
                 }
 
@@ -62,22 +62,22 @@ namespace warehub.controller
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                     };
                     products = JsonSerializer.Deserialize<List<Product>>(jsonContent, options);
-                    Logger.Trace("Deserialized JSON content into Product objects.");
+                    Logger.Trace("ProductPopulator: Deserialized JSON content into Product objects.");
                 }
                 catch (JsonException jsonEx)
                 {
-                    Logger.Error($"Deserialization failed. {jsonEx.Message}");
+                    Logger.Error($"ProductPopulator: Deserialization failed. {jsonEx.Message}");
                     return;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error($"Unexpected deserialization error: {ex.Message}");
+                    Logger.Error($"ProductPopulator: Unexpected deserialization error: {ex.Message}");
                     return;
                 }
 
                 if (products == null || products.Count == 0)
                 {
-                    Logger.Warn("No products found in the JSON file.");
+                    Logger.Warn("ProductPopulator: No products found in the JSON file.");
                     return;
                 }
 
@@ -90,13 +90,13 @@ namespace warehub.controller
                     foreach (Product product in products)
                     {
                         productService.AddProduct(product);
-                        Logger.Trace($"Added product: {product.Name} (ID: {product.Id})");
+                        Logger.Trace($"ProductPopulator: Added product: {product.Name} (ID: {product.Id})");
                     }
-                    Logger.Info($"Added {products.Count} products to the repository");
+                    Logger.Info($"ProductPopulator: Added {products.Count} products to the repository");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error($"Error adding products: {ex.Message}");
+                    Logger.Error($"ProductPopulator: Error adding products: {ex.Message}");
                     return;
                 }
 
@@ -109,24 +109,24 @@ namespace warehub.controller
                         if (productToUpdate != null)
                         {
                             bool updateResult = productService.UpdateProduct(productToUpdate);
-                            Logger.Trace($"Product update result for {productToUpdate.Name}: {updateResult}");
+                            Logger.Trace($"ProductPopulator: Product update result for {productToUpdate.Name}: {updateResult}");
                         }
-                        else Logger.Warn("No products available to update.");
+                        else Logger.Warn("ProductPopulator: No products available to update.");
                     }
-                    else Logger.Warn("Failed to retrieve products.");
+                    else Logger.Warn("ProductPopulator: Failed to retrieve products.");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error($"Error retrieving or updating products: {ex.Message}");
+                    Logger.Error($"ProductPopulator: Error retrieving or updating products: {ex.Message}");
                 }
             }
             catch (Exception ex)
             {
-                Logger.Fatal($"Critical error in Populate: {ex.Message}");
+                Logger.Fatal($"ProductPopulator: Critical error in Populate: {ex.Message}");
             }
             finally
             {
-                Logger.Trace("Product population process completed.");
+                Logger.Trace("ProductPopulator: Product population process completed.");
             }
         }
     }
