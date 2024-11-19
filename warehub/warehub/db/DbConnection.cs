@@ -10,6 +10,7 @@ namespace warehub.db
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private static DbConnection? _instance;
         private readonly MySqlConnection _connection;
+        private static readonly object _lock = new(); // Lock object to ensure thread safety when initializing the singleton
 
         // Private constructor to avoid instantiation from outside
         private DbConnection(string connectionString) => _connection = new MySqlConnection(connectionString);
@@ -39,9 +40,9 @@ namespace warehub.db
                 if (_instance == null)
                 {
                     try {
-                    Config config = Config.GetInstance();
-                    _instance = new DbConnection(config.GetConnectionString(connectionString));
-                    Logger.Info($"DbConnection singleton instance created targeting {target}.");
+                        Config config = Config.GetInstance();
+                        _instance = new DbConnection(config.GetConnectionString(connectionString));
+                        Logger.Info($"DbConnection singleton instance created targeting {connectionString}.");
                     } 
                     catch (Exception ex)
                     {
@@ -81,9 +82,9 @@ namespace warehub.db
         /// <summary>
         /// Gets the MySqlConnection instance and ensures the connection is open.
         /// </summary>
-        public static MySqlConnection GetConnection(string connectionString)
+        public static MySqlConnection GetConnection(string connectionString = "localhost")
         {
-            if (_instance == null) Initialize(string connectionString)
+            if (_instance == null) Initialize(connectionString);
             Instance.Connect();
             return Instance._connection;
         }
