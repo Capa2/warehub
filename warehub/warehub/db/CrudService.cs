@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using ZstdSharp;
 using warehub.services;
 using warehub.db.enums;
+using warehub.db.DTO;
 
 namespace warehub.db
 {
@@ -39,7 +40,7 @@ namespace warehub.db
         /// <summary>
         /// Reads entries from the specified table with optional filtering.
         /// </summary>
-        public (bool, List<Dictionary<string, object>>) Read<T>(Table table, Dictionary<string, object> parameters)
+        public (bool, List<T>) Read<T>(Table table, Dictionary<string, object> parameters)
         {
             try
             {
@@ -145,13 +146,12 @@ namespace warehub.db
         }
 
 
-
         /// <summary>
         /// Executes a query command and GETS results as a list of dictionaries.
         /// </summary>
-        private (bool, List<Dictionary<string, object>>) ExecuteQuery<T>(string query, Dictionary<string, object> parameters, string successMessage)
+        private (bool, List<T>) ExecuteQuery<T>(string query, Dictionary<string, object> parameters, string successMessage)
         {
-            var results = new List<Dictionary<string, object>>();
+            List<T> results = [];
             bool status = false;
 
             try
@@ -161,46 +161,20 @@ namespace warehub.db
                     throw new InvalidOperationException("Database connection is not open.");
                 }
 
-                // Fetch the type mapping for the specified table
-                //if (!TableTypeRegistry.TableColumnMappings.TryGetValue(tableName, out var columnTypeMapping))
-                //{
-                //    throw new InvalidOperationException($"No type mapping found for table: {tableName}");
-                //}
-
-                using (var command = new MySqlCommand(query, _connection))
+                using var command = new MySqlCommand(query, _connection);
+                // Add parameters to the command
+                foreach (var param in parameters)
                 {
-                    // Add parameters to the command
-                    foreach (var param in parameters)
-                    {
-                        var value = param.Key == "id" ? GuidService.GuidToString((Guid)param.Value) : param.Value;
-                        command.Parameters.AddWithValue($"@{param.Key}", value);
-                    }
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var row = new Dictionary<string, object>();
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                string columnName = reader.GetName(i);
-                                object value = reader.GetValue(i);
-
-                                // Convert the value based on the column type mapping
-                                if (columnTypeMapping.TryGetValue(columnName, out var targetType))
-                                {
-                                    value = ConvertToType(value, targetType);
-                                }
-
-                                row[columnName] = value;
-                            }
-                            results.Add(row);
-                        }
-                    }
-
-                    Console.WriteLine(successMessage);
-                    status = true;
+                    command.Parameters.AddWithValue($"@{param.Key}", param.Value);
                 }
+
+                using var reader = command.ExecuteReader();
+                 
+                results.AddRange(DBSerializerService.DeserialzeDBContentResponse<T>(reader));
+                
+
+                Console.WriteLine(successMessage);
+                status = true;
             }
             catch (Exception ex)
             {
@@ -209,45 +183,5 @@ namespace warehub.db
 
             return (status, results);
         }
-
-
-        public static class TableTypeRegistry
-        {
-            public static readonly Dictionary<string, Dictionary<string, Type>> TableColumnMappings = new()
-            {
-                {
-                    "products", // Table name
-                    new Dictionary<string, Type>
-                    {
-                        { "id", typeof(Guid) },
-                        { "name", typeof(string) },
-                        { "price", typeof(decimal) }
-                    }
-                },
-                // Add mappings for additional tables as needed
-                {
-                    "another_table",
-                    new Dictionary<string, Type>
-                    {
-                        { "column1", typeof(int) },
-                        { "column2", typeof(DateTime) }
-                    }
-                }
-            };
-        }
-
-        private object ConvertToType(object value, Type targetType)
-        {
-            if (value == DBNull.Value)
-                return null;
-
-            if (targetType == typeof(Guid))
-            {
-                return Guid.Parse(value.ToString());
-            }
-
-            return Convert.ChangeType(value, targetType);
-        }
-
     }
 }

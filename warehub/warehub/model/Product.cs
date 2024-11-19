@@ -21,11 +21,20 @@ namespace warehub.model
 
         public Product(Guid id, string name, decimal price)
         {
-
             Id = id;
             Name = name;
             Price = price;
             Logger.Trace("Initialized " + this.ToString());
+        }
+
+        public bool ValidateAttributesPresent()
+        {
+            var properties = this.GetType().GetProperties();
+            return properties.All(property =>
+            {
+                var value = property.GetValue(this);
+                return value != null && !(value is string str && string.IsNullOrWhiteSpace(str));
+            });
         }
 
         public override string ToString()

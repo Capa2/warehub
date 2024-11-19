@@ -6,20 +6,9 @@ using System.Threading.Tasks;
 
 namespace warehub.repository.returnObjects
 {
-    public class GenericResponseDTO<T>
+    public class GenericResponseDTO<T>(T data, bool isSuccess = true)
     {
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; }
-        public T Data { get; set; }
-
-        // Optional metadata property
-        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
-
-        public GenericResponseDTO(T data, bool isSuccess = true, string message = "")
-        {
-            Data = data;
-            IsSuccess = isSuccess;
-            Message = message;
-        }
+        public bool IsSuccess { get; set; } = isSuccess;
+        public T Data { get; set; } = data;
     }
 }

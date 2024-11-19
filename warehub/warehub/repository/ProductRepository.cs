@@ -26,13 +26,13 @@ namespace warehub.repository
 
         public GenericResponseDTO<Product> Add(Product product)
         {
-            var parameters = new Dictionary<string, object>
+            bool status = false;
+            if (product.ValidateAttributesPresent())
             {
-                { "name", product.Name },
-                { "price", product.Price },
-                { "id", product.Id }
-            };
-            bool status = _cRUDService.Create(Table.Products, parameters);
+                ProductDTO productDTO = ObjectMapper.Map<Product, ProductDTO>(product);
+                status = _cRUDService.Create<ProductDTO>(Table.Products, productDTO);
+            }
+
             var returnObject = new GenericResponseDTO<Product>(product)
             {
                 IsSuccess = status
