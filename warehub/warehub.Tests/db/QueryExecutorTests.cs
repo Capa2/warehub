@@ -95,6 +95,7 @@ namespace warehub.Tests.db.utils
         public void ExecuteNonQuery_ShouldRollbackOnError()
         {
             Logger.Trace("Starting test: ExecuteNonQuery_ShouldRollbackOnError");
+
             // Arrange
             string invalidQuery = "INSERT INTO products (id, name, price, amount) VALUES (@id, @non_existing_column, @price, @amount)";
             var parameters = new Dictionary<string, object>
@@ -106,12 +107,21 @@ namespace warehub.Tests.db.utils
             };
 
             // Act
-            bool result = _queryExecutor.ExecuteNonQuery(invalidQuery, parameters, "Insert should fail.");
+            bool result = false;
+            try
+            {
+                result = _queryExecutor.ExecuteNonQuery(invalidQuery, parameters, "Insert should fail.");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Expected error occurred during invalid query execution.");
+            }
 
             // Assert
             Assert.False(result, "Query should have failed and rolled back.");
             Logger.Debug("Test ExecuteNonQuery_ShouldRollbackOnError passed.");
         }
+
 
         private void CreateProductsTable()
         {

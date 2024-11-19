@@ -42,6 +42,8 @@ namespace warehub.db.utils
 
                 using (var command = new MySqlCommand(query, _connection, transaction))
                 {
+                    command.CommandTimeout = 30; // Avoid endless execution
+
                     // Add parameters to the query
                     foreach (var param in parameters)
                     {
@@ -61,23 +63,30 @@ namespace warehub.db.utils
                     }
                     else
                     {
+                        Logger.Warn($"No rows affected. Rolling back transaction for query: {query}");
                         transaction.Rollback();
-                        Logger.Warn($"Transaction rolled back for query: {query}");
                         return false;
                     }
                 }
             }
-            catch (Exception ex)
+            catch (MySqlException ex)
             {
                 transaction?.Rollback();
                 Logger.Error(ex, $"SQL Error in ExecuteNonQuery. Query: {query}");
-                return false;
+                return false; // Gracefully fail on SQL error
+            }
+            catch (Exception ex)
+            {
+                transaction?.Rollback();
+                Logger.Error(ex, $"Unexpected error in ExecuteNonQuery. Query: {query}");
+                throw; // Re-throw for unexpected issues
             }
             finally
             {
                 transaction?.Dispose();
             }
         }
+
 
         /// <summary>
         /// Executes a query and retrieves the results as a list of dictionaries.
