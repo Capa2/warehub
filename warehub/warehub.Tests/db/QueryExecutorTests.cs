@@ -19,7 +19,7 @@ namespace warehub.Tests.db.utils
             try
             {
                 Logger.Trace("Initializing QueryExecutorTests...");
-                _connection = DbConnection.GetConnection("test");
+                _connection = new MySqlConnection(DbConnection.GetConnection("test").ConnectionString);
                 Logger.Debug("Connection to test database established.");
 
                 _queryExecutor = new QueryExecutor(_connection);
