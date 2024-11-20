@@ -8,32 +8,38 @@ using warehub.db.utils;
 
 namespace warehub.Tests.db.utils
 {
-    public class QueryExecutorTests : IDisposable
+    public class DatabaseFixture : IDisposable
+    {
+        public MySqlConnection Connection { get; }
+
+        public DatabaseFixture()
+        {
+            Connection = new MySqlConnection(DbConnection.GetConnection("test").ConnectionString);
+            Connection.Open();
+        }
+
+        public void Dispose()
+        {
+            Connection.Close();
+            Connection.Dispose();
+        }
+    }
+
+
+    public class QueryExecutorTests : IClassFixture<DatabaseFixture>, IDisposable
     {
         private readonly MySqlConnection _connection;
         private readonly QueryExecutor _queryExecutor;
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        public QueryExecutorTests()
+        public QueryExecutorTests(DatabaseFixture fixture)
         {
-            try
-            {
-                Logger.Trace("Initializing QueryExecutorTests...");
-                _connection = new MySqlConnection(DbConnection.GetConnection("test").ConnectionString);
-                Logger.Debug("Connection to test database established.");
-
-                _queryExecutor = new QueryExecutor(_connection);
-
-                // Ensure the products table exists
-                CreateProductsTable();
-                Logger.Debug("Products table ensured for testing.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Failed to initialize QueryExecutorTests.");
-                throw;
-            }
+            _connection = fixture.Connection;
+            _queryExecutor = new QueryExecutor(_connection);
+            CreateProductsTable();
         }
+
+
 
         [Fact]
         public void ExecuteNonQuery_ShouldInsertProduct()
@@ -122,58 +128,24 @@ namespace warehub.Tests.db.utils
             Logger.Debug("Test ExecuteNonQuery_ShouldRollbackOnError passed.");
         }
 
-
         private void CreateProductsTable()
         {
-            Logger.Trace("Ensuring products table exists...");
-            try
-            {
-                string createTableQuery = @"
-                    CREATE TABLE IF NOT EXISTS products (
-                        id CHAR(36) PRIMARY KEY,
-                        name VARCHAR(50),
-                        price DECIMAL(10, 2),
-                        amount INT
-                    );";
+            string createTableQuery = @"
+            CREATE TABLE IF NOT EXISTS products (
+                id CHAR(36) PRIMARY KEY,
+                name VARCHAR(50),
+                price DECIMAL(10, 2),
+                amount INT
+            );";
 
-                using (var command = new MySqlCommand(createTableQuery, _connection))
-                {
-                    command.CommandTimeout = 30; // Add timeout to avoid indefinite hang
-                    command.ExecuteNonQuery();
-                }
-                Logger.Debug("Products table created or already exists.");
-            }
-            catch (Exception ex)
+            using (var command = new MySqlCommand(createTableQuery, _connection))
             {
-                Logger.Error(ex, "Failed to create products table.");
-                throw new InvalidOperationException("Failed to create products table. Check the test schema.", ex);
+                command.ExecuteNonQuery();
             }
         }
-
         public void Dispose()
         {
-            Logger.Trace("Cleaning up QueryExecutorTests...");
-            try
-            {
-                string dropTableQuery = "DROP TABLE IF EXISTS products";
-
-                using (var command = new MySqlCommand(dropTableQuery, _connection))
-                {
-                    command.CommandTimeout = 30; // Add timeout to avoid indefinite hang
-                    command.ExecuteNonQuery();
-                }
-                Logger.Debug("Products table dropped successfully.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error during test cleanup.");
-            }
-            finally
-            {
-                _connection.Close();
-                _connection.Dispose();
-                Logger.Debug("Connection to test database closed.");
-            }
+            // No explicit disposal required; handled by the fixture
         }
     }
 }

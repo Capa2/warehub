@@ -37,7 +37,7 @@ namespace warehub.Tests.model
             var productAmount = 100;
 
             // Act: Call the method we're testing (System Under Test)
-            var sut = ProductFactory.CreateProduct(productName, productPrice, productAmount);
+            var sut = ProductFactory.CreateProduct(id, productName, productPrice, productAmount);
 
             // Assert: Verify that the SUT behaves as expected
             Assert.Equal(id, sut.Id);
