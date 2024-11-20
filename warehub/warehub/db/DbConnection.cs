@@ -5,6 +5,9 @@ using warehub;
 
 namespace warehub.db
 {
+    /// <summary>
+    /// Represents a thread-safe singleton class for managing a MySQL database connection.
+    /// </summary>
     public class DbConnection
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
