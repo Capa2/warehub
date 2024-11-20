@@ -16,7 +16,7 @@ namespace warehub.Tests.db
         {
             // Use a dedicated connection for the test schema
             DbConnection.Initialize("test");
-            DbConnection.Instance.Connect();
+            DbConnection.Connect();
             _connection = new MySqlConnection(DbConnection.GetConnection().ConnectionString);
             _connection.Open();
             CrudService = new CRUDService(_connection);
