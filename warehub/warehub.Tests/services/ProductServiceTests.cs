@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using warehub.model;
-using warehub.repository;
+using warehub.repository.interfaces;
 using warehub.services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
