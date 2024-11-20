@@ -18,7 +18,7 @@ namespace warehub.db
         /// <summary>
         /// Gets the singleton instance of DbConnection.
         /// </summary>
-        private static DbConnection Instance
+        public static DbConnection? Instance
         {
             get
             {
@@ -33,7 +33,7 @@ namespace warehub.db
         /// <summary>
         /// Initialize the singleton instance of DbConnection with connection string from config.
         /// </summary>
-        private static void Initialize(string connectionString)
+        public static void Initialize(string connectionString = "localhost")
         {
             lock (_lock)
             {
@@ -41,8 +41,14 @@ namespace warehub.db
                 {
                     try {
                         Config config = Config.GetInstance();
-                        _instance = new DbConnection(config.GetConnectionString(connectionString));
-                        Logger.Info($"DbConnection singleton instance created targeting {connectionString}.");
+                        string? _connectionString = config.GetConnectionString(connectionString);
+                        if (_connectionString == null)
+                        {
+                            Logger.Error("Failed to initialize DbConnection. Connection string is null.");
+                            return;
+                        }
+                        _instance = new DbConnection(_connectionString);
+                        Logger.Info($"DbConnection singleton instance created targeting {_connectionString}.");
                     } 
                     catch (Exception ex)
                     {
@@ -59,10 +65,15 @@ namespace warehub.db
         /// <summary>
         /// Opens the MySQL connection if it is not already open.
         /// </summary>
-        private void Connect()
+        public void Connect()
         {
             try
             {
+                if (_instance is null)
+                {
+                    Logger.Error("MysqlConnection: Cannot connect. MysqlConnection Instance is null");
+                    return;
+                }
                 if (_connection.State != System.Data.ConnectionState.Open)
                 {
                     _connection.Open();
@@ -82,11 +93,14 @@ namespace warehub.db
         /// <summary>
         /// Gets the MySqlConnection instance and ensures the connection is open.
         /// </summary>
-        public static MySqlConnection GetConnection(string connectionString = "localhost")
+        public static MySqlConnection? GetConnection()
         {
-            if (_instance == null) Initialize(connectionString);
-            Instance.Connect();
-            return Instance._connection;
+            if (_instance is null)
+            {
+                Logger.Error("MysqlConnection: Cannot get connection. MysqlConnection Instance is null");
+                return null;
+            }
+            return _instance._connection;
         }
 
         /// <summary>
@@ -96,9 +110,14 @@ namespace warehub.db
         {
             try
             {
-                if (Instance._connection.State != System.Data.ConnectionState.Closed)
+                if (_instance is null)
                 {
-                    Instance._connection.Close();
+                    Logger.Error("MysqlConnection: Cannot disconnect. MysqlConnection Instance is null");
+                    return;
+                }
+                if (_instance._connection.State != System.Data.ConnectionState.Closed)
+                {
+                    _instance._connection.Close();
                     Logger.Info("Database connection successfully closed.");
                 }
                 else

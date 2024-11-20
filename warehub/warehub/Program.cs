@@ -12,10 +12,12 @@ class Program
         LoggerConfig.ConfigureLogging();
         var logger = LogManager.GetCurrentClassLogger();
         logger.Info("Application started.");
-
-        logger.Info("Populating...");
-        ProductPopulater.Populate();
-        
+        logger.Info("Initializing Database...");
+        DbConnection.Initialize();
+        DbConnection.Instance.Connect();
+        //logger.Info("Populating...");
+        //ProductPopulater.Populate();
+        DbConnection.Disconnect();
         LogManager.Shutdown();
     }
 }

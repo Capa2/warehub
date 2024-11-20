@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using warehub.model;
-using warehub.repository;
+using warehub.model.interfaces;
 using warehub.services.interfaces;
 using NLog;
+using warehub.repository.interfaces;
 
 namespace warehub.services
 {
     /// <summary>
     /// Service class responsible for managing Product-related business logic.
     /// </summary>
-    public class ProductService : IProductSerivce
+    public class ProductService : IProductService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IProductRepository _productRepository;
@@ -28,7 +29,7 @@ namespace warehub.services
         /// Retrieves all products from the repository.
         /// </summary>
         /// <returns>A list of products if successful; otherwise, null.</returns>
-        public List<Product>? GetAllProducts()
+        public List<IProduct>? GetAllProducts()
         {
             try
             {
@@ -62,7 +63,7 @@ namespace warehub.services
         /// </summary>
         /// <param name="id">The unique identifier of the product.</param>
         /// <returns>The product if found; otherwise, null.</returns>
-        public Product? GetProductById(Guid id)
+        public IProduct? GetProductById(Guid id)
         {
             try
             {
@@ -96,7 +97,7 @@ namespace warehub.services
         /// </summary>
         /// <param name="product">The product to add.</param>
         /// <returns>True if the product was added successfully; otherwise, false.</returns>
-        public bool AddProduct(Product product)
+        public bool AddProduct(IProduct product)
         {
             try
             {
@@ -124,7 +125,7 @@ namespace warehub.services
         /// </summary>
         /// <param name="product">The product to update.</param>
         /// <returns>True if the product was updated successfully; otherwise, false.</returns>
-        public bool UpdateProduct(Product product)
+        public bool UpdateProduct(IProduct product)
         {
             try
             {

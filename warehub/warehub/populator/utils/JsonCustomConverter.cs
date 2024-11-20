@@ -5,23 +5,22 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
+using warehub.model.interfaces;
 using warehub.model;
 
-namespace warehub.controller
+namespace warehub.populator.utils
 {
     internal class JsonCustomConverter
     {
-        public class ProductConverter : JsonConverter<Product>
+        public class ProductConverter : JsonConverter<IProduct>
         {
-            public override Product Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            public override IProduct Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
                 // Parse the JSON object
                 if (reader.TokenType != JsonTokenType.StartObject)
-                {
                     throw new JsonException("Expected StartObject token.");
-                }
 
-                string name = null;
+                string? name = null;
                 decimal price = 0;
                 int amount = 0;
 
@@ -29,13 +28,11 @@ namespace warehub.controller
                 while (reader.Read())
                 {
                     if (reader.TokenType == JsonTokenType.EndObject)
-                    {
                         break; // End of the object
-                    }
 
                     if (reader.TokenType == JsonTokenType.PropertyName)
                     {
-                        string propertyName = reader.GetString();
+                        string? propertyName = reader.GetString();
                         reader.Read(); // Move to the value
 
                         switch (propertyName)
@@ -57,7 +54,7 @@ namespace warehub.controller
                 return ProductFactory.CreateProduct(name, price, amount);
             }
 
-            public override void Write(Utf8JsonWriter writer, Product value, JsonSerializerOptions options)
+            public override void Write(Utf8JsonWriter writer, IProduct value, JsonSerializerOptions options)
             {
                 // Serialize Product back to JSON
                 writer.WriteStartObject();

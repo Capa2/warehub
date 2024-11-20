@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using NLog;
-using warehub.services;
+using warehub.utils;
 
 namespace warehub.db.utils
 {
@@ -33,7 +33,7 @@ namespace warehub.db.utils
         /// <returns>True if the operation is successful; otherwise, false.</returns>
         public bool ExecuteNonQuery(string query, Dictionary<string, object> parameters, string successMessage, bool commitTransaction = true)
         {
-            MySqlTransaction transaction = null;
+            MySqlTransaction? transaction = null;
 
             try
             {
@@ -107,7 +107,7 @@ namespace warehub.db.utils
             var results = new List<Dictionary<string, object>>();
             bool status = false;
 
-            MySqlTransaction transaction = null;
+            MySqlTransaction? transaction = null;
 
             try
             {
@@ -123,7 +123,7 @@ namespace warehub.db.utils
 
                         if (param.Key == "id" && param.Value is Guid guidValue)
                         {
-                            value = GuidService.GuidToString(guidValue);
+                            value = GuidUtil.GuidToString(guidValue);
                         }
                         else
                         {
@@ -144,7 +144,7 @@ namespace warehub.db.utils
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 string columnName = reader.GetName(i);
-                                object value = reader.GetValue(i);
+                                object? value = reader.GetValue(i);
 
                                 if (columnTypeMapping.TryGetValue(columnName, out var targetType))
                                 {
@@ -184,7 +184,7 @@ namespace warehub.db.utils
         /// <param name="value">The value to convert.</param>
         /// <param name="targetType">The target type to convert the value to.</param>
         /// <returns>The converted value.</returns>
-        private object ConvertToType(object value, Type targetType)
+        private object? ConvertToType(object value, Type targetType)
         {
             if (value == DBNull.Value)
                 return null;

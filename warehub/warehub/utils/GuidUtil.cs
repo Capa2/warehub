@@ -1,13 +1,13 @@
 ﻿//GuidService.cs
 using NLog;
 
-namespace warehub.services
+namespace warehub.utils
 {
     /// <summary>
     /// Provides utility methods for working with Guids, including generation, 
     /// conversion to binary format, and parsing from strings.
     /// </summary>
-    public static class GuidService
+    public static class GuidUtil
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -42,9 +42,7 @@ namespace warehub.services
         public static Guid BinaryToGuid(byte[] binaryGuid)
         {
             if (binaryGuid.Length != 16)
-            {
                 Logger.Error("GuidService: Invalid binary format for Guid. Must be 16 bytes.");
-            }
             Guid guid = new Guid(binaryGuid);
             Logger.Trace($"GuidService: Converted byte array to Guid: {guid}");
             return guid;
