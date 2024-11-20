@@ -14,7 +14,7 @@ class Program
         logger.Info("Application started.");
         logger.Info("Initializing Database...");
         DbConnection.Initialize();
-        DbConnection.Instance.Connect();
+        DbConnection.Connect();
         //logger.Info("Populating...");
         //ProductPopulater.Populate();
         DbConnection.Disconnect();

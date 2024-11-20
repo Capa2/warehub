@@ -20,12 +20,7 @@ namespace warehub.repository
 
         public ProductRepository()
         {
-            MySqlConnection? connection = DbConnection.GetConnection();
-            if (connection == null)
-            {
-                Logger.Error("Failed to initialize ProductRepository. Connection is null.");
-                return;
-            }
+            MySqlConnection connection = DbConnection.GetConnection();
             _cRUDService = new CRUDService(connection);
         }
 
