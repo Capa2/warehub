@@ -14,7 +14,10 @@ namespace warehub.Tests.db.utils
 
         public DatabaseFixture()
         {
-            Connection = new MySqlConnection(DbConnection.GetConnection("test").ConnectionString);
+            // Use a dedicated connection for the test schema
+            DbConnection.Initialize("test");
+            DbConnection.Instance.Connect();
+            Connection = new MySqlConnection(DbConnection.GetConnection().ConnectionString);
             Connection.Open();
         }
 
