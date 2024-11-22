@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using warehub.model;
+using warehub.model.interfaces;
 using NLog;
 
-namespace warehub.repository
+namespace warehub.repository.utils
 {
     /// <summary>
     /// Provides methods for mapping dictionary data to Product objects.
@@ -17,9 +18,9 @@ namespace warehub.repository
         /// </summary>
         /// <param name="products">The list of dictionaries containing product data.</param>
         /// <returns>A list of mapped Product objects.</returns>
-        public static List<Product> MapDictToProducts(List<Dictionary<string, object>> products)
+        public static List<IProduct> MapDictToProducts(List<Dictionary<string, object>> products)
         {
-            var productList = new List<Product>();
+            var productList = new List<IProduct>();
             foreach (var productDict in products)
             {
                 // Validate and extract 'id'

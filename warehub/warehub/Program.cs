@@ -19,7 +19,12 @@ builder.Services.AddFastEndpoints(); // Register FastEndpoints
 builder.Services.AddScoped<IProductRepository, ProductRepository>(); 
 builder.Services.AddScoped<ProductService>();    // Scoped for request lifecycle
 var app = builder.Build();
-
+LoggerConfig.ConfigureLogging();
+var logger = LogManager.GetCurrentClassLogger();
+logger.Info("Application started.");
+logger.Info("Initializing Database...");
+DbConnection.Initialize();
+DbConnection.Connect();
 // Configure middleware
 //app.UseAuthorization();
 app.UseFastEndpoints(); // Enable FastEndpoints

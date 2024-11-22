@@ -1,20 +1,20 @@
 ﻿using System;
-using warehub.services;
+using warehub.utils;
 using Xunit;
 
 namespace warehub.Tests.services
 {
     /// <summary>
-    /// Unit tests for the GuidService class.
+    /// Unit tests for the GuidUtil class.
     /// </summary>
-    public class GuidServiceTests
+    public class GuidUtilTests
     {
         [Fact]
         public void GenerateId_ShouldReturnNewGuid()
         {
             // Act
-            var guid1 = GuidService.GenerateId();
-            var guid2 = GuidService.GenerateId();
+            var guid1 = GuidUtil.GenerateId();
+            var guid2 = GuidUtil.GenerateId();
 
             // Assert
             Assert.NotEqual(Guid.Empty, guid1); // Ensure the GUID is not empty
@@ -29,7 +29,7 @@ namespace warehub.Tests.services
             var guid = Guid.NewGuid();
 
             // Act
-            var byteArray = GuidService.GuidToBinary(guid);
+            var byteArray = GuidUtil.GuidToBinary(guid);
 
             // Assert
             Assert.NotNull(byteArray);
@@ -44,7 +44,7 @@ namespace warehub.Tests.services
             var byteArray = guid.ToByteArray();
 
             // Act
-            var resultGuid = GuidService.BinaryToGuid(byteArray);
+            var resultGuid = GuidUtil.BinaryToGuid(byteArray);
 
             // Assert
             Assert.Equal(guid, resultGuid); // The converted GUID should match the original
@@ -57,7 +57,7 @@ namespace warehub.Tests.services
             var invalidByteArray = new byte[10]; // Invalid length
 
             // Act & Assert
-            var ex = Assert.Throws<ArgumentException>(() => GuidService.BinaryToGuid(invalidByteArray));
+            var ex = Assert.Throws<ArgumentException>(() => GuidUtil.BinaryToGuid(invalidByteArray));
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace warehub.Tests.services
             var guid = Guid.NewGuid();
 
             // Act
-            var guidString = GuidService.GuidToString(guid);
+            var guidString = GuidUtil.GuidToString(guid);
 
             // Assert
             Assert.False(string.IsNullOrEmpty(guidString), "Guid string should not be null or empty.");
@@ -82,7 +82,7 @@ namespace warehub.Tests.services
             var guidString = guid.ToString();
 
             // Act
-            var parsedGuid = GuidService.StringToGuid(guidString);
+            var parsedGuid = GuidUtil.StringToGuid(guidString);
 
             // Assert
             Assert.Equal(guid, parsedGuid); // The parsed GUID should match the original
@@ -95,7 +95,7 @@ namespace warehub.Tests.services
             var invalidGuidString = "invalid-guid";
 
             // Act & Assert
-            Assert.Throws<FormatException>(() => GuidService.StringToGuid(invalidGuidString));
+            Assert.Throws<FormatException>(() => GuidUtil.StringToGuid(invalidGuidString));
         }
     }
 }

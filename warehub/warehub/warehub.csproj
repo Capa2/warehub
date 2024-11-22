@@ -25,7 +25,7 @@
     </ItemGroup>
 	
     <ItemGroup>
-      <None Update="controller\ExampleProducts.json">
+      <None Update="populator\data\ExampleProducts.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

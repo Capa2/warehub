@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MySql.Data.MySqlClient;
 using NLog;
+using warehub.db.interfaces;
 using warehub.db.utils;
 
 namespace warehub.db

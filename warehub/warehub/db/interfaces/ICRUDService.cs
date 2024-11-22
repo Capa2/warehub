@@ -1,5 +1,4 @@
-﻿
-namespace warehub.db
+﻿namespace warehub.db.interfaces
 {
     public interface ICRUDService
     {

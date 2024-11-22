@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using NLog;
-using warehub.services;
+using warehub.utils;
 
 namespace warehub.db.utils
 {
@@ -42,6 +42,8 @@ namespace warehub.db.utils
 
                 using (var command = new MySqlCommand(query, _connection, transaction))
                 {
+                    command.CommandTimeout = 30; // Avoid endless execution
+
                     // Add parameters to the query
                     foreach (var param in parameters)
                     {
@@ -61,11 +63,17 @@ namespace warehub.db.utils
                     }
                     else
                     {
+                        Logger.Warn($"No rows affected. Rolling back transaction for query: {query}");
                         await transaction.RollbackAsync();
-                        Logger.Warn($"Transaction rolled back for query: {query}");
                         return false;
                     }
                 }
+            }
+            catch (MySqlException ex)
+            {
+                transaction?.Rollback();
+                Logger.Error(ex, $"SQL Error in ExecuteNonQuery. Query: {query}");
+                return false; // Gracefully fail on SQL error
             }
             catch (Exception ex)
             {
@@ -84,6 +92,7 @@ namespace warehub.db.utils
                 }
             }
         }
+
 
         /// <summary>
         /// Executes a query and retrieves the results as a list of dictionaries.
@@ -120,7 +129,7 @@ namespace warehub.db.utils
 
                         if (param.Key == "id" && param.Value is Guid guidValue)
                         {
-                            value = GuidService.GuidToString(guidValue);
+                            value = GuidUtil.GuidToString(guidValue);
                         }
                         else
                         {
@@ -141,7 +150,7 @@ namespace warehub.db.utils
                             for (int i = 0; i < reader.FieldCount; i++)
                             {
                                 string columnName = reader.GetName(i);
-                                object value = reader.GetValue(i);
+                                object? value = reader.GetValue(i);
 
                                 if (columnTypeMapping.TryGetValue(columnName, out var targetType))
                                 {
@@ -186,7 +195,7 @@ namespace warehub.db.utils
         /// <param name="value">The value to convert.</param>
         /// <param name="targetType">The target type to convert the value to.</param>
         /// <returns>The converted value.</returns>
-        private object ConvertToType(object value, Type targetType)
+        private object? ConvertToType(object value, Type targetType)
         {
             if (value == DBNull.Value)
                 return null;

@@ -1,0 +1,891 @@
+﻿{
+  "Version": 2,
+  "Properties": {
+    "AreNodeDescriptionsVisible": "True"
+  },
+  "Nodes": [
+    {
+      "Id": "20",
+      "Name": "warehub (1.0.0.0)",
+      "Stereotype": "Assembly",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0507933Z",
+      "AbsoluteTopLeft": "-624.0843,3279.8995",
+      "HeaderContentSize": "1312.0611,27",
+      "PreferredHeaderSize": "156.07,27",
+      "Tooltip": "assembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "1312.0611,1147.5436",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "1310.0611,1119.5436",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "Other",
+        "SymbolName": "warehub",
+        "FullName": "assembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+        "Symbols": [
+          "{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "NotApplicable",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "1",
+      "ParentId": "20",
+      "Name": "Program",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0467693Z",
+      "AbsoluteTopLeft": "-467.9875,3581.6149",
+      "HeaderContentSize": "100,50",
+      "PreferredHeaderSize": "60.0933,43.4",
+      "Tooltip": "class Program\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "100,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "Program",
+        "FullName": "class Program",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"Program\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Internal",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "2",
+      "ParentId": "20",
+      "Name": "warehub.db",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0467693Z",
+      "AbsoluteTopLeft": "-216.404,3677.2773",
+      "HeaderContentSize": "395,27",
+      "PreferredHeaderSize": "158.5833,27",
+      "Tooltip": "namespace warehub.db\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "395,645.2",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "393,617.2",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "db",
+        "FullyQualifiedName": "warehub.db",
+        "FullName": "namespace warehub.db",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 2
+      }
+    },
+    {
+      "Id": "3",
+      "ParentId": "2",
+      "Name": "CRUDService",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0467693Z",
+      "AbsoluteTopLeft": "-156.2234,3902.2773",
+      "HeaderContentSize": "301,76.4",
+      "PreferredHeaderSize": "301,76.4",
+      "Tooltip": "class warehub.db.CRUDService\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "301,76.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "CRUDService",
+        "FullName": "class warehub.db.CRUDService",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"CRUDService\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "Description": "Handles CRUD (Create, Read, Update, Delete) operations on a database table.",
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "4",
+      "ParentId": "2",
+      "Name": "DbConnection",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0477751Z",
+      "AbsoluteTopLeft": "-162.3369,3773.518",
+      "HeaderContentSize": "100,50",
+      "PreferredHeaderSize": "91.56,39.4",
+      "Tooltip": "class warehub.db.DbConnection\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "100,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "DbConnection",
+        "FullName": "class warehub.db.DbConnection",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"DbConnection\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "21",
+      "ParentId": "2",
+      "Name": "interfaces",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "-1.8307,3724.2773",
+      "HeaderContentSize": "146.99,27",
+      "PreferredHeaderSize": "146.99,27",
+      "Tooltip": "namespace warehub.db.interfaces\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "146.99,118",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "144.99,90",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "interfaces",
+        "FullyQualifiedName": "warehub.db.interfaces",
+        "FullName": "namespace warehub.db.interfaces",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 3
+      }
+    },
+    {
+      "Id": "22",
+      "ParentId": "21",
+      "Name": "ICRUDService",
+      "Stereotype": "Interface",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "23.4623,3771.2773",
+      "HeaderContentSize": "100,50",
+      "PreferredHeaderSize": "87.2933,39.4",
+      "Tooltip": "interface warehub.db.interfaces.ICRUDService\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "100,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "ICRUDService",
+        "FullName": "interface warehub.db.interfaces.ICRUDService",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"ICRUDService\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "IsAbstract": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "23",
+      "ParentId": "2",
+      "Name": "utils",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "-185.404,4038.6773",
+      "HeaderContentSize": "343,27",
+      "PreferredHeaderSize": "117.7633,27",
+      "Tooltip": "namespace warehub.db.utils\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "343,262.8",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "341,234.8",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "utils",
+        "FullyQualifiedName": "warehub.db.utils",
+        "FullName": "namespace warehub.db.utils",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 3
+      }
+    },
+    {
+      "Id": "24",
+      "ParentId": "23",
+      "Name": "QueryExecutor",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "-164.404,4085.6773",
+      "HeaderContentSize": "301,88.4",
+      "PreferredHeaderSize": "301,88.4",
+      "Tooltip": "class warehub.db.utils.QueryExecutor\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "301,88.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "QueryExecutor",
+        "FullName": "class warehub.db.utils.QueryExecutor",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"QueryExecutor\",\"C\":{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+        ],
+        "Description": "Handles the execution of database queries and commands for non-CRUD-specific operations. Mainly Works in corrolation with CrudService.cs",
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "25",
+      "ParentId": "23",
+      "Name": "TableTypeUtility",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "-164.404,4204.0773",
+      "HeaderContentSize": "301,76.4",
+      "PreferredHeaderSize": "301,76.4",
+      "Tooltip": "class warehub.db.utils.TableTypeUtility\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "301,76.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "TableTypeUtility",
+        "FullName": "class warehub.db.utils.TableTypeUtility",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"TableTypeUtility\",\"C\":{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+        ],
+        "Description": "Provides utility methods and data for managing table-to-column type mappings and converting database values to .NET types.",
+        "IsDescriptionVisible": true,
+        "IsStatic": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "5",
+      "ParentId": "20",
+      "Name": "warehub.model",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0477751Z",
+      "AbsoluteTopLeft": "-517.8307,3859.9412",
+      "HeaderContentSize": "198.99,27",
+      "PreferredHeaderSize": "178.08,27",
+      "Tooltip": "namespace warehub.model\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "198.99,456",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "196.99,428",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "model",
+        "FullyQualifiedName": "warehub.model",
+        "FullName": "namespace warehub.model",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"model\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 2
+      }
+    },
+    {
+      "Id": "6",
+      "ParentId": "5",
+      "Name": "GenericResponseDTO<T>",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0477751Z",
+      "AbsoluteTopLeft": "-494.8407,4084.9412",
+      "HeaderContentSize": "155,50",
+      "PreferredHeaderSize": "155,39.4",
+      "Tooltip": "class warehub.model.GenericResponseDTO<T>\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "155,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "GenericResponseDTO",
+        "FullName": "class warehub.model.GenericResponseDTO<T>",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"GenericResponseDTO\",\"A\":1,\"C\":{\"K\":\"Namespace\",\"N\":\"model\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "7",
+      "ParentId": "5",
+      "Name": "Product",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0487812Z",
+      "AbsoluteTopLeft": "-439.8407,4244.9412",
+      "HeaderContentSize": "100,50",
+      "PreferredHeaderSize": "57,39.4",
+      "Tooltip": "class warehub.model.Product\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "100,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "Product",
+        "FullName": "class warehub.model.Product",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"Product\",\"C\":{\"K\":\"Namespace\",\"N\":\"model\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "8",
+      "ParentId": "5",
+      "Name": "ProductFactory",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0487812Z",
+      "AbsoluteTopLeft": "-439.8407,4164.9412",
+      "HeaderContentSize": "100,50",
+      "PreferredHeaderSize": "97.33,39.4",
+      "Tooltip": "class warehub.model.ProductFactory\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "100,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "ProductFactory",
+        "FullName": "class warehub.model.ProductFactory",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"ProductFactory\",\"C\":{\"K\":\"Namespace\",\"N\":\"model\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "IsStatic": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "26",
+      "ParentId": "5",
+      "Name": "interfaces",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "-493.9904,3906.9412",
+      "HeaderContentSize": "146.99,27",
+      "PreferredHeaderSize": "146.99,27",
+      "Tooltip": "namespace warehub.model.interfaces\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "146.99,118",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "144.99,90",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "interfaces",
+        "FullyQualifiedName": "warehub.model.interfaces",
+        "FullName": "namespace warehub.model.interfaces",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"model\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 3
+      }
+    },
+    {
+      "Id": "27",
+      "ParentId": "26",
+      "Name": "IProduct",
+      "Stereotype": "Interface",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "-469.1538,3953.9412",
+      "HeaderContentSize": "100,50",
+      "PreferredHeaderSize": "58.4,39.4",
+      "Tooltip": "interface warehub.model.interfaces.IProduct\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "100,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "IProduct",
+        "FullName": "interface warehub.model.interfaces.IProduct",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"IProduct\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"model\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "IsAbstract": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "11",
+      "ParentId": "20",
+      "Name": "warehub.repository",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0497880Z",
+      "AbsoluteTopLeft": "-218.8547,3357.6301",
+      "HeaderContentSize": "811.8,27",
+      "PreferredHeaderSize": "198.0733,27",
+      "Tooltip": "namespace warehub.repository\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "811.8,229.6377",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "809.8,201.6377",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "repository",
+        "FullyQualifiedName": "warehub.repository",
+        "FullName": "namespace warehub.repository",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 2
+      }
+    },
+    {
+      "Id": "12",
+      "ParentId": "11",
+      "Name": "ProductRepository",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0497880Z",
+      "AbsoluteTopLeft": "-197.8547,3516.2678",
+      "HeaderContentSize": "116.7267,50",
+      "PreferredHeaderSize": "116.7267,39.4",
+      "Tooltip": "class warehub.repository.ProductRepository\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "116.7267,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "ProductRepository",
+        "FullName": "class warehub.repository.ProductRepository",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"ProductRepository\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "28",
+      "ParentId": "11",
+      "Name": "interfaces",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "-21.1281,3438.2774",
+      "HeaderContentSize": "160.0733,27",
+      "PreferredHeaderSize": "146.99,27",
+      "Tooltip": "namespace warehub.repository.interfaces\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "160.0733,118",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "158.0733,90",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "interfaces",
+        "FullyQualifiedName": "warehub.repository.interfaces",
+        "FullName": "namespace warehub.repository.interfaces",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 3
+      }
+    },
+    {
+      "Id": "29",
+      "ParentId": "28",
+      "Name": "IProductRepository",
+      "Stereotype": "Interface",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "-0.1281,3485.2774",
+      "HeaderContentSize": "118.0733,50",
+      "PreferredHeaderSize": "118.0733,39.4",
+      "Tooltip": "interface warehub.repository.interfaces.IProductRepository\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "118.0733,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "IProductRepository",
+        "FullName": "interface warehub.repository.interfaces.IProductRepository",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"IProductRepository\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "IsAbstract": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "30",
+      "ParentId": "11",
+      "Name": "utils",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "228.9453,3411.8774",
+      "HeaderContentSize": "343,27",
+      "PreferredHeaderSize": "117.7633,27",
+      "Tooltip": "namespace warehub.repository.utils\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "343,144.4",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "341,116.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "utils",
+        "FullyQualifiedName": "warehub.repository.utils",
+        "FullName": "namespace warehub.repository.utils",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 3
+      }
+    },
+    {
+      "Id": "31",
+      "ParentId": "30",
+      "Name": "ObjectMapper",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "249.9453,3458.8774",
+      "HeaderContentSize": "301,76.4",
+      "PreferredHeaderSize": "301,76.4",
+      "Tooltip": "class warehub.repository.utils.ObjectMapper\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "301,76.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "ObjectMapper",
+        "FullName": "class warehub.repository.utils.ObjectMapper",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"ObjectMapper\",\"C\":{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+        ],
+        "Description": "Provides methods for mapping dictionary data to Product objects.",
+        "IsDescriptionVisible": true,
+        "IsStatic": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "13",
+      "ParentId": "20",
+      "Name": "warehub.services",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0497880Z",
+      "AbsoluteTopLeft": "278.596,3677.2773",
+      "HeaderContentSize": "343,27",
+      "PreferredHeaderSize": "185.5733,27",
+      "Tooltip": "namespace warehub.services\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "343,322.4",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "341,294.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "services",
+        "FullyQualifiedName": "warehub.services",
+        "FullName": "namespace warehub.services",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"services\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 2
+      }
+    },
+    {
+      "Id": "14",
+      "ParentId": "13",
+      "Name": "ProductService",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0497880Z",
+      "AbsoluteTopLeft": "299.596,3902.2773",
+      "HeaderContentSize": "301,76.4",
+      "PreferredHeaderSize": "301,76.4",
+      "Tooltip": "class warehub.services.ProductService\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "301,76.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "ProductService",
+        "FullName": "class warehub.services.ProductService",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"ProductService\",\"C\":{\"K\":\"Namespace\",\"N\":\"services\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "Description": "Service class responsible for managing Product-related business logic.",
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "32",
+      "ParentId": "13",
+      "Name": "interfaces",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "399.9853,3724.2773",
+      "HeaderContentSize": "146.99,27",
+      "PreferredHeaderSize": "146.99,27",
+      "Tooltip": "namespace warehub.services.interfaces\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "146.99,118",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "144.99,90",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "interfaces",
+        "FullyQualifiedName": "warehub.services.interfaces",
+        "FullName": "namespace warehub.services.interfaces",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"services\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 3
+      }
+    },
+    {
+      "Id": "33",
+      "ParentId": "32",
+      "Name": "IProductService",
+      "Stereotype": "Interface",
+      "CreatedAtUtc": "2024-11-20T12:46:00.5583369Z",
+      "AbsoluteTopLeft": "425.9753,3771.2773",
+      "HeaderContentSize": "100,50",
+      "PreferredHeaderSize": "97.88,39.4",
+      "Tooltip": "interface warehub.services.interfaces.IProductService\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "100,50",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "IProductService",
+        "FullName": "interface warehub.services.interfaces.IProductService",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"IProductService\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"services\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "IsAbstract": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "15",
+      "ParentId": "20",
+      "Name": "warehub.utils",
+      "Stereotype": "Namespace",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0497880Z",
+      "AbsoluteTopLeft": "278.596,4089.6773",
+      "HeaderContentSize": "343,27",
+      "PreferredHeaderSize": "166.2267,27",
+      "Tooltip": "namespace warehub.utils\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "343,250.8",
+      "ChildrenAreaTopLeft": "1,27",
+      "ChildrenAreaSize": "341,222.8",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynNamespace",
+        "SymbolName": "utils",
+        "FullyQualifiedName": "warehub.utils",
+        "FullName": "namespace warehub.utils",
+        "Symbols": [
+          "{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}"
+        ],
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode",
+        "NamespaceLevel": 2
+      }
+    },
+    {
+      "Id": "16",
+      "ParentId": "15",
+      "Name": "GuidUtil",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0507933Z",
+      "AbsoluteTopLeft": "299.596,4231.0773",
+      "HeaderContentSize": "301,88.4",
+      "PreferredHeaderSize": "301,88.4",
+      "Tooltip": "class warehub.utils.GuidUtil\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "301,88.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "GuidUtil",
+        "FullName": "class warehub.utils.GuidUtil",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"GuidUtil\",\"C\":{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "Description": "Provides utility methods for working with Guids, including generation, conversion to binary format, and parsing from strings.",
+        "IsDescriptionVisible": true,
+        "IsStatic": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "17",
+      "ParentId": "15",
+      "Name": "LoggerConfig",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0507933Z",
+      "AbsoluteTopLeft": "323.748,4136.6773",
+      "HeaderContentSize": "238.7,64.4",
+      "PreferredHeaderSize": "238.7,64.4",
+      "Tooltip": "class warehub.utils.LoggerConfig\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "238.7,64.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "LoggerConfig",
+        "FullName": "class warehub.utils.LoggerConfig",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"LoggerConfig\",\"C\":{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}"
+        ],
+        "Description": "Configures logging for the application using NLog.",
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    },
+    {
+      "Id": "19",
+      "ParentId": "20",
+      "Name": "Config",
+      "Stereotype": "Class",
+      "CreatedAtUtc": "2024-11-20T12:43:26.0507933Z",
+      "AbsoluteTopLeft": "-577.404,3696.9803",
+      "HeaderContentSize": "301,100.4",
+      "PreferredHeaderSize": "301,100.4",
+      "Tooltip": "class warehub.Config\r\nassembly: warehub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "NodeTotalSize": "301,100.4",
+      "IsPinned": true,
+      "Payload": {
+        "Discriminator": "RoslynType",
+        "SymbolName": "Config",
+        "FullName": "class warehub.Config",
+        "Symbols": [
+          "{\"K\":\"NamedType\",\"N\":\"Config\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}"
+        ],
+        "Description": "The Config class is responsible for loading and accessing configuration settings from a specified JSON file. This class is implemented as a singleton to ensure only one instance is used throughout the application.",
+        "IsDescriptionVisible": true,
+        "Accessibility": "Public",
+        "Origin": "SourceCode"
+      }
+    }
+  ],
+  "Connectors": [
+    {
+      "Id": "1",
+      "SourceNodeId": "3",
+      "TargetNodeId": "22",
+      "Stereotype": "Implementation",
+      "Payload": {
+        "Discriminator": "Other",
+        "Relationship": "{\"K\":\"NamedType\",\"N\":\"CRUDService\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}|Implementation|{\"K\":\"NamedType\",\"N\":\"ICRUDService\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+      }
+    },
+    {
+      "Id": "2",
+      "SourceNodeId": "12",
+      "TargetNodeId": "22",
+      "Stereotype": "Association",
+      "Payload": {
+        "Discriminator": "Association",
+        "Relationship": "{\"K\":\"NamedType\",\"N\":\"ProductRepository\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}|Association|{\"K\":\"NamedType\",\"N\":\"ICRUDService\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}",
+        "TargetLabels": [
+          {
+            "Label": {
+              "Text1": "0..1",
+              "Text2": "_cRUDService",
+              "Tooltip": "private readonly ICRUDService? _cRUDService"
+            },
+            "Symbol": "{\"K\":\"Field\",\"N\":\"_cRUDService\",\"C\":{\"K\":\"NamedType\",\"N\":\"ProductRepository\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "3",
+      "SourceNodeId": "3",
+      "TargetNodeId": "24",
+      "Stereotype": "Association",
+      "Payload": {
+        "Discriminator": "Association",
+        "Relationship": "{\"K\":\"NamedType\",\"N\":\"CRUDService\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}|Association|{\"K\":\"NamedType\",\"N\":\"QueryExecutor\",\"C\":{\"K\":\"Namespace\",\"N\":\"utils\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}",
+        "TargetLabels": [
+          {
+            "Label": {
+              "Text2": "_queryExecutor",
+              "Tooltip": "private readonly QueryExecutor _queryExecutor",
+              "CanBeHidden": true
+            },
+            "Symbol": "{\"K\":\"Field\",\"N\":\"_queryExecutor\",\"C\":{\"K\":\"NamedType\",\"N\":\"CRUDService\",\"C\":{\"K\":\"Namespace\",\"N\":\"db\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "4",
+      "SourceNodeId": "7",
+      "TargetNodeId": "27",
+      "Stereotype": "Implementation",
+      "Payload": {
+        "Discriminator": "Other",
+        "Relationship": "{\"K\":\"NamedType\",\"N\":\"Product\",\"C\":{\"K\":\"Namespace\",\"N\":\"model\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}|Implementation|{\"K\":\"NamedType\",\"N\":\"IProduct\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"model\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+      }
+    },
+    {
+      "Id": "5",
+      "SourceNodeId": "12",
+      "TargetNodeId": "29",
+      "Stereotype": "Implementation",
+      "Payload": {
+        "Discriminator": "Other",
+        "Relationship": "{\"K\":\"NamedType\",\"N\":\"ProductRepository\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}|Implementation|{\"K\":\"NamedType\",\"N\":\"IProductRepository\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+      }
+    },
+    {
+      "Id": "6",
+      "SourceNodeId": "14",
+      "TargetNodeId": "29",
+      "Stereotype": "Association",
+      "Payload": {
+        "Discriminator": "Association",
+        "Relationship": "{\"K\":\"NamedType\",\"N\":\"ProductService\",\"C\":{\"K\":\"Namespace\",\"N\":\"services\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}|Association|{\"K\":\"NamedType\",\"N\":\"IProductRepository\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"repository\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}",
+        "TargetLabels": [
+          {
+            "Label": {
+              "Text2": "_productRepository",
+              "Tooltip": "private readonly IProductRepository _productRepository",
+              "CanBeHidden": true
+            },
+            "Symbol": "{\"K\":\"Field\",\"N\":\"_productRepository\",\"C\":{\"K\":\"NamedType\",\"N\":\"ProductService\",\"C\":{\"K\":\"Namespace\",\"N\":\"services\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "7",
+      "SourceNodeId": "14",
+      "TargetNodeId": "33",
+      "Stereotype": "Implementation",
+      "Payload": {
+        "Discriminator": "Other",
+        "Relationship": "{\"K\":\"NamedType\",\"N\":\"ProductService\",\"C\":{\"K\":\"Namespace\",\"N\":\"services\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}|Implementation|{\"K\":\"NamedType\",\"N\":\"IProductService\",\"C\":{\"K\":\"Namespace\",\"N\":\"interfaces\",\"C\":{\"K\":\"Namespace\",\"N\":\"services\",\"C\":{\"K\":\"Namespace\",\"N\":\"warehub\",\"C\":{\"K\":\"Assembly\",\"N\":\"warehub\",\"V\":\"1.0.0.0\"}}}}}"
+      }
+    }
+  ]
+}

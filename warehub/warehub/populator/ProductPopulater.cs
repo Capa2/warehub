@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using warehub.model;
+using warehub.model.interfaces;
 using warehub.repository;
 using warehub.services;
 using NLog;
-using static warehub.controller.JsonCustomConverter;
+using static warehub.populator.utils.JsonCustomConverter;
 
 namespace warehub.controller
 {
@@ -23,7 +24,7 @@ namespace warehub.controller
         /// </summary>
         public static void Populate()
         {
-            string relativePath = "controller\\ExampleProducts.json"; // Path relative to the application root
+            string relativePath = "populator\\data\\ExampleProducts.json"; // Path relative to the application root
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
 
             try
@@ -53,7 +54,7 @@ namespace warehub.controller
                     return;
                 }
 
-                List<Product>? products;
+                List<IProduct>? products;
                 try // Deserialize the JSON content into Product objects
                 {
                     JsonSerializerOptions options = new()
@@ -61,7 +62,7 @@ namespace warehub.controller
                         Converters = { new ProductConverter() },
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                     };
-                    products = JsonSerializer.Deserialize<List<Product>>(jsonContent, options);
+                    products = JsonSerializer.Deserialize<List<IProduct>>(jsonContent, options);
                     Logger.Trace("ProductPopulator: Deserialized JSON content into Product objects.");
                 }
                 catch (JsonException jsonEx)

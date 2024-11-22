@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using warehub.model;
-using warehub.repository;
+using warehub.model.interfaces;
+using warehub.repository.interfaces;
 using warehub.services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -26,11 +27,11 @@ namespace warehub.Tests.services
         public void GetAllProducts_ReturnsListOfProducts_WhenResponseIsSuccessful()
         {
             // Arrange: Mock the response of GetAll to return a successful result with a list of products.
-            var Data = new List<Product>
+            var Data = new List<IProduct>
             {
                 new Product(Guid.NewGuid(), "Product1", 10.99m, 5),
             };
-            var mockResponse = new GenericResponseDTO<List<Product>>(Data, true);
+            var mockResponse = new GenericResponseDTO<List<IProduct>>(Data, true);
 
             _productRepository.GetAll().Returns(mockResponse);
 
@@ -46,10 +47,10 @@ namespace warehub.Tests.services
         public void GetAllProducts_ReturnsNull_WhenResponseIsUnsuccessful()
         {
             // Arrange: Mock the response of GetAll to return an unsuccessful result.
-            var Data = new List<Product>
+            var Data = new List<IProduct>
             {
             };
-            var mockResponse = new GenericResponseDTO<List<Product>>(Data, false);
+            var mockResponse = new GenericResponseDTO<List<IProduct>>(Data, false);
 
             _productRepository.GetAll().Returns(mockResponse);
 
@@ -65,7 +66,7 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the response of GetById to return a successful result with a products.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponse = new GenericResponseDTO<Product>(product, true);
+            var mockResponse = new GenericResponseDTO<IProduct>(product, true);
 
             _productRepository.GetById(product.Id).Returns(mockResponse);
 
@@ -81,7 +82,7 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the response of GetById to return an unsuccessful result.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponse = new GenericResponseDTO<Product>(product, false);
+            var mockResponse = new GenericResponseDTO<IProduct>(product, false);
             _productRepository.GetById(product.Id).Returns(mockResponse);
 
             // Act: Call the method
@@ -97,7 +98,7 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the Add method to return a successful response.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponse = new GenericResponseDTO<Product>(product, true);
+            var mockResponse = new GenericResponseDTO<IProduct>(product, true);
 
             _productRepository.Add(product).Returns(mockResponse);
 
@@ -113,7 +114,7 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the Add method to return an unsuccessful response.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponse = new GenericResponseDTO<Product>(product, false);
+            var mockResponse = new GenericResponseDTO<IProduct>(product, false);
 
             _productRepository.Add(product).Returns(mockResponse);
 
@@ -129,7 +130,7 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the Add method to return a successful response.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponseGetById = new GenericResponseDTO<Product>(product, true);
+            var mockResponseGetById = new GenericResponseDTO<IProduct>(product, true);
             var mockResponseDelete = new GenericResponseDTO<Guid>(product.Id, true);
 
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
@@ -146,7 +147,7 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the Add method to return an unsuccessful response.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponseGetById = new GenericResponseDTO<Product>(product, true);
+            var mockResponseGetById = new GenericResponseDTO<IProduct>(product, true);
             var mockResponseDelete = new GenericResponseDTO<Guid>(product.Id, false);
 
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
@@ -164,7 +165,7 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the Add method to return an unsuccessful response.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponseGetById = new GenericResponseDTO<Product>(product, false);
+            var mockResponseGetById = new GenericResponseDTO<IProduct>(product, false);
             var mockResponseDelete = new GenericResponseDTO<Guid>(product.Id, true);
 
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
@@ -182,8 +183,8 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the Add method to return a successful response.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponseGetById = new GenericResponseDTO<Product>(product, true);
-            var mockResponseUpdate = new GenericResponseDTO<Product>(product, true);
+            var mockResponseGetById = new GenericResponseDTO<IProduct>(product, true);
+            var mockResponseUpdate = new GenericResponseDTO<IProduct>(product, true);
 
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
             _productRepository.Update(product).Returns(mockResponseUpdate);
@@ -199,8 +200,8 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the Add method to return an unsuccessful response.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponseGetById = new GenericResponseDTO<Product>(product, true);
-            var mockResponseUpdate = new GenericResponseDTO<Product>(product, false);
+            var mockResponseGetById = new GenericResponseDTO<IProduct>(product, true);
+            var mockResponseUpdate = new GenericResponseDTO<IProduct>(product, false);
 
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
             _productRepository.Update(product).Returns(mockResponseUpdate);
@@ -216,8 +217,8 @@ namespace warehub.Tests.services
         {
             // Arrange: Mock the Add method to return an unsuccessful response.
             var product = new Product(Guid.NewGuid(), "Product1", 10.99m, 5);
-            var mockResponseGetById = new GenericResponseDTO<Product>(product, false);
-            var mockResponseUpdate = new GenericResponseDTO<Product>(product, true);
+            var mockResponseGetById = new GenericResponseDTO<IProduct>(product, false);
+            var mockResponseUpdate = new GenericResponseDTO<IProduct>(product, true);
 
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
             _productRepository.Update(product).Returns(mockResponseUpdate);

@@ -1,6 +1,6 @@
 ﻿using warehub.model.interfaces;
-using warehub.services;
 using NLog;
+using warehub.utils;
 namespace warehub.model
 {
     public class Product : IProduct
@@ -13,7 +13,7 @@ namespace warehub.model
 
         public Product(string name, decimal price, int amount)
         {
-            Id = GuidService.GenerateId();
+            Id = GuidUtil.GenerateId();
             Name = name;
             Price = price;
             Amount = amount;

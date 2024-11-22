@@ -5,17 +5,21 @@ using warehub;
 
 namespace warehub.db
 {
+    /// <summary>
+    /// Represents a thread-safe singleton class for managing a MySQL database connection.
+    /// </summary>
     public class DbConnection
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private static DbConnection? _instance;
         private readonly MySqlConnection _connection;
+        private static readonly object _lock = new(); // Lock object to ensure thread safety when initializing the singleton
 
         // Private constructor to avoid instantiation from outside
         private DbConnection(string connectionString) => _connection = new MySqlConnection(connectionString);
 
         /// <summary>
-        /// Gets the singleton instance of DbConnection with connection string from config.
+        /// Gets the singleton instance of DbConnection.
         /// </summary>
         public static DbConnection Instance
         {
@@ -23,33 +27,61 @@ namespace warehub.db
             {
                 if (_instance == null)
                 {
-                    Config config = Config.GetInstance();
-                    string connectionString = config.GetConnectionString();
-                    _instance = new DbConnection(connectionString);
-                    Logger.Info("DbConnection singleton instance created.");
+                    Logger.Error("DbConnection has not been initialized. Call Initialize() first.");
+                    throw new InvalidOperationException("DbConnection has not been initialized. Call Initialize() first.");
                 }
                 return _instance;
             }
         }
 
         /// <summary>
-        /// Gets the MySqlConnection instance and ensures the connection is open.
+        /// Initialize the singleton instance of DbConnection with connection string from config.
         /// </summary>
-        public static MySqlConnection GetConnection()
+        public static void Initialize(string connectionString = "localhost")
         {
-            Instance.Connect();
-            return Instance._connection;
+            lock (_lock)
+            {
+                if (_instance == null)
+                {
+                    try {
+                        Config config = Config.GetInstance();
+                        string? _connectionString = config.GetConnectionString(connectionString);
+                        if (_connectionString == null)
+                        {
+                            Logger.Fatal("Failed to initialize DbConnection. Connection string is null.");
+                            throw new ArgumentNullException(nameof(connectionString));
+                        }
+                        _instance = new DbConnection(_connectionString);
+                        Logger.Info($"DbConnection singleton instance created targeting {_connectionString}.");
+                    } 
+                    catch (Exception ex)
+                    {
+                        Logger.Fatal($"Failed to initialize DbConnection. Error: {ex.Message}");
+                        throw;
+                    }
+                }
+                else
+                {
+                    Logger.Warn("DbConnection singleton instance is already initialized. Ignoring re-initialization.");
+                }
+            }
         }
+        
         /// <summary>
         /// Opens the MySQL connection if it is not already open.
         /// </summary>
-        private void Connect()
+        public static void Connect()
         {
             try
             {
-                if (_connection.State != System.Data.ConnectionState.Open)
+                if (_instance is null)
                 {
-                    _connection.Open();
+                    Logger.Error("MysqlConnection: Cannot connect. MysqlConnection Instance is null");
+                    return;
+                }
+                if (_instance._connection.State != System.Data.ConnectionState.Open)
+                {
+                    _instance._connection.Open();
                     Logger.Info("Database connection successfully opened.");
                 }
                 else
@@ -64,15 +96,33 @@ namespace warehub.db
         }
 
         /// <summary>
+        /// Gets the MySqlConnection instance and ensures the connection is open.
+        /// </summary>
+        public static MySqlConnection GetConnection()
+        {
+            if (_instance is null)
+            {
+                Logger.Error("MysqlConnection: Cannot get connection. MysqlConnection Instance is null");
+                throw new InvalidOperationException("MysqlConnection: Cannot get connection. MysqlConnection Instance is null");
+            }
+            return _instance._connection;
+        }
+
+        /// <summary>
         /// Closes the MySQL connection if it is open.
         /// </summary>
         public static void Disconnect()
         {
             try
             {
-                if (Instance._connection.State != System.Data.ConnectionState.Closed)
+                if (_instance is null)
                 {
-                    Instance._connection.Close();
+                    Logger.Error("MysqlConnection: Cannot disconnect. MysqlConnection Instance is null");
+                    return;
+                }
+                if (_instance._connection.State != System.Data.ConnectionState.Closed)
+                {
+                    _instance._connection.Close();
                     Logger.Info("Database connection successfully closed.");
                 }
                 else
@@ -87,11 +137,3 @@ namespace warehub.db
         }
     }
 }
-
-// Usage example (Ensure appsettings.json and Config setup is correct)
-// Get the connection for SQL operations, and it will automatically be open
-// MySqlConnection connection = DbConnection.GetConnection();
-// Use 'connection' to execute your SQL commands
-
-// Close the connection when done
-//DbConnection.Disconnect();
