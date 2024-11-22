@@ -7,6 +7,10 @@ namespace warehub.model
 {
     public static class ProductFactory
     {
+        /// <summary>
+        /// Provides factory methods for creating new product instances with specified attributes.
+        /// Supports creation of products with or without predefined unique identifiers.
+        /// </summary>
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static Product CreateProduct(string name, decimal price, int amount)

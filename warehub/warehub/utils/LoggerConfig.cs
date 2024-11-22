@@ -5,7 +5,9 @@ using NLog.Targets;
 namespace warehub.utils
 {
     /// <summary>
-    /// Configures logging for the application using NLog.
+    /// Configures global logging targets and rules using 
+    /// NLog, including console, file, and debug output, 
+    /// based on the application's configuration settings.
     /// </summary>
     public class LoggerConfig
     {

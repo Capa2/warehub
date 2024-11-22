@@ -9,7 +9,8 @@ using warehub.db.utils;
 namespace warehub.db
 {
     /// <summary>
-    /// Handles CRUD (Create, Read, Update, Delete) operations on a database table.
+    /// Provides functionality for generic CRUD operations on the database.
+    /// Uses a MySQL connection and query executor for database interaction.
     /// </summary>
     public class CRUDService : ICRUDService
     {

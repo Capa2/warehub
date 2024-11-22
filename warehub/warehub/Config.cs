@@ -4,8 +4,8 @@ using NLog;
 namespace warehub
 {
     /// <summary>
-    /// The Config class is responsible for loading and accessing configuration settings from a specified JSON file.
-    /// This class is implemented as a singleton to ensure only one instance is used throughout the application.
+    /// Provides singleton access to application configuration settings loaded from JSON files.
+    /// It supports retrieving connection strings and logging levels from the configuration.
     /// </summary>
     public class Config
     {

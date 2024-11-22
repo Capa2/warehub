@@ -5,6 +5,10 @@ namespace warehub.model
 {
     public class Product : IProduct
     {
+        /// <summary>
+        /// Represents a product in the system, encapsulating its unique identifier, name, price, and available amount.
+        /// Provides constructors for creating new products and initializing existing ones.
+        /// </summary>
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public Guid Id { get; }
         public string Name { get; }

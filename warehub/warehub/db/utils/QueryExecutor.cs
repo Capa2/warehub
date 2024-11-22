@@ -7,7 +7,7 @@ using warehub.utils;
 namespace warehub.db.utils
 {
     /// <summary>
-    /// Handles the execution of database queries and commands for non-CRUD-specific operations. Mainly Works in corrolation with CrudService.cs
+    /// Handles the execution of database queries and commands.
     /// </summary>
     public class QueryExecutor
     {

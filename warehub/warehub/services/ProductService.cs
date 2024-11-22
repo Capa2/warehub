@@ -9,7 +9,8 @@ using warehub.repository.interfaces;
 namespace warehub.services
 {
     /// <summary>
-    /// Service class responsible for managing Product-related business logic.
+    /// Provides business logic for managing products, including CRUD operations. 
+    /// Serves as the intermediary between the product repository and the application logic.
     /// </summary>
     public class ProductService : IProductService
     {

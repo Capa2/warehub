@@ -8,6 +8,10 @@ namespace warehub.model
 {
     public class GenericResponseDTO<T>
     {
+        /// <summary>
+        /// Represents a standardized response object for operations, encapsulating success status, 
+        /// data of a specified type, and optional metadata for additional information.
+        /// </summary>
         public bool IsSuccess { get; set; }
         public T Data { get; set; }
 

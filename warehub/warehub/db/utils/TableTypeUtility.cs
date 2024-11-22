@@ -12,10 +12,6 @@ namespace warehub.db.utils
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// Registry containing type mappings for columns in different tables.
-        /// Each table maps column names to their corresponding .NET types.
-        /// </summary>
         public static readonly Dictionary<string, Dictionary<string, Type>> TableColumnMappings = new()
         {
             {

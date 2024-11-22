@@ -15,6 +15,11 @@ namespace warehub.repository
 {
     public class ProductRepository : IProductRepository
     {
+        /// <summary>
+        /// Provides data access functionality for managing products 
+        /// in the database as an intermediary between the service 
+        /// layer and the database layer.
+        /// </summary>
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ICRUDService? _cRUDService;
 
@@ -54,7 +59,7 @@ namespace warehub.repository
         public GenericResponseDTO<List<IProduct>> GetAll()
         {
             var (status, products) = _cRUDService.Read("products", new Dictionary<string, object>());
-            List<IProduct> listOfProducts = ObjectMapper.MapDictToProducts(products);
+            List<IProduct> listOfProducts = ProductMapper.MapDictToProducts(products);
             var returnObject = new GenericResponseDTO<List<IProduct>>(listOfProducts)
             {
                 IsSuccess = status
@@ -65,7 +70,7 @@ namespace warehub.repository
         public GenericResponseDTO<IProduct> GetById(Guid id)
         {
             var (status, products) = _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
-            List<IProduct> listOfProducts = ObjectMapper.MapDictToProducts(products);
+            List<IProduct> listOfProducts = ProductMapper.MapDictToProducts(products);
 
             var product = listOfProducts.FirstOrDefault(p => p.Id == id);
             var returnObject = new GenericResponseDTO<IProduct>(product)

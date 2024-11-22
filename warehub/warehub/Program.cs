@@ -6,7 +6,10 @@ using warehub.utils;
 
 class Program
 {
-
+    /// <summary>
+    /// Entry point of the application, responsible for initializing logging, 
+    /// establishing database connection, and coordinating core operations.
+    /// </summary>
     static void Main(string[] args)
     {
         LoggerConfig.ConfigureLogging();
