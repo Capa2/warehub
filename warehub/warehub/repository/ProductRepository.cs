@@ -24,7 +24,7 @@ namespace warehub.repository
             _cRUDService = new CRUDService(connection);
         }
 
-        public GenericResponseDTO<IProduct> Add(IProduct product)
+        public async Task<GenericResponseDTO<IProduct>> Add(IProduct product)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -51,7 +51,7 @@ namespace warehub.repository
             return returnObject;
         }
 
-        public GenericResponseDTO<List<IProduct>> GetAll()
+        public async Task<GenericResponseDTO<List<IProduct>>> GetAll()
         {
             var (status, products) = await _cRUDService.Read("products", new Dictionary<string, object>());
             List<IProduct> listOfProducts = ObjectMapper.MapDictToProducts(products);
@@ -75,7 +75,7 @@ namespace warehub.repository
             return returnObject;
         }
 
-        public async Task<GenericResponseDTO<IProduct>> Update(Product product)
+        public async Task<GenericResponseDTO<IProduct>> Update(IProduct product)
         {
             var updateParams = new Dictionary<string, object>
             {

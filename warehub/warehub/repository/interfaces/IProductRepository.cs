@@ -5,10 +5,10 @@ namespace warehub.repository.interfaces
 {
     public interface IProductRepository
     {
-        GenericResponseDTO<IProduct> Add(IProduct product);
-        GenericResponseDTO<Guid> Delete(Guid id);
-        GenericResponseDTO<List<IProduct>> GetAll();
-        GenericResponseDTO<IProduct> GetById(Guid id);
-        GenericResponseDTO<IProduct> Update(IProduct product);
+        Task<GenericResponseDTO<IProduct>> Add(IProduct product);
+        Task<GenericResponseDTO<Guid>> Delete(Guid id);
+        Task<GenericResponseDTO<List<IProduct>>> GetAll();
+        Task<GenericResponseDTO<IProduct>> GetById(Guid id);
+        Task<GenericResponseDTO<IProduct>> Update(IProduct product);
     }
 }

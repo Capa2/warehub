@@ -10,10 +10,10 @@ namespace warehub.services.interfaces
 {
     public interface IProductService
     {
-        public IProduct? GetProductById(Guid id);
-        public List<IProduct>? GetAllProducts();
-        public bool AddProduct(IProduct product);
-        public bool UpdateProduct(IProduct product);
-        public bool DeleteProduct(Guid id);
+        Task<bool> AddProduct(IProduct product);
+        Task<bool> DeleteProduct(Guid id);
+        Task<List<IProduct>?> GetAllProducts();
+        Task<IProduct?> GetProductByIdAsync(Guid id);
+        Task<bool> UpdateProduct(IProduct product);
     }
 }

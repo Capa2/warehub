@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using warehub.model;
+using warehub.model.interfaces;
 
 namespace warehub.Endpoints.Products.GetProduct
 {
-    public class Mappers : Mapper<ProductRequest, ProductResponse, Product>
+    public class Mappers : Mapper<ProductRequest, ProductResponse, IProduct>
     {
-        public override ProductResponse FromEntity(Product e)
+        public override ProductResponse FromEntity(IProduct e)
         {
             return new()
             {

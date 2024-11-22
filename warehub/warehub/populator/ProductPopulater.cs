@@ -103,7 +103,7 @@ namespace warehub.controller
 
                 try // Retrieve and update products
                 {
-                    List<Product>? productsReturned = productService.GetAllProducts().Result;
+                    List<IProduct>? productsReturned = productService.GetAllProducts().Result;
                     if (productsReturned != null)
                     {
                         var productToUpdate = productsReturned.FirstOrDefault();

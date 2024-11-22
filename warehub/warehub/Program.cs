@@ -6,6 +6,7 @@ using warehub;
 using warehub.controller;
 using warehub.db;
 using warehub.repository;
+using warehub.repository.interfaces;
 using warehub.services;
 using warehub.utils;
 
