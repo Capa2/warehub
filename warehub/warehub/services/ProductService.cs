@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using warehub.model;
 using warehub.repository;
-using warehub.services.interfaces;
 using NLog;
+using warehub.services.interfaces;
 
 namespace warehub.services
 {
     /// <summary>
     /// Service class responsible for managing Product-related business logic.
     /// </summary>
-    public class ProductService : IProductSerivce
+    public class ProductService : IProductService
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IProductRepository _productRepository;

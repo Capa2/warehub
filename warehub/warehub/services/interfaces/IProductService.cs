@@ -7,7 +7,7 @@ using warehub.model;
 
 namespace warehub.services.interfaces
 {
-    public interface IProductSerivce
+    public interface IProductService
     {
         public Task<Product?> GetProductByIdAsync(Guid id);
         public Task<List<Product>?> GetAllProducts();

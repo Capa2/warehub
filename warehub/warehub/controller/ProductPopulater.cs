@@ -8,6 +8,8 @@ using warehub.repository;
 using warehub.services;
 using NLog;
 using static warehub.controller.JsonCustomConverter;
+using warehub.db;
+using warehub.services.interfaces;
 
 namespace warehub.controller
 {
@@ -17,12 +19,15 @@ namespace warehub.controller
     public static class ProductPopulater
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static IProductService? _productService;
 
         /// <summary>
         /// Populates the product data from a JSON file.
         /// </summary>
-        public static void Populate()
+        public static void Populate(IProductService productService)
         {
+            _productService = productService;
+
             string relativePath = "controller\\ExampleProducts.json"; // Path relative to the application root
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
 
@@ -81,15 +86,11 @@ namespace warehub.controller
                     return;
                 }
 
-                // Initialize the repository and service
-                ProductRepository productRepository = new();
-                ProductService productService = new ProductService(productRepository);
-
                 try // Add products to the repository
                 {
                     foreach (Product product in products)
                     {
-                        productService.AddProduct(product);
+                        _productService.AddProduct(product);
                         Logger.Trace($"ProductPopulator: Added product: {product.Name} (ID: {product.Id})");
                     }
                     Logger.Info($"ProductPopulator: Added {products.Count} products to the repository");

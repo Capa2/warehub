@@ -16,9 +16,9 @@ namespace warehub.Endpoints.Products.UpdateProduct
 {
     public class Endpoint : Endpoint<ProductRequest, ProductResponse, Mappers>
     {
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
 
-        public Endpoint(ProductService productService)
+        public Endpoint(IProductService productService)
         {
             _productService = productService;
         }

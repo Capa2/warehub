@@ -5,44 +5,16 @@ using warehub;
 
 namespace warehub.db
 {
-    public class DbConnection
+    public class DbConnection(string connectionString) : IDbConnection
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-        private static DbConnection? _instance;
-        private readonly MySqlConnection _connection;
+        private readonly MySqlConnection _connection = new MySqlConnection(connectionString);
 
-        // Private constructor to avoid instantiation from outside
-        private DbConnection(string connectionString) => _connection = new MySqlConnection(connectionString);
-
-        /// <summary>
-        /// Gets the singleton instance of DbConnection with connection string from config.
-        /// </summary>
-        public static DbConnection Instance
+        public MySqlConnection GetConnection()
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    Config config = Config.GetInstance();
-                    string connectionString = config.GetConnectionString();
-                    _instance = new DbConnection(connectionString);
-                    Logger.Info("DbConnection singleton instance created.");
-                }
-                return _instance;
-            }
+            Connect();
+            return _connection;
         }
 
-        /// <summary>
-        /// Gets the MySqlConnection instance and ensures the connection is open.
-        /// </summary>
-        public static MySqlConnection GetConnection()
-        {
-            Instance.Connect();
-            return Instance._connection;
-        }
-        /// <summary>
-        /// Opens the MySQL connection if it is not already open.
-        /// </summary>
         private void Connect()
         {
             try
@@ -50,39 +22,26 @@ namespace warehub.db
                 if (_connection.State != System.Data.ConnectionState.Open)
                 {
                     _connection.Open();
-                    Logger.Info("Database connection successfully opened.");
-                }
-                else
-                {
-                    Logger.Debug("Database connection is already open.");
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Error occurred while connecting to the database.");
+                throw new InvalidOperationException("Failed to open database connection.", ex);
             }
         }
 
-        /// <summary>
-        /// Closes the MySQL connection if it is open.
-        /// </summary>
-        public static void Disconnect()
+        public void Disconnect()
         {
             try
             {
-                if (Instance._connection.State != System.Data.ConnectionState.Closed)
+                if (_connection.State != System.Data.ConnectionState.Closed)
                 {
-                    Instance._connection.Close();
-                    Logger.Info("Database connection successfully closed.");
-                }
-                else
-                {
-                    Logger.Debug("Database connection is already closed.");
+                    _connection.Close();
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Error occurred while disconnecting from the database.");
+                throw new InvalidOperationException("Failed to close database connection.", ex);
             }
         }
     }

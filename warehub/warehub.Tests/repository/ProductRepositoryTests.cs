@@ -18,7 +18,7 @@ namespace warehub.Tests.repository
         public ProductRepositoryTests()
         {
             _CRUDService = Substitute.For<ICRUDService>();
-            _productRepository = new ProductRepository();
+            //_productRepository = new ProductRepository();
         }
 
 

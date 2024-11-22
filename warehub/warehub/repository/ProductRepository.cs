@@ -11,10 +11,12 @@ namespace warehub.repository
     public class ProductRepository : IProductRepository
     {
         private readonly CRUDService _cRUDService;
+        private readonly IDbConnection _dbConnection;
 
-        public ProductRepository()
+        public ProductRepository(IDbConnection dbConnection)
         {
-            MySqlConnection connection = DbConnection.GetConnection();
+            _dbConnection = dbConnection;
+            MySqlConnection connection = _dbConnection.GetConnection();
             _cRUDService = new CRUDService(connection);
         }
 

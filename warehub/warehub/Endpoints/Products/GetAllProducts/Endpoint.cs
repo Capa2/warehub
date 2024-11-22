@@ -14,9 +14,9 @@ namespace warehub.Endpoints.Products.GetAllProducts
 {
     public class Endpoint : Endpoint<EmptyRequest, ProductsResponse, Mappers>
     {
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
 
-        public Endpoint(ProductService productService)
+        public Endpoint(IProductService productService)
         {
             _productService = productService;
         }
