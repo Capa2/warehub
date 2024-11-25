@@ -1,26 +1,32 @@
-﻿using NLog;
+﻿using FastEndpoints;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using NLog;
 using warehub;
 using warehub.controller;
 using warehub.db;
+using warehub.repository;
+using warehub.repository.interfaces;
+using warehub.services;
 using warehub.utils;
 
-class Program
-{
-    /// <summary>
-    /// Entry point of the application, responsible for initializing logging, 
-    /// establishing database connection, and coordinating core operations.
-    /// </summary>
-    static void Main(string[] args)
-    {
-        LoggerConfig.ConfigureLogging();
-        var logger = LogManager.GetCurrentClassLogger();
-        logger.Info("Application started.");
-        logger.Info("Initializing Database...");
-        DbConnection.Initialize();
-        DbConnection.Connect();
-        //logger.Info("Populating...");
-        //ProductPopulater.Populate();
-        DbConnection.Disconnect();
-        LogManager.Shutdown();
-    }
-}
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container
+builder.Services.AddFastEndpoints(); // Register FastEndpoints
+
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>(); 
+builder.Services.AddScoped<ProductService>();    // Scoped for request lifecycle
+var app = builder.Build();
+LoggerConfig.ConfigureLogging();
+var logger = LogManager.GetCurrentClassLogger();
+logger.Info("Application started.");
+logger.Info("Initializing Database...");
+DbConnection.Initialize();
+DbConnection.Connect();
+// Configure middleware
+//app.UseAuthorization();
+app.UseFastEndpoints(); // Enable FastEndpoints
+
+app.Run();

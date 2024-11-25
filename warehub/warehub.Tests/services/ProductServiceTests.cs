@@ -36,7 +36,7 @@ namespace warehub.Tests.services
             _productRepository.GetAll().Returns(mockResponse);
 
             // Act: Call the method
-            var sut = _productService.GetAllProducts();
+            var sut = _productService.GetAllProducts().Result;
 
             // Assert: Verify that the result is the list of products
             Assert.Equal(1, sut.Count);
@@ -55,7 +55,7 @@ namespace warehub.Tests.services
             _productRepository.GetAll().Returns(mockResponse);
 
             // Act: Call the method
-            var sut = _productService.GetAllProducts();
+            var sut = _productService.GetAllProducts().Result;
 
             // Assert: Verify that the result is null
             Assert.Null(sut);
@@ -71,7 +71,7 @@ namespace warehub.Tests.services
             _productRepository.GetById(product.Id).Returns(mockResponse);
 
             // Act: Call the method
-            var sut = _productService.GetProductById(product.Id);
+            var sut = _productService.GetProductByIdAsync(product.Id).Result;
 
             // Assert: Verify that the result is the list of products
             Assert.Equal(product.Id, sut.Id);
@@ -86,7 +86,7 @@ namespace warehub.Tests.services
             _productRepository.GetById(product.Id).Returns(mockResponse);
 
             // Act: Call the method
-            var sut = _productService.GetProductById(product.Id);
+            var sut = _productService.GetProductByIdAsync(product.Id).Result;
 
             // Assert: Verify that the result is null
             Assert.Null(sut);
@@ -103,7 +103,7 @@ namespace warehub.Tests.services
             _productRepository.Add(product).Returns(mockResponse);
 
             // Act: Call the method
-            var sut = _productService.AddProduct(product);
+            var sut = _productService.AddProduct(product).Result;
 
             // Assert: Verify that the result is true
             Assert.True(sut);
@@ -119,7 +119,7 @@ namespace warehub.Tests.services
             _productRepository.Add(product).Returns(mockResponse);
 
             // Act: Call the method
-            var sut = _productService.AddProduct(product);
+            var sut = _productService.AddProduct(product).Result;
 
             // Assert: Verify that the result is false
             Assert.False(sut);
@@ -136,7 +136,7 @@ namespace warehub.Tests.services
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
             _productRepository.Delete(product.Id).Returns(mockResponseDelete);
             // Act: Call the method
-            var sut = _productService.DeleteProduct(product.Id);
+            var sut = _productService.DeleteProduct(product.Id).Result;
 
             // Assert: Verify that the result is true
             Assert.True(sut);
@@ -154,7 +154,7 @@ namespace warehub.Tests.services
             _productRepository.Delete(product.Id).Returns(mockResponseDelete);
 
             // Act: Call the method
-            var sut = _productService.DeleteProduct(product.Id);
+            var sut = _productService.DeleteProduct(product.Id).Result;
 
             // Assert: Verify that the result is false
             Assert.False(sut);
@@ -172,7 +172,7 @@ namespace warehub.Tests.services
             _productRepository.Delete(product.Id).Returns(mockResponseDelete);
 
             // Act: Call the method
-            var sut = _productService.DeleteProduct(product.Id);
+            var sut = _productService.DeleteProduct(product.Id).Result;
 
             // Assert: Verify that the result is false
             Assert.False(sut);
@@ -189,7 +189,7 @@ namespace warehub.Tests.services
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
             _productRepository.Update(product).Returns(mockResponseUpdate);
             // Act: Call the method
-            var sut = _productService.UpdateProduct(product);
+            var sut = _productService.UpdateProduct(product).Result;
 
             // Assert: Verify that the result is true
             Assert.True(sut);
@@ -206,7 +206,7 @@ namespace warehub.Tests.services
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
             _productRepository.Update(product).Returns(mockResponseUpdate);
             // Act: Call the method
-            var sut = _productService.UpdateProduct(product);
+            var sut = _productService.UpdateProduct(product).Result;
 
             // Assert: Verify that the result is false
             Assert.False(sut);
@@ -223,7 +223,7 @@ namespace warehub.Tests.services
             _productRepository.GetById(product.Id).Returns(mockResponseGetById);
             _productRepository.Update(product).Returns(mockResponseUpdate);
             // Act: Call the method
-            var sut = _productService.UpdateProduct(product);
+            var sut = _productService.UpdateProduct(product).Result;
 
             // Assert: Verify that the result is false
             Assert.False(sut);

@@ -30,12 +30,12 @@ namespace warehub.services
         /// Retrieves all products from the repository.
         /// </summary>
         /// <returns>A list of products if successful; otherwise, null.</returns>
-        public List<IProduct>? GetAllProducts()
+        public async Task<List<IProduct>?> GetAllProducts()
         {
             try
             {
                 Logger.Trace("ProductService: Attempting to retrieve all products from the repository.");
-                var responseObject = _productRepository.GetAll();
+                var responseObject = await _productRepository.GetAll();
 
                 if (responseObject.IsSuccess)
                 {
@@ -64,12 +64,12 @@ namespace warehub.services
         /// </summary>
         /// <param name="id">The unique identifier of the product.</param>
         /// <returns>The product if found; otherwise, null.</returns>
-        public IProduct? GetProductById(Guid id)
+        public async Task<IProduct?> GetProductByIdAsync(Guid id)
         {
             try
             {
                 Logger.Trace($"ProductService: Attempting to retrieve product with ID: {id}");
-                var response = _productRepository.GetById(id);
+                var response = await _productRepository.GetById(id);
 
                 if (response.IsSuccess)
                 {
@@ -98,12 +98,12 @@ namespace warehub.services
         /// </summary>
         /// <param name="product">The product to add.</param>
         /// <returns>True if the product was added successfully; otherwise, false.</returns>
-        public bool AddProduct(IProduct product)
+        public async Task<bool> AddProduct(IProduct product)
         {
             try
             {
                 Logger.Trace($"ProductService: Attempting to add product: {product.Name}");
-                var response = _productRepository.Add(product);
+                var response = await _productRepository.Add(product);
 
                 if (response.IsSuccess)
                 {
@@ -126,12 +126,12 @@ namespace warehub.services
         /// </summary>
         /// <param name="product">The product to update.</param>
         /// <returns>True if the product was updated successfully; otherwise, false.</returns>
-        public bool UpdateProduct(IProduct product)
+        public async Task<bool> UpdateProduct(IProduct product)
         {
             try
             {
                 Logger.Trace($"ProductService: Attempting to update product with ID: {product.Id}");
-                var getResponse = _productRepository.GetById(product.Id);
+                var getResponse = await _productRepository.GetById(product.Id);
 
                 if (!getResponse.IsSuccess || getResponse.Data == null)
                 {
@@ -139,7 +139,7 @@ namespace warehub.services
                     return false;
                 }
 
-                var response = _productRepository.Update(product);
+                var response = await _productRepository.Update(product);
 
                 if (response.IsSuccess)
                 {
@@ -162,12 +162,12 @@ namespace warehub.services
         /// </summary>
         /// <param name="id">The unique identifier of the product to delete.</param>
         /// <returns>True if the product was deleted successfully; otherwise, false.</returns>
-        public bool DeleteProduct(Guid id)
+        public async Task<bool> DeleteProduct(Guid id)
         {
             try
             {
                 Logger.Trace($"ProductService: Attempting to delete product with ID: {id}");
-                var getResponse = _productRepository.GetById(id);
+                var getResponse = await _productRepository.GetById(id);
 
                 if (!getResponse.IsSuccess || getResponse.Data == null)
                 {
@@ -175,7 +175,7 @@ namespace warehub.services
                     return false;
                 }
 
-                var response = _productRepository.Delete(id);
+                var response = await _productRepository.Delete(id);
 
                 if (response.IsSuccess)
                 {

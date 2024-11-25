@@ -102,7 +102,7 @@ namespace warehub.Tests.db
             };
 
             // Act
-            bool createStatus = _crudService.Create("products", createParameters);
+            bool createStatus = _crudService.Create("products", createParameters).Result;
 
             // Assert
             Assert.True(createStatus, "Failed to create item in database.");
@@ -115,7 +115,7 @@ namespace warehub.Tests.db
             EnsureTestItemExists();
 
             // Act
-            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });
+            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } }).Result;
 
             // Assert
             Assert.True(readStatus, "Read operation failed.");
@@ -131,13 +131,13 @@ namespace warehub.Tests.db
             var updateParameters = new Dictionary<string, object> { { "name", "Updated Item" } };
 
             // Act
-            bool updateStatus = _crudService.Update("products", updateParameters, "id", _testId);
+            bool updateStatus = _crudService.Update("products", updateParameters, "id", _testId).Result;
 
             // Assert
             Assert.True(updateStatus, "Update operation failed.");
 
             // Verify update
-            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });
+            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } }).Result;
             Assert.True(readStatus, "Read operation failed after update.");
             Assert.Single(readResult);
             Assert.Equal("Updated Item", readResult[0]["name"]);
@@ -150,13 +150,13 @@ namespace warehub.Tests.db
             EnsureTestItemExists();
 
             // Act
-            bool deleteStatus = _crudService.Delete("products", "id", _testId);
+            bool deleteStatus = _crudService.Delete("products", "id", _testId).Result;
 
             // Assert
             Assert.True(deleteStatus, "Delete operation failed.");
 
             // Verify deletion
-            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });
+            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } }).Result;
             Assert.True(readStatus, "Read operation failed after deletion.");
             Assert.Empty(readResult);
         }
@@ -174,11 +174,11 @@ namespace warehub.Tests.db
                 { "amount", 100 }
             };
 
-            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } });
+            var (readStatus, readResult) = _crudService.Read("products", new Dictionary<string, object> { { "id", _testId } }).Result;
 
             if (!readStatus || readResult.Count == 0)
             {
-                bool createStatus = _crudService.Create("products", createParameters);
+                bool createStatus = _crudService.Create("products", createParameters).Result;
                 if (!createStatus)
                 {
                     throw new InvalidOperationException("Test setup failed: unable to create test item.");
