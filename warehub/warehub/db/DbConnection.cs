@@ -6,8 +6,7 @@ using warehub;
 namespace warehub.db
 {
     /// <summary>
-    /// Manages a single, thread-safe MySQL database connection using the singleton pattern. 
-    /// Provides methods for initializing, connecting, retrieving, and disconnecting the connection.
+    /// Manages a singleton MySQL database connection with thread safety and lifecycle control.
     /// </summary>
     public class DbConnection
     {

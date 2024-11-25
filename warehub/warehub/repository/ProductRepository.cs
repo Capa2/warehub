@@ -1,8 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using warehub.db;
 using warehub.db.interfaces;
 using warehub.model;
@@ -58,13 +55,9 @@ namespace warehub.repository
 
         public async Task<GenericResponseDTO<List<IProduct>>> GetAll()
         {
-<<<<<<< HEAD
-            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object>());
-            List<IProduct> listOfProducts = ProductMapper.MapDictToProducts(products);
-=======
             var (status, products) = await _cRUDService.Read("products", new Dictionary<string, object>());
-            List<IProduct> listOfProducts = ObjectMapper.MapDictToProducts(products);
->>>>>>> cc4b78bbcdde7c7e584cc35a6278f23ff1c78d26
+            List<IProduct> listOfProducts = ProductMapper.MapDictToProducts(products);
+
             var returnObject = new GenericResponseDTO<List<IProduct>>(listOfProducts)
             {
                 IsSuccess = status
@@ -74,13 +67,8 @@ namespace warehub.repository
 
         public async Task<GenericResponseDTO<IProduct>> GetById(Guid id)
         {
-<<<<<<< HEAD
-            var (status, products) = _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
-            List<IProduct> listOfProducts = ProductMapper.MapDictToProducts(products);
-=======
             var (status, products) = await _cRUDService.Read("products", new Dictionary<string, object> { { "id", id } });
-            List<IProduct> listOfProducts = ObjectMapper.MapDictToProducts(products);
->>>>>>> cc4b78bbcdde7c7e584cc35a6278f23ff1c78d26
+            List<IProduct> listOfProducts = ProductMapper.MapDictToProducts(products);
 
             var product = listOfProducts.FirstOrDefault(p => p.Id == id);
             var returnObject = new GenericResponseDTO<IProduct>(product)
